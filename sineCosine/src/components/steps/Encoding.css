@@ -1,0 +1,187 @@
+.encContainer{
+  width:100%;
+  max-width:1100px;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+}
+
+.encHeading{
+  text-align:center;
+  border-bottom:2px solid #dbeafe;
+  padding-bottom:18px;
+}
+
+.encHeading h2{
+  font-size:30px;
+  color:#123b8d;
+  margin-bottom:10px;
+}
+
+.encHeading p{
+  max-width:800px;
+  margin:auto;
+  line-height:1.8;
+  color:#666;
+}
+
+.encWarning{
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#9a3412;
+  padding:14px 18px;
+  border-radius:12px;
+  text-align:center;
+  font-weight:600;
+}
+
+.encSequenceCard,
+.encStreamCard,
+.encBinaryCard{
+  background:#fff;
+  padding:22px;
+  border-radius:18px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  text-align:center;
+}
+
+.encSequenceCard h3,
+.encStreamCard h3,
+.encBinaryCard h3{
+  color:#123b8d;
+  margin-bottom:16px;
+}
+
+.encSequence{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  justify-content:center;
+}
+
+.encChip{
+  width:32px;
+  height:28px;
+  border-radius:6px;
+  background:#f1f5f9;
+  border:1px solid #e2e8f0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-family:Consolas,monospace;
+  color:#334155;
+  transition:.2s;
+}
+
+.encChipZero{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+
+.encChipEOBRegion{
+  opacity:.45;
+}
+
+.encChipCurrent{
+  outline:2px solid #f59e0b;
+  outline-offset:-2px;
+  transform:scale(1.15);
+}
+
+.encButton{
+  margin-top:18px;
+  padding:14px 26px;
+  background:#2563eb;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.encButton:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.encStatus{
+  margin-top:12px;
+  color:#64748b;
+  font-size:13px;
+}
+
+.encStream{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+  min-height:50px;
+  align-items:center;
+}
+
+.encPair{
+  background:#eef4ff;
+  border:1px solid #c8d7ff;
+  border-radius:10px;
+  padding:8px 12px;
+  font-family:Consolas,monospace;
+  font-weight:700;
+  display:flex;
+  gap:2px;
+}
+
+.encPairRun{ color:#2563eb; }
+.encPairVal{ color:#123b8d; }
+
+.encEOB{
+  background:#16a34a;
+  color:#fff;
+  border-radius:10px;
+  padding:8px 16px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.encEmpty{
+  color:#94a3b8;
+  font-style:italic;
+}
+
+.encBinaryNote{
+  color:#64748b;
+  font-size:13px;
+  margin-bottom:16px;
+}
+
+.encBinaryStream{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+}
+
+.encBinaryChip{
+  background:#0f172a;
+  color:#93c5fd;
+  padding:8px 12px;
+  border-radius:8px;
+  font-family:Consolas,monospace;
+  font-size:12px;
+}
+
+.encBinaryChip b{
+  color:#fde68a;
+}
+
+.encBinaryEOB{
+  background:#16a34a;
+  color:#fff;
+}
+
+@media(max-width:768px){
+  .encChip{ width:26px; height:24px; font-size:9px; }
+  .encHeading h2{ font-size:22px; }
+  .encBinaryChip{ font-size:10px; }
+}

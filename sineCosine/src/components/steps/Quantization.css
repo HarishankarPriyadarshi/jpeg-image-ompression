@@ -1,0 +1,908 @@
+.quantContainer{
+
+width:100%;
+max-width:1100px;
+margin:auto;
+display:flex;
+flex-direction:column;
+gap:28px;
+
+}
+
+/* -------------------------------- */
+
+.quantHeading{
+
+text-align:center;
+border-bottom:2px solid #dbeafe;
+padding-bottom:18px;
+
+}
+
+.quantHeading h2{
+
+font-size:30px;
+color:#123b8d;
+margin-bottom:10px;
+
+}
+
+.quantHeading p{
+
+max-width:760px;
+margin:auto;
+line-height:1.8;
+color:#666;
+
+}
+
+/* -------------------------------- */
+
+.topControls{
+
+display:flex;
+justify-content:center;
+gap:25px;
+flex-wrap:wrap;
+
+}
+
+.controlCard{
+
+background:white;
+padding:22px;
+border-radius:18px;
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+min-width:300px;
+text-align:center;
+
+}
+
+.controlCard h3{
+
+margin-bottom:15px;
+color:#123b8d;
+
+}
+
+.toggleButtons,
+.blockButtons{
+
+display:flex;
+justify-content:center;
+gap:12px;
+flex-wrap:wrap;
+
+}
+
+.toggleButtons button,
+.blockButtons button{
+
+padding:12px 22px;
+border:none;
+background:#e5e7eb;
+border-radius:10px;
+cursor:pointer;
+font-weight:600;
+transition:.3s;
+
+}
+
+.activeBtn{
+
+background:#2563eb;
+color:white;
+
+}
+
+/* -------------------------------- */
+
+.quantLayout{
+
+display:grid;
+
+grid-template-columns:minmax(0,1fr) 60px minmax(0,1fr) 60px minmax(0,1fr);
+
+align-items:center;
+
+justify-content:center;
+
+gap:18px;
+
+}
+
+/* -------------------------------- */
+
+.matrixCard{
+
+background:white;
+
+padding:20px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+text-align:center;
+
+min-width:0;
+
+width:100%;
+
+max-width:360px;
+
+margin:0 auto;
+
+overflow:auto;
+
+}
+
+.matrixCard h3{
+
+margin-bottom:18px;
+
+color:#123b8d;
+
+}
+
+/* -------------------------------- */
+
+.operator{
+
+font-size:48px;
+
+font-weight:bold;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+color:#2563eb;
+
+}
+
+/* -------------------------------- */
+
+.miniMatrix{
+
+display:grid;
+
+grid-template-columns:repeat(8,26px);
+
+gap:3px;
+
+justify-content:center;
+
+margin:auto;
+
+}
+
+.miniMatrix span{
+
+width:24px;
+
+height:24px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:8px;
+
+font-family:Consolas,monospace;
+
+background:#edf4ff;
+
+border:1px solid #c8d7ff;
+
+border-radius:6px;
+
+cursor:pointer;
+
+transition:.25s;
+
+}
+
+.miniMatrix span:hover{
+
+transform:scale(1.08);
+
+background:#2563eb;
+
+color:white;
+
+}
+
+/* -------------------------------- */
+
+.waitingText{
+
+height:260px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:22px;
+
+font-weight:700;
+
+color:#888;
+
+}
+
+/* -------------------------------- */
+
+.progressCard{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+text-align:center;
+
+}
+
+.progressTrack{
+
+height:20px;
+
+background:#e5e7eb;
+
+border-radius:20px;
+
+overflow:hidden;
+
+margin:20px 0;
+
+}
+
+.progressFill{
+
+height:100%;
+
+background:linear-gradient(90deg,#2563eb,#60a5fa);
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+color:white;
+
+font-weight:bold;
+
+transition:.35s;
+
+}
+
+.quantButton{
+
+margin-top:20px;
+
+padding:15px 28px;
+
+background:#2563eb;
+
+color:white;
+
+border:none;
+
+border-radius:10px;
+
+font-size:15px;
+
+font-weight:700;
+
+cursor:pointer;
+
+}
+
+.quantButton:disabled{
+
+opacity:.6;
+
+cursor:not-allowed;
+
+}
+
+/* -------------------------------- */
+
+.formulaSection{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.formulaSection h3{
+
+margin-bottom:20px;
+
+color:#123b8d;
+
+}
+
+.formulaCard{
+
+background:#f8fbff;
+
+padding:22px;
+
+border-left:5px solid #2563eb;
+
+border-radius:12px;
+
+line-height:2;
+
+}
+
+.formulaCard h2{
+
+text-align:center;
+
+color:#2563eb;
+
+margin-bottom:15px;
+
+}
+
+/* -------------------------------- */
+
+.currentCalculation{
+
+background:white;
+
+padding:24px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+line-height:2;
+
+}
+
+.currentCalculation h3{
+
+margin-bottom:18px;
+
+text-align:center;
+
+color:#123b8d;
+
+}
+
+.currentCalculation b{
+
+color:#2563eb;
+
+}
+
+/* -------------------------------- */
+
+.quantInfo{
+
+display:grid;
+
+grid-template-columns:repeat(3,1fr);
+
+gap:18px;
+
+}
+
+.quantInfo div{
+
+background:white;
+
+padding:18px;
+
+border-radius:14px;
+
+box-shadow:0 6px 15px rgba(0,0,0,.08);
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+gap:8px;
+
+}
+
+.quantInfo b{
+
+color:#123b8d;
+
+}
+
+.quantInfo span{
+
+font-weight:bold;
+
+color:#2563eb;
+
+}
+
+/* -------------------------------- */
+
+.observationCard{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+line-height:2;
+
+}
+
+.observationCard h3{
+
+margin-bottom:15px;
+
+color:#123b8d;
+
+}
+
+.observationCard ul{
+
+padding-left:22px;
+
+}
+
+/* -------------------------------- */
+
+.pipelineCard{
+
+background:white;
+
+padding:30px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+text-align:center;
+
+}
+
+.pipelineCard h2{
+
+color:#123b8d;
+
+margin-bottom:15px;
+
+}
+
+.pipelineFlow{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+gap:18px;
+
+flex-wrap:wrap;
+
+margin-top:25px;
+
+}
+
+.pipelineBox{
+
+width:170px;
+
+height:110px;
+
+background:#eef4ff;
+
+border:2px solid #dbeafe;
+
+border-radius:14px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-weight:bold;
+
+}
+
+.pipelineOperator{
+
+font-size:38px;
+
+font-weight:bold;
+
+color:#2563eb;
+
+}
+
+.pipelineResult{
+
+width:180px;
+
+height:110px;
+
+background:#2563eb;
+
+color:white;
+
+border-radius:14px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-weight:bold;
+
+}
+
+/* -------------------------------- */
+
+@media(max-width:1100px){
+
+.quantLayout{
+
+grid-template-columns:1fr;
+
+}
+
+.operator{
+
+transform:rotate(90deg);
+
+}
+
+.matrixCard{
+
+min-width:100%;
+
+}
+
+.quantInfo{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+@media(max-width:650px){
+
+.quantInfo{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+.qualityCard{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+text-align:center;
+
+}
+
+.qualityCard h3{
+
+margin-bottom:18px;
+
+color:#123b8d;
+
+}
+
+.qualityCard input{
+
+width:80%;
+
+margin:20px auto;
+
+display:block;
+
+cursor:pointer;
+
+}
+
+.qualityCard h2{
+
+color:#2563eb;
+
+margin-top:10px;
+
+}
+
+.qualityCard p{
+
+margin-top:10px;
+
+font-weight:600;
+
+color:#555;
+
+}
+
+.activeCell{
+
+background:#2563eb !important;
+
+color:white;
+
+transform:scale(1.12);
+
+transition:.3s;
+
+box-shadow:0 0 15px rgba(37,99,235,.35);
+
+}
+
+.generatedCell{
+
+background:#16a34a !important;
+
+color:white;
+
+animation:popCell .35s;
+
+}
+
+@keyframes popCell{
+
+0%{
+
+transform:scale(.4);
+
+opacity:0;
+
+}
+
+100%{
+
+transform:scale(1);
+
+opacity:1;
+
+}
+
+}
+/* ============ Additions: QF marks, math panel, zero stats, compression, mobile ============ */
+
+.qfMarks{
+  display:flex;
+  justify-content:space-between;
+  max-width:80%;
+  margin:0 auto;
+  font-size:11px;
+  color:#94a3b8;
+  font-weight:600;
+}
+
+.qfMarkActive{
+  color:#2563eb;
+}
+
+.qfNote{
+  margin-top:12px;
+  font-size:13px;
+  color:#64748b;
+  background:#f8fbff;
+  border-radius:10px;
+  padding:10px 14px;
+}
+
+.pendingCell{
+  color:#c3d2f0;
+}
+
+.zeroCell{
+  background:#dcfce7 !important;
+  color:#15803d;
+  font-weight:700;
+}
+
+.chosenCell{
+  outline:2px solid #f59e0b;
+  outline-offset:-2px;
+}
+
+.mathSteps{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+  margin-top:15px;
+}
+
+.mathStep{
+  background:#f8fbff;
+  border-radius:12px;
+  padding:14px 8px;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.mathStep span{
+  font-size:12px;
+  color:#64748b;
+  font-weight:600;
+}
+
+.mathStep b{
+  font-size:16px;
+  color:#123b8d;
+}
+
+.mathStep.highlight{
+  background:#2563eb;
+}
+
+.mathStep.highlight span,
+.mathStep.highlight b{
+  color:#fff;
+}
+
+.zeroStatsSection,
+.compressionSection{
+  background:#fff;
+  padding:25px;
+  border-radius:18px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.zeroStatsSection h3,
+.compressionSection h3{
+  margin-bottom:18px;
+  color:#123b8d;
+  text-align:center;
+}
+
+.zeroStatsGrid,
+.compressionGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-bottom:18px;
+}
+
+.zeroStatCard,
+.compressionCard{
+  background:#f8fbff;
+  border-radius:14px;
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  text-align:center;
+}
+
+.zeroCard{ border-top:4px solid #16a34a; }
+.nonZeroCard{ border-top:4px solid #2563eb; }
+.percentCard{ border-top:4px solid #f59e0b; }
+
+.statLabel{
+  font-size:12px;
+  color:#64748b;
+  font-weight:600;
+}
+
+.statValue{
+  font-size:24px;
+  font-weight:800;
+  color:#123b8d;
+}
+
+.zeroBarTrack{
+  height:16px;
+  background:#e5e7eb;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.zeroBarFill{
+  height:100%;
+  background:linear-gradient(90deg,#16a34a,#4ade80);
+  transition:.4s;
+}
+
+.zeroBarCaption{
+  text-align:center;
+  font-size:13px;
+  color:#64748b;
+  margin-top:10px;
+}
+
+.compressionChart{
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  gap:60px;
+  height:180px;
+  padding-top:20px;
+}
+
+.chartBarGroup{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-end;
+  height:100%;
+  width:90px;
+}
+
+.chartBar{
+  width:60px;
+  background:linear-gradient(180deg,#93c5fd,#2563eb);
+  border-radius:8px 8px 0 0;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  color:#fff;
+  font-weight:700;
+  padding-top:6px;
+  transition:.4s;
+}
+
+.chartBarAfter{
+  background:linear-gradient(180deg,#86efac,#16a34a);
+}
+
+.chartBarGroup label{
+  margin-top:10px;
+  font-size:12px;
+  text-align:center;
+  color:#475569;
+  font-weight:600;
+}
+
+@media(max-width:768px){
+  .quantContainer{ gap:18px; }
+  .quantHeading h2{ font-size:22px; }
+  .controlCard{ min-width:0; width:100%; padding:16px; }
+  .topControls{ gap:14px; }
+  .miniMatrix{ grid-template-columns:repeat(8,26px); }
+  .miniMatrix span{ width:24px; height:24px; font-size:8px; }
+  .mathSteps{ grid-template-columns:repeat(2,1fr); }
+  .zeroStatsGrid,.compressionGrid{ grid-template-columns:1fr; }
+  .compressionChart{ gap:30px; height:140px; }
+  .qfMarks{ font-size:9px; max-width:100%; }
+  .quantInfo{ grid-template-columns:1fr; }
+  .pipelineFlow{ flex-direction:column; }
+  .pipelineOperator{ transform:rotate(90deg); }
+}

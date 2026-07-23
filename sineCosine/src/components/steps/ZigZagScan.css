@@ -1,0 +1,207 @@
+.zzContainer{
+  width:100%;
+  max-width:1100px;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+}
+
+.zzHeading{
+  text-align:center;
+  border-bottom:2px solid #dbeafe;
+  padding-bottom:18px;
+}
+
+.zzHeading h2{
+  font-size:30px;
+  color:#123b8d;
+  margin-bottom:10px;
+}
+
+.zzHeading p{
+  max-width:780px;
+  margin:auto;
+  line-height:1.8;
+  color:#666;
+}
+
+.zzWarning{
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#9a3412;
+  padding:14px 18px;
+  border-radius:12px;
+  text-align:center;
+  font-weight:600;
+}
+
+.zzLayout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:22px;
+  align-items:start;
+}
+
+.zzGridCard,
+.zz1dCard{
+  background:#fff;
+  padding:22px;
+  border-radius:18px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  text-align:center;
+}
+
+.zzGridCard h3,
+.zz1dCard h3{
+  color:#123b8d;
+  margin-bottom:16px;
+}
+
+.zzGridWrap{
+  position:relative;
+  width:320px;
+  height:320px;
+  margin:auto;
+}
+
+.zzSvg{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+}
+
+.zzGrid{
+  display:grid;
+  grid-template-columns:repeat(8,40px);
+  grid-template-rows:repeat(8,40px);
+  width:320px;
+  height:320px;
+  margin:auto;
+}
+
+.zzCell{
+  border:1px solid #dbeafe;
+  background:#f8fbff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-size:10px;
+  font-family:Consolas,monospace;
+  position:relative;
+  transition:.2s;
+}
+
+.zzValue{
+  font-weight:700;
+  color:#123b8d;
+}
+
+.zzOrder{
+  font-size:7px;
+  color:#94a3b8;
+}
+
+.zzActive{
+  background:#fde68a !important;
+  transform:scale(1.1);
+  z-index:2;
+}
+
+.zzVisited{
+  background:#dbeafe;
+}
+
+.zzButton{
+  margin-top:18px;
+  padding:14px 26px;
+  background:#2563eb;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.zzButton:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.zzStatus{
+  margin-top:12px;
+  color:#64748b;
+  font-size:13px;
+}
+
+.zz1dTrack{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  justify-content:center;
+  max-height:320px;
+  overflow-y:auto;
+}
+
+.zzChip{
+  width:34px;
+  height:30px;
+  border-radius:6px;
+  background:#f1f5f9;
+  border:1px solid #e2e8f0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-family:Consolas,monospace;
+  color:#94a3b8;
+}
+
+.zzChipFilled{
+  background:#dbeafe;
+  color:#123b8d;
+  font-weight:700;
+}
+
+.zzChipZero{
+  background:#dcfce7;
+  color:#15803d;
+  font-weight:700;
+}
+
+.zzChipCurrent{
+  outline:2px solid #f59e0b;
+  outline-offset:-2px;
+}
+
+.zz1dCaption{
+  margin-top:14px;
+  font-size:13px;
+  color:#64748b;
+}
+
+.zzFormula h2{
+  text-align:center;
+  color:#2563eb;
+  margin:14px 0;
+}
+
+@media(max-width:900px){
+  .zzLayout{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:420px){
+  .zzGridWrap,
+  .zzGrid{
+    width:280px;
+    height:280px;
+    grid-template-columns:repeat(8,35px);
+    grid-template-rows:repeat(8,35px);
+  }
+}
