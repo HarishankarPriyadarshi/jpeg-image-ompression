@@ -1,0 +1,9397 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f3f4f6;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: #f3f4f6;
+}
+
+.modal {
+  width: 100vw;
+  height: 100vh;
+  background: #f3f4f6;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.headerBar {
+  height: 55px;
+  background: #0d2c72;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+
+.headerTitle {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.closeHeaderBtn {
+  background: white;
+  color: #0d2c72;
+  border: none;
+  padding: 11px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.closeHeaderBtn:hover {
+  background: #eef4ff;
+}
+
+.stepNavigator {
+  width: 80%;
+  height: 42px;
+  margin: 14px auto 0;
+  background: #000000;
+  color: white;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 18px;
+  flex-shrink: 0;
+}
+
+.navBtn {
+  width: 50px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.navBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.stepText {
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.contentArea {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 18px;
+  padding: 18px;
+  overflow: hidden;
+}
+
+.leftPanel {
+  width: 270px;
+  min-width: 270px;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.stepsHeading {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0d2c72;
+}
+
+.stepsList {
+  flex: 1;
+  min-height: 0;
+  list-style: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.stepsList li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #e1e7ef;
+  background: #ffffff;
+  color: #25324a;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.stepsList li:hover {
+  background: #eef4ff;
+  border-color: #b8c7e6;
+}
+
+.stepCircle {
+  border-radius: 50%;
+  background: #e8edf5;
+  color: #0d2c72;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 800;
+}
+
+.currentStep {
+  background: #eaf2ff !important;
+  color: #0d2c72 !important;
+  border-color: #0d2c72 !important;
+  font-weight: 800 !important;
+}
+
+.currentStep .stepCircle {
+  background: #0d2c72;
+  color: white;
+}
+
+.completedStep {
+  background: #ecfdf3 !important;
+  color: #15803d !important;
+  border-color: #9ed7b8 !important;
+  font-weight: 700 !important;
+}
+
+.completedStep .stepCircle {
+  background: #16a34a;
+  color: white;
+}
+
+.lockedStep {
+  background: #ffffff;
+  color: #475467;
+  font-weight: 600;
+}
+
+.lockedStep .stepCircle {
+  background: #e8edf5;
+  color: #667085;
+}
+
+.controlButtons {
+  margin-top: 10px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 10px;
+  flex-shrink: 0;
+}
+
+.controlButtons button {
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  background: #0d2c72;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.controlButtons button:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+}
+
+.visualPanel {
+  flex: 1;
+  min-width: 0;
+  background: white;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.stepWorkspace {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.stepWorkspace h2 {
+  text-align: center;
+  color: #0d2c72;
+}
+
+.ioContainer {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 18px;
+}
+
+.ioBox {
+  width: 270px;
+  min-height: 112px;
+  background: white;
+  border: 2px solid #dcdcdc;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.ioBox h3 {
+  margin-bottom: 8px;
+  color: #0d2c72;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.ioContent {
+  padding: 8px;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.35;
+  color: #1f2937;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.ioArrow {
+  font-size: 36px;
+  line-height: 1;
+  font-weight: 800;
+  color: #0d2c72;
+}
+
+.explanationBox {
+  width: 100%;
+  background: white;
+  border: 1px solid #d9e2ec;
+  border-left: 6px solid #0d2c72;
+  border-radius: 14px;
+  box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.08);
+}
+
+.explanationBox h3 {
+  color: #0d2c72;
+  font-weight: 800;
+}
+
+.explanationBox p {
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.quantizationDemo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0 18px;
+}
+
+.matrixCard {
+  background: white;
+  border: 2px solid #d9d9d9;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.quantMatrixCard {
+  width: 620px;
+  max-width: 100%;
+}
+
+.quantMatrixCard h3 {
+  text-align: center;
+  color: #0d2c72;
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+
+.matrixGrid8 {
+  display: grid;
+  grid-template-columns: repeat(8, 46px);
+  gap: 7px;
+  justify-content: center;
+}
+
+.matrixGrid8 span {
+  width: 46px;
+  height: 36px;
+  background: #eef4ff;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.matrixInfo {
+  margin-top: 14px;
+  text-align: center;
+  color: #555555;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.quantFormulaBox {
+  background: #eef4ff;
+  color: #0d2c72;
+  border: 1px solid #cfd9e4;
+  border-radius: 10px;
+  padding: 13px 22px;
+  font-size: 16px;
+  font-weight: 800;
+  text-align: center;
+}
+
+@media (max-width: 1050px) {
+  .stepNavigator {
+    width: 90%;
+  }
+
+  .contentArea {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .leftPanel {
+    width: 240px;
+    min-width: 240px;
+    padding: 14px;
+  }
+
+  .stepsHeading {
+    font-size: 24px;
+  }
+
+  .stepsList li {
+    font-size: 10.5px;
+    padding: 6px 8px;
+  }
+
+  .ioBox {
+    width: 250px;
+  }
+
+  .matrixGrid8 {
+    grid-template-columns: repeat(8, 38px);
+    gap: 5px;
+  }
+
+  .matrixGrid8 span {
+    width: 38px;
+    height: 32px;
+    font-size: 11px;
+  }
+
+  .quantFormulaBox {
+    font-size: 14px;
+    padding: 11px 16px;
+  }
+}
+
+@media (max-width: 760px) {
+  .modal {
+    overflow-y: auto;
+  }
+
+  .headerBar {
+    height: auto;
+    min-height: 55px;
+    padding: 12px 16px;
+  }
+
+  .headerTitle {
+    font-size: 16px;
+  }
+
+  .closeHeaderBtn {
+    padding: 9px 16px;
+  }
+
+  .stepNavigator {
+    width: calc(100% - 24px);
+    margin-top: 12px;
+  }
+
+  .stepText {
+    font-size: 13px;
+  }
+
+  .contentArea {
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .leftPanel {
+    width: 100%;
+    min-width: 0;
+    max-height: 280px;
+  }
+
+  .visualPanel {
+    min-height: 520px;
+  }
+
+  .matrixGrid8 {
+    grid-template-columns: repeat(4, 46px);
+  }
+}
+
+.rgbProcessArrow {
+  text-align: center;
+}
+
+@media (max-width: 1200px) {
+  .rgbMatrixRow {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .rgbProcessArrow {
+    transform: rotate(90deg);
+  }
+
+  .rgbMatrixCard {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 760px) {
+  .rgbTupleGrid {
+    grid-template-columns: repeat(2, 112px);
+  }
+
+  .channelGrid {
+    grid-template-columns: repeat(4, 34px);
+  }
+
+  .channelGrid span {
+    width: 34px;
+    height: 28px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 1300px) {
+  .rgbMatrixRow {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .rgbProcessBox {
+    transform: rotate(90deg);
+    margin: 8px 0;
+  }
+
+  .rgbProcessText {
+    display: none;
+  }
+
+  .rgbMatrixCard {
+    max-width: 100%;
+  }
+
+  .channelMatrixRow {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 760px) {
+  .rgbTupleGrid {
+    grid-template-columns: repeat(2, 112px);
+  }
+
+  .channelMatrixRow {
+    flex-wrap: wrap;
+  }
+
+  .channelGrid {
+    grid-template-columns: repeat(4, 32px);
+  }
+
+  .channelGrid span {
+    width: 32px;
+    height: 28px;
+    font-size: 11px;
+  }
+}
+
+.rgbMatrixDemo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  overflow-x: hidden;
+}
+
+.rgbMatrixCard {
+  background: #ffffff;
+  border: 2px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.rgbMatrixCard h3 {
+  text-align: center;
+  color: #0d2c72;
+  font-size: 17px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.rgbTupleGrid {
+  display: grid;
+  justify-content: center;
+}
+
+.rgbTupleGrid span {
+  min-height: 36px;
+  background: #eef4ff;
+  border: 1px solid #cfd9e4;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.rgbProcessBox {
+  width: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.rgbProcessArrow {
+  color: #0d2c72;
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.rgbProcessText {
+  color: #0d2c72;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.15;
+}
+
+.channelMatrix h4 {
+  color: #0d2c72;
+}
+
+@media (max-width: 1250px) {
+  .rgbMatrixRow {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .rgbProcessBox {
+    width: auto;
+    margin: 4px 0;
+  }
+
+  .rgbProcessArrow {
+    transform: rotate(90deg);
+  }
+
+  .rgbProcessText {
+    display: none;
+  }
+
+  .inputRgbCard,
+  .outputRgbCard {
+    width: 100%;
+    max-width: 620px;
+  }
+
+  .channelMatrixRow {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 760px) {
+  .rgbTupleGrid {
+    grid-template-columns: repeat(2, 92px);
+  }
+
+  .channelMatrixRow {
+    flex-wrap: wrap;
+  }
+
+  .channelGrid {
+    grid-template-columns: repeat(4, 28px);
+  }
+
+  .channelGrid span {
+    width: 28px;
+    height: 26px;
+    font-size: 10px;
+  }
+}
+
+.processOverviewBox {
+  background: #f4f8ff;
+  border: 2px solid #b9cbed;
+  box-shadow: 0 4px 14px rgba(13, 44, 114, 0.12);
+}
+
+.processOverviewBox h3 {
+  color: #0d2c72;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.processOverviewBox .ioContent {
+  color: #1f2937;
+}
+
+.processOverviewBox .ioContent b {
+  display: inline-block;
+  margin-bottom: 6px;
+  color: #0d2c72;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.startPageFlow .ioBox:not(.processOverviewBox) {
+  width: 310px;
+  min-height: 112px;
+  background: #ffffff;
+  border: 2px solid #d9e2ec;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.08);
+}
+
+.startPageFlow .ioBox:not(.processOverviewBox) h3 {
+  color: #0d2c72;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.startPageFlow .ioBox:not(.processOverviewBox) .ioContent {
+  color: #1f2937;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.startPageFlow .ioArrow {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.startPageFlow ~ .explanationBox,
+.stepWorkspace:has(.startPageFlow) .explanationBox {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-left: 6px solid #0d2c72;
+  border-radius: 14px;
+  padding: 16px 22px;
+  box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.08);
+}
+
+.stepWorkspace:has(.startPageFlow) .explanationBox h3 {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.stepWorkspace:has(.startPageFlow) .explanationBox p {
+  color: #1f2937;
+}
+
+.startStepNavigator {
+  background: #050505;
+  border: 1px solid #1f2937;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+.startStepNavigator .stepText {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.startStepNavigator .navBtn {
+  opacity: 0.25;
+}
+
+.stepsSubtitle {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: -8px;
+  margin-bottom: 14px;
+}
+
+.leftPanel {
+  border: 1px solid #e5eaf2;
+}
+
+.stepsHeading {
+  margin-bottom: 10px;
+}
+
+.stepsList {
+  padding-right: 6px;
+  padding-bottom: 18px;
+}
+
+.stepsList li {
+  min-height: 42px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  line-height: 1.25;
+  border-radius: 9px;
+}
+
+.stepCircle {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  font-size: 11px;
+}
+
+.currentStep {
+  box-shadow: 0 2px 8px rgba(13, 44, 114, 0.16);
+}
+
+.completedStep {
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.12);
+}
+
+.lockedStep {
+  opacity: 0.92;
+}
+
+.startPageFlow .ioBox {
+  transition: 0.2s ease;
+}
+
+.startPageFlow .ioBox:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 16px rgba(15, 23, 42, 0.12);
+}
+
+.stepWorkspace:has(.startPageFlow) {
+  overflow-x: hidden;
+}
+
+.stepWorkspace:has(.startPageFlow) .explanationBox {
+  max-width: 100%;
+}
+
+@media (max-width: 760px) {
+  .processOverviewBox {
+    width: 300px;
+    min-height: 210px;
+  }
+
+  .processOverviewBox .ioContent {
+    font-size: 13px;
+  }
+
+  .startPageFlow .ioBox:not(.processOverviewBox) {
+    width: 280px;
+  }
+
+  .startGoalBox {
+    width: 280px;
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+
+  .stepWorkspace:has(.startPageFlow) .explanationBox p {
+    font-size: 14px;
+  }
+}
+
+.stepWorkspace:has(.startPageFlow) {
+  min-height: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.stepWorkspace:has(.startPageFlow) h2 {
+  margin-bottom: 8px !important;
+  flex-shrink: 0 !important;
+}
+
+.startPageSubtitle {
+  margin-bottom: 10px !important;
+  flex-shrink: 0 !important;
+}
+
+.startPageFlow {
+  flex: 0 0 auto !important;
+  min-height: auto !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding-top: 4px !important;
+  padding-bottom: 10px !important;
+  overflow: visible !important;
+}
+
+.startPageFlow .ioBox {
+  width: 300px !important;
+  max-width: calc(100% - 24px) !important;
+  min-height: auto !important;
+  padding: 12px 14px !important;
+  flex-shrink: 0 !important;
+}
+
+.processOverviewBox {
+  width: 360px !important;
+  max-width: calc(100% - 24px) !important;
+  min-height: auto !important;
+  padding: 14px 16px !important;
+}
+
+.processOverviewBox .ioContent {
+  font-size: 13.5px !important;
+  line-height: 1.35 !important;
+  font-weight: 700 !important;
+}
+
+.startPageFlow .ioBox h3 {
+  margin-bottom: 6px !important;
+  font-size: 18px !important;
+}
+
+.startPageFlow .ioArrow {
+  font-size: 28px !important;
+  line-height: 1 !important;
+  margin: -2px 0 !important;
+  flex-shrink: 0 !important;
+}
+
+.startGoalBox {
+  flex-shrink: 0 !important;
+  max-width: calc(100% - 24px) !important;
+  margin-top: 4px !important;
+  padding: 9px 18px !important;
+  font-size: 13.5px !important;
+}
+
+.stepWorkspace:has(.startPageFlow) .explanationBox {
+  position: static !important;
+  margin-top: 12px !important;
+  flex-shrink: 0 !important;
+  min-height: auto !important;
+  padding: 14px 20px !important;
+}
+
+.stepWorkspace:has(.startPageFlow) .explanationBox h3 {
+  font-size: 18px !important;
+  margin-bottom: 5px !important;
+}
+
+.stepWorkspace:has(.startPageFlow) .explanationBox p {
+  font-size: 14px !important;
+  line-height: 1.45 !important;
+  font-weight: 600 !important;
+}
+
+@media (max-height: 760px) {
+  .stepWorkspace:has(.startPageFlow) h2 {
+    font-size: 22px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .startPageSubtitle {
+    font-size: 12px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .startPageFlow {
+    gap: 4px !important;
+    padding-top: 0 !important;
+    padding-bottom: 6px !important;
+  }
+
+  .startPageFlow .ioBox {
+    padding: 10px 12px !important;
+  }
+
+  .processOverviewBox {
+    padding: 11px 14px !important;
+  }
+
+  .processOverviewBox .ioContent {
+    font-size: 12.5px !important;
+    line-height: 1.25 !important;
+  }
+
+  .startPageFlow .ioArrow {
+    font-size: 24px !important;
+  }
+
+  .stepWorkspace:has(.startPageFlow) .explanationBox {
+    margin-top: 8px !important;
+    padding: 12px 18px !important;
+  }
+
+  .stepWorkspace:has(.startPageFlow) .explanationBox p {
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .processOverviewBox {
+    width: 300px !important;
+  }
+
+  .startPageFlow .ioBox {
+    width: 280px !important;
+  }
+
+  .startGoalBox {
+    width: 280px !important;
+  }
+}
+
+.visualPanel {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+.stepWorkspace {
+  min-height: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.stepWorkspace h2 {
+  flex-shrink: 0 !important;
+}
+
+.explanationBox {
+  position: static !important;
+  flex-shrink: 0 !important;
+  min-height: auto !important;
+}
+
+.rgbMatrixDemo {
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+  padding: 8px 0 14px !important;
+}
+
+.rgbMatrixRow {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: grid !important;
+  grid-template-columns: minmax(360px, 460px) 70px minmax(500px, 620px) !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 14px !important;
+  overflow: visible !important;
+}
+
+.inputRgbCard {
+  width: 100% !important;
+  max-width: 460px !important;
+  overflow: hidden !important;
+}
+
+.outputRgbCard {
+  width: 100% !important;
+  max-width: 620px !important;
+  overflow: hidden !important;
+}
+
+.rgbTupleGrid {
+  grid-template-columns: repeat(4, minmax(78px, 1fr)) !important;
+  gap: 7px !important;
+}
+
+.rgbTupleGrid span {
+  min-width: 0 !important;
+  font-size: 11px !important;
+  padding: 0 4px !important;
+  white-space: nowrap !important;
+}
+
+.channelMatrixRow {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  flex-wrap: nowrap !important;
+}
+
+.rgbInfoBox {
+  max-width: calc(100% - 24px) !important;
+  flex-shrink: 0 !important;
+}
+
+@media (max-width: 1450px) {
+  .rgbMatrixRow {
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+  }
+
+  .inputRgbCard,
+  .outputRgbCard {
+    width: 100% !important;
+    max-width: 720px !important;
+  }
+
+  .rgbProcessBox {
+    width: auto !important;
+    margin: 4px 0 !important;
+  }
+
+  .rgbProcessArrow {
+    transform: rotate(90deg) !important;
+  }
+
+  .rgbProcessText {
+    display: none !important;
+  }
+
+  .channelMatrixRow {
+    flex-wrap: wrap !important;
+  }
+}
+
+@media (max-height: 760px) {
+  .stepWorkspace h2 {
+    font-size: 22px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .rgbMatrixDemo {
+    gap: 10px !important;
+    padding-top: 4px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .rgbMatrixCard {
+    padding: 12px !important;
+  }
+
+  .rgbMatrixCard h3 {
+    font-size: 16px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .matrixNote {
+    font-size: 12px !important;
+    margin-top: 8px !important;
+  }
+
+  .rgbInfoBox {
+    padding: 9px 16px !important;
+    font-size: 13px !important;
+  }
+
+  .explanationBox {
+    padding: 12px 18px !important;
+    margin-top: 10px !important;
+  }
+
+  .explanationBox h3 {
+    font-size: 18px !important;
+    margin-bottom: 5px !important;
+  }
+
+  .explanationBox p {
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .rgbTupleGrid {
+    grid-template-columns: repeat(2, 100px) !important;
+  }
+
+  .channelMatrixRow {
+    flex-wrap: wrap !important;
+  }
+
+  .channelGrid {
+    grid-template-columns: repeat(4, 28px) !important;
+  }
+
+  .channelGrid span {
+    width: 28px !important;
+    height: 26px !important;
+    font-size: 10px !important;
+  }
+}
+
+.startPageSubtitle {
+  width: 100%;
+  text-align: center;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: -4px;
+  margin-bottom: 12px;
+  letter-spacing: 0.2px;
+}
+
+.processSmallText {
+  font-size: 12px;
+  color: #475467;
+  font-weight: 700;
+}
+
+.startGoalBox {
+  margin-top: 8px;
+  background: #eef4ff;
+  color: #0d2c72;
+  border: 1px solid #cfd9e4;
+  border-radius: 10px;
+  padding: 11px 22px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 2px 8px rgba(13, 44, 114, 0.08);
+  max-width: calc(100% - 24px);
+  line-height: 1.35;
+}
+
+.stepWorkspace:has(.startPageFlow) .explanationBox {
+  margin-top: 10px;
+  min-height: auto;
+  padding: 14px 20px;
+}
+
+.stepWorkspace:has(.startPageFlow) .explanationBox h3 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.stepWorkspace:has(.startPageFlow) .explanationBox p {
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+.rgbDynamicDemo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.matrixCategoryBar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 12px;
+}
+
+.matrixCategoryLabel {
+  font-size: 13px;
+  font-weight: 800;
+  color: #334155;
+}
+
+.matrixPresetBtn {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.matrixPresetBtn:hover {
+  background: #eaf2ff;
+  border-color: #2563eb;
+  color: #0d2c72;
+  transform: translateY(-1px);
+}
+
+.activeMatrixPreset {
+  background: #0d2c72;
+  border-color: #0d2c72;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(13, 44, 114, 0.22);
+}
+
+.rgbInteractiveRow {
+  display: grid;
+  grid-template-columns: 1fr 0.82fr;
+  align-items: stretch;
+}
+
+.rgbMatrixCard,
+.pixelInspectorCard {
+  background: #ffffff;
+  border: 1px solid #dbe4ee;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.rgbMatrixCard h3,
+.pixelInspectorCard h3 {
+  margin: 0 0 10px;
+  font-weight: 900;
+  color: #0f172a;
+  text-align: center;
+}
+
+.rgbPixelGrid {
+  align-items: center;
+  margin: 8px auto;
+}
+
+.rgbPixelCell {
+  border: 2px solid rgba(15, 23, 42, 0.16);
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25),
+    0 4px 10px rgba(15, 23, 42, 0.12);
+  transition: all 0.18s ease;
+}
+
+.rgbPixelCell:hover {
+  transform: scale(1.06);
+  border-color: #0d2c72;
+}
+
+.selectedRgbPixel {
+  transform: scale(1.1);
+  border: 3px solid #111827;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.22),
+    0 8px 18px rgba(15, 23, 42, 0.2);
+}
+
+.matrixNote {
+  margin: 8px auto 0;
+  max-width: 620px;
+  text-align: center;
+  color: #475569;
+  font-weight: 600;
+}
+
+.pixelInspectorCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.selectedPixelLabel {
+  text-align: center;
+  background: #eef4ff;
+  color: #0d2c72;
+  border: 1px solid #cfd9e4;
+  border-radius: 10px;
+  font-weight: 900;
+}
+
+.selectedRgbValue {
+  text-align: center;
+  color: #0f172a;
+  font-weight: 900;
+}
+
+.componentList {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.componentItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+  font-weight: 800;
+}
+
+.redItem {
+  background: #fff1f2;
+  color: #991b1b;
+  border: 1px solid #fecdd3;
+}
+
+.greenItem {
+  background: #ecfdf5;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.blueItem {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.colorPreviewWrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  color: #334155;
+  font-weight: 800;
+}
+
+.colorPreviewBox {
+  border-radius: 9px;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px #cbd5e1,
+    0 4px 10px rgba(15, 23, 42, 0.16);
+}
+
+.inspectorHint {
+  margin: 10px 0 0;
+  text-align: center;
+  color: #64748b;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.rgbProcessStrip {
+  width: fit-content;
+  margin: 0 auto;
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
+}
+
+.rgbProcessSymbol {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.rgbProcessLabel {
+  font-weight: 900;
+  letter-spacing: 0.2px;
+}
+
+.dynamicOutputCard {
+  padding-bottom: 12px;
+}
+
+.dynamicChannelRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: start;
+}
+
+.channelMatrix {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 12px;
+}
+
+.channelMatrix h4 {
+  margin: 0 0 8px;
+  text-align: center;
+  font-weight: 900;
+}
+
+.channelGrid span {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.selectedChannelValue {
+  background: #facc15 !important;
+  border-color: #ca8a04 !important;
+  color: #111827 !important;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.28);
+}
+
+.redChannel h4 {
+  color: #dc2626;
+}
+
+.greenChannel h4 {
+  color: #16a34a;
+}
+
+.blueChannel h4 {
+  color: #2563eb;
+}
+
+.rgbInfoBox {
+  margin: 0 auto;
+  background: #eef4ff;
+  color: #0d2c72;
+  border: 1px solid #cfd9e4;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 900;
+  box-shadow: 0 2px 8px rgba(13, 44, 114, 0.08);
+}
+
+@media (max-width: 1200px) {
+  .rgbInteractiveRow {
+    grid-template-columns: 1fr;
+  }
+
+  .dynamicChannelRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stepConceptNote {
+  width: min(100%, 980px);
+  margin: 0 auto;
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-left: 5px solid #0d2c72;
+  border-radius: 12px;
+  color: #334155;
+  font-weight: 700;
+  text-align: center;
+}
+
+.improvedRgbRow {
+  grid-template-columns: 1fr 1.2fr 0.9fr !important;
+  align-items: stretch !important;
+}
+
+.rgbTupleCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.rgbTupleMatrix {
+  align-items: center;
+  margin: 8px auto;
+  width: 100%;
+}
+
+.rgbTupleCell {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.rgbTupleCell:hover {
+  background: #eef4ff;
+  border-color: #0d2c72;
+  transform: translateY(-1px);
+}
+
+.selectedTupleCell {
+  background: #0d2c72 !important;
+  color: #ffffff !important;
+  border-color: #0d2c72 !important;
+  box-shadow: 0 0 0 4px rgba(13, 44, 114, 0.16);
+}
+
+.dynamicOutputCard h3 {
+  color: #0d2c72 !important;
+}
+
+.rgbProcessLabel {
+  text-align: center;
+}
+
+@media (max-width: 1450px) {
+  .improvedRgbRow {
+    grid-template-columns: 1fr !important;
+  }
+
+  .rgbTupleCard,
+  .dynamicInputCard,
+  .pixelInspectorCard {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .rgbTupleMatrix {
+    grid-template-columns: repeat(2, minmax(92px, 1fr));
+  }
+
+  .rgbTupleCell {
+    font-size: 11px;
+    min-height: 34px;
+  }
+
+  .rgbProcessStrip {
+    min-width: auto;
+    width: calc(100% - 24px);
+  }
+
+  .stepConceptNote {
+    font-size: 12px;
+    text-align: left;
+  }
+}
+
+.visualPanel {
+  padding: 14px !important;
+}
+
+.stepWorkspace h2 {
+  margin-bottom: 8px !important;
+}
+
+.rgbDynamicDemo {
+  gap: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+.matrixCategoryBar {
+  padding: 7px 10px !important;
+}
+
+.matrixPresetBtn {
+  padding: 6px 12px !important;
+  font-size: 11.5px !important;
+}
+
+.stepConceptNote {
+  padding: 8px 12px !important;
+}
+
+.rgbInteractiveRow {
+  gap: 10px !important;
+}
+
+.rgbMatrixCard,
+.pixelInspectorCard {
+  padding: 11px !important;
+}
+
+.rgbMatrixCard h3,
+.pixelInspectorCard h3 {
+  margin-bottom: 8px !important;
+}
+
+.matrixNote {
+  margin-top: 7px !important;
+}
+
+.selectedPixelLabel {
+  padding: 7px 9px !important;
+  font-size: 13px !important;
+}
+
+.selectedRgbValue {
+  margin-top: 8px !important;
+  font-size: 14px !important;
+}
+
+.componentList {
+  gap: 6px !important;
+  margin-top: 9px !important;
+}
+
+.componentItem {
+  padding: 7px 10px !important;
+  font-size: 12px !important;
+}
+
+.colorPreviewWrap {
+  margin-top: 9px !important;
+  padding: 7px 10px !important;
+  font-size: 12px !important;
+}
+
+.colorPreviewBox {
+  width: 48px !important;
+  height: 30px !important;
+}
+
+.inspectorHint {
+  margin-top: 8px !important;
+  font-size: 11.5px !important;
+}
+
+.rgbProcessStrip {
+  padding: 7px 16px !important;
+  min-width: 300px !important;
+}
+
+.rgbProcessLabel {
+  font-size: 13px !important;
+}
+
+.dynamicOutputCard {
+  padding: 10px !important;
+}
+
+.dynamicOutputCard h3 {
+  font-size: 15px !important;
+  margin-bottom: 8px !important;
+}
+
+.dynamicChannelRow {
+  gap: 8px !important;
+}
+
+.channelMatrix {
+  padding: 7px !important;
+}
+
+.channelMatrix h4 {
+  font-size: 12px !important;
+  margin-bottom: 6px !important;
+}
+
+.channelGrid span {
+  min-width: 34px !important;
+}
+
+.rgbInfoBox {
+  padding: 8px 16px !important;
+}
+
+.explanationBox {
+  margin-top: 10px !important;
+  padding: 12px 18px !important;
+}
+
+.explanationBox h3 {
+  font-size: 18px !important;
+  margin-bottom: 5px !important;
+}
+
+.explanationBox p {
+  font-size: 13.5px !important;
+  line-height: 1.4 !important;
+}
+
+.ycbcrDynamicDemo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+  padding-bottom: 8px;
+}
+
+.ycbcrConceptNote {
+  max-width: 1050px;
+}
+
+.ycbcrInputCard,
+.conversionFormulaCard,
+.selectedConversionCard,
+.ycbcrOutputCard {
+  background: #ffffff;
+  border: 1px solid #dbe4ee;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.ycbcrInputCard h3,
+.conversionFormulaCard h3,
+.selectedConversionCard h3,
+.ycbcrOutputCard h3 {
+  text-align: center;
+  color: #0d2c72;
+  font-size: 15px;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.conversionFormulaCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.formulaList div {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  display: grid;
+  gap: 4px;
+}
+
+.formulaList strong {
+  color: #0d2c72;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.formulaList span {
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.formulaNote {
+  margin-top: 10px;
+  background: #eef4ff;
+  border: 1px solid #cfd9e4;
+  border-radius: 10px;
+  padding: 8px 10px;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.selectedConversionCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.conversionValueBox {
+  margin-top: 8px;
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 9px 10px;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.conversionArrow {
+  text-align: center;
+  color: #0d2c72;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1;
+  margin-top: 6px;
+}
+
+.ycbcrValue {
+  background: #eef4ff;
+  color: #0d2c72;
+  border-color: #bfd0ee;
+}
+
+.selectedCalcList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.selectedCalcList div {
+  background: #ffffff;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px;
+  display: grid;
+  gap: 4px;
+  text-align: center;
+}
+
+.selectedCalcList span {
+  color: #475569;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.selectedCalcList strong {
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.ycbcrProcessStrip {
+  min-width: 370px;
+}
+
+.yChannel h4 {
+  color: #0d2c72;
+}
+
+.cbChannel h4 {
+  color: #1d4ed8;
+}
+
+.crChannel h4 {
+  color: #b91c1c;
+}
+
+.ycbcrOutputCard {
+  padding: 12px;
+}
+
+@media (max-width: 1450px) {
+  .ycbcrTopGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ycbcrInputCard,
+  .conversionFormulaCard,
+  .selectedConversionCard,
+  .ycbcrOutputCard {
+    width: 100%;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .selectedCalcList {
+    grid-template-columns: 1fr;
+  }
+
+  .ycbcrProcessStrip {
+    min-width: auto;
+    width: calc(100% - 24px);
+  }
+
+  .formulaList span {
+    font-size: 11.5px;
+  }
+}
+
+.conversionControls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.conversionControls button {
+  border: none;
+  background: #0d2c72;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: 12.5px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 5px 14px rgba(13, 44, 114, 0.18);
+}
+
+.conversionControls button:hover:not(:disabled) {
+  background: #123b91;
+  transform: translateY(-1px);
+}
+
+.conversionControls button:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.conversionProgressBox {
+  width: min(100%, 680px);
+  margin: 0 auto;
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 12px;
+  padding: 9px 12px;
+}
+
+.conversionProgressText {
+  text-align: center;
+  color: #0d2c72;
+  font-size: 12.5px;
+  font-weight: 900;
+  margin-bottom: 7px;
+}
+
+.conversionProgressTrack {
+  width: 100%;
+  height: 8px;
+  background: #e5eaf2;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.conversionProgressFill {
+  height: 100%;
+  background: #0d2c72;
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.pendingConversionBox {
+  margin-top: 10px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #9a3412;
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.calculationBreakdown {
+  margin-top: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.calculationBreakdown div {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 8px;
+  padding: 7px 9px;
+  color: #0f172a;
+  font-size: 11.5px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.calculationBreakdown b {
+  color: #0d2c72;
+}
+
+.hiddenConvertedValue {
+  color: #94a3b8 !important;
+  background: #f1f5f9 !important;
+  border-style: dashed !important;
+}
+
+.revealedConvertedValue {
+  animation: revealCell 0.28s ease;
+}
+
+@keyframes revealCell {
+  from {
+    transform: scale(0.86);
+    opacity: 0.35;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.chromaDynamicDemo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.chromaConceptNote {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border: 1px solid #fed7aa;
+  color: #7c2d12;
+}
+
+.chromaControlBar {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+}
+
+.chromaControlBar button {
+  border: none;
+  outline: none;
+  padding: 11px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  background: #0f172a;
+  color: #ffffff;
+  transition: 0.25s ease;
+}
+
+.chromaControlBar button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: #1d4ed8;
+}
+
+.chromaControlBar button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.chromaFlowBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 16px;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  color: #312e81;
+  font-size: 0.95rem;
+}
+
+.chromaFlowBox b {
+  background: #ffffff;
+  border: 1px solid #c7d2fe;
+  padding: 7px 12px;
+  border-radius: 999px;
+}
+
+.chromaSectionTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f172a;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.chromaMatricesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.chromaMatrixCard {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+}
+
+.chromaCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.chromaCardHeader h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #111827;
+}
+
+.chromaBadge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 5px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.sameBadge {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.downBadge {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.smallBadge {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.chromaMatrixGrid {
+  display: grid;
+  gap: 8px;
+}
+
+.chromaCell {
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  color: #111827;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+}
+
+button.chromaCell {
+  cursor: pointer;
+}
+
+button.chromaCell:hover {
+  background: #e0f2fe;
+  border-color: #0284c7;
+}
+
+.selectedChromaGroup {
+  background: #fef3c7 !important;
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+}
+
+.selectedChromaPixel {
+  background: #dc2626 !important;
+  border-color: #991b1b !important;
+  color: #ffffff !important;
+}
+
+.chromaCalculationBox {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+}
+
+.calcMainTitle {
+  text-align: center;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 14px;
+}
+
+.calcGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.calcMiniCard {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.calcMiniCard h4 {
+  margin: 0 0 10px;
+  color: #0f172a;
+  font-size: 0.95rem;
+}
+
+.calcValues {
+  display: grid;
+  grid-template-columns: repeat(2, 48px);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.calcValues span {
+  min-height: 36px;
+  border-radius: 10px;
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: #78350f;
+}
+
+.calcMiniCard p {
+  margin: 0;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.calcHint {
+  margin-top: 12px;
+  text-align: center;
+  background: #fefce8;
+  color: #713f12;
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+  padding: 10px;
+  font-weight: 600;
+}
+
+.chromaProcessStrip {
+  margin-top: 0;
+}
+
+.outputChromaCard {
+  background: #f8fafc;
+}
+
+.outputMatrixGrid {
+  justify-content: center;
+}
+
+.outputChromaCell {
+  min-height: 42px;
+}
+
+.visibleDownsampleValue {
+  background: #dbeafe;
+  border-color: #2563eb;
+  color: #1e3a8a;
+  animation: popDownsampleValue 0.25s ease;
+}
+
+.hiddenDownsampleValue {
+  background: #f1f5f9;
+  color: #94a3b8;
+  border-style: dashed;
+}
+
+@keyframes popDownsampleValue {
+  from {
+    transform: scale(0.85);
+    opacity: 0.4;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.chromaReductionCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 16px;
+  background: linear-gradient(135deg, #ecfeff, #f0f9ff);
+  border: 1px solid #bae6fd;
+  border-radius: 18px;
+}
+
+.chromaReductionCard div:not(.reductionArrow):not(.reductionPercent) {
+  background: #ffffff;
+  border: 1px solid #bae6fd;
+  border-radius: 14px;
+  padding: 10px 16px;
+  text-align: center;
+}
+
+.chromaReductionCard span {
+  display: block;
+  font-size: 0.8rem;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.chromaReductionCard strong {
+  display: block;
+  color: #0f172a;
+  font-size: 1.05rem;
+}
+
+.reductionArrow {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #0369a1;
+}
+
+.reductionPercent {
+  background: #16a34a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 900;
+}
+
+@media (max-width: 1024px) {
+  .chromaMatricesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .calcGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.divideBlockDemo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.divideBlockConceptNote {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1px solid #bfdbfe;
+  color: #1e3a8a;
+}
+
+.blockComponentSelector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+}
+
+.blockComponentSelector span {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.blockComponentSelector button {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  padding: 9px 15px;
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.22s ease;
+}
+
+.blockComponentSelector button:hover {
+  transform: translateY(-2px);
+  border-color: #2563eb;
+  color: #1d4ed8;
+}
+
+.blockComponentSelector .activeBlockComponent {
+  background: #0d2c72;
+  color: #ffffff;
+  border-color: #0d2c72;
+}
+
+.blockControlBar {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.blockControlBar button {
+  border: none;
+  outline: none;
+  padding: 11px 18px;
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+  background: #0f172a;
+  color: #ffffff;
+  transition: 0.25s ease;
+}
+
+.blockControlBar button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: #1d4ed8;
+}
+
+.blockControlBar button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.blockFlowBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 16px;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  color: #312e81;
+  font-size: 0.95rem;
+}
+
+.blockFlowBox b {
+  background: #ffffff;
+  border: 1px solid #c7d2fe;
+  padding: 7px 12px;
+  border-radius: 999px;
+}
+
+.blockCardHeader span {
+  white-space: nowrap;
+}
+
+.blockMatrix16 {
+  display: grid;
+  grid-template-columns: repeat(16, minmax(25px, 1fr));
+  gap: 4px;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #dbe3ef;
+  border-radius: 14px;
+}
+
+.block16Cell {
+  min-height: 27px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 0.68rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.18s ease;
+  cursor: pointer;
+}
+
+.block16Cell:hover {
+  background: #e0f2fe;
+  border-color: #0284c7;
+}
+
+.selected8BlockCell {
+  background: #fef3c7 !important;
+  border-color: #f59e0b !important;
+  color: #78350f !important;
+}
+
+.rightBlockBoundary {
+  border-right: 3px solid #0d2c72 !important;
+}
+
+.bottomBlockBoundary {
+  border-bottom: 3px solid #0d2c72 !important;
+}
+
+.selectedBlockGrid8 {
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #dbe3ef;
+  border-radius: 14px;
+}
+
+.selectedBlockGrid8 span {
+  min-height: 34px;
+}
+
+.visibleBlockValue {
+  background: #dbeafe;
+  color: #1e3a8a;
+  border-color: #2563eb !important;
+}
+
+.blockSummaryRow strong {
+  display: block;
+}
+
+@media (max-width: 1180px) {
+  .blockMainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .blockSummaryRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .blockMatrix16 {
+    grid-template-columns: repeat(8, minmax(28px, 1fr));
+    overflow-x: auto;
+  }
+
+  .block16Cell {
+    min-height: 30px;
+    font-size: 0.65rem;
+  }
+
+  .selectedBlockGrid8 {
+    grid-template-columns: repeat(4, minmax(38px, 1fr));
+  }
+
+  .selectedBlockInfo {
+    grid-template-columns: 1fr;
+  }
+
+  .blockSummaryRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+.levelShiftDemo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 0 18px;
+}
+
+.levelShiftConceptNote {
+  max-width: 100%;
+  background: #f8fbff;
+  border: 1px solid #cfd9e4;
+  border-left: 6px solid #0d2c72;
+  border-radius: 14px;
+  padding: 12px 18px;
+  color: #172554;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.levelShiftControlBar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.levelShiftControlBar button {
+  border: none;
+  background: #0d2c72;
+  color: #ffffff;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(13, 44, 114, 0.18);
+}
+
+.levelShiftControlBar button:hover {
+  background: #123c95;
+  transform: translateY(-1px);
+}
+
+.levelShiftControlBar button:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.levelShiftFlowBox {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 9px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.levelShiftFlowBox b {
+  color: #dbeafe;
+}
+
+.levelProgressBox {
+  max-width: 620px;
+  width: 100%;
+  margin: 0 auto;
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+.levelProgressText {
+  text-align: center;
+  color: #0d2c72;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.levelProgressTrack {
+  width: 100%;
+  height: 10px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.levelProgressFill {
+  height: 100%;
+  background: #0d2c72;
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
+.levelMainGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(310px, 1fr) minmax(260px, 0.75fr) minmax(310px, 1fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+.levelBlockCard,
+.levelCalculationCard {
+  background: #ffffff;
+  border: 1px solid #dbe4ee;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.levelCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.levelCardHeader h3,
+.levelCalculationCard h3 {
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.levelCardHeader span {
+  background: #eef4ff;
+  color: #0d2c72;
+  border: 1px solid #cfd9e4;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.levelMatrixGrid {
+  display: grid;
+  grid-template-columns: repeat(8, 34px);
+  gap: 5px;
+  justify-content: center;
+}
+
+.levelCell {
+  width: 34px;
+  height: 30px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.inputLevelCell {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.inputLevelCell:hover {
+  background: #eaf2ff;
+  border-color: #0d2c72;
+}
+
+.selectedLevelCell {
+  background: #dbeafe !important;
+  border: 2px solid #0d2c72 !important;
+  color: #0d2c72 !important;
+  transform: scale(1.08);
+}
+
+.processedLevelCell {
+  background: #ecfdf3;
+  border-color: #16a34a;
+  color: #15803d;
+}
+
+.outputLevelCell {
+  border: 1px solid #dbe4ee;
+}
+
+.hiddenShiftedCell {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+
+.visibleShiftedCell {
+  background: #eef4ff;
+  color: #0d2c72;
+  border-color: #0d2c72;
+}
+
+.selectedOutputLevelCell {
+  box-shadow: 0 0 0 3px rgba(13, 44, 114, 0.16);
+}
+
+.selectedLevelMeta {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 9px;
+  margin: 12px 0;
+}
+
+.selectedLevelMeta div {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 9px 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.selectedLevelMeta span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.selectedLevelMeta strong {
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.levelFormulaBox {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 11px 12px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 900;
+  margin: 10px 0;
+}
+
+.levelCalculationResult {
+  background: #f8fbff;
+  border: 1px solid #cfd9e4;
+  border-radius: 12px;
+  padding: 12px;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.levelCalcArrow {
+  color: #0d2c72;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin: 3px 0;
+}
+
+.levelRangeNote {
+  margin-top: 8px;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pendingLevelBox {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #9a3412;
+  border-radius: 12px;
+  padding: 13px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.levelSummaryRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.levelSummaryRow div {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+}
+
+.levelSummaryRow span {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.levelSummaryRow strong {
+  color: #0d2c72;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+@media (max-width: 1300px) {
+  .levelMainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .levelBlockCard,
+  .levelCalculationCard {
+    max-width: 760px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .levelShiftFlowBox {
+    border-radius: 14px;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .levelMatrixGrid {
+    grid-template-columns: repeat(8, 28px);
+    gap: 4px;
+  }
+
+  .levelCell {
+    width: 28px;
+    height: 26px;
+    font-size: 9.5px;
+  }
+
+  .levelSummaryRow {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .levelCardHeader {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.dctDemo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 0 18px;
+}
+
+.dctConceptNote {
+  max-width: 100%;
+  background: #f8fbff;
+  border: 1px solid #cfd9e4;
+  border-left: 6px solid #0d2c72;
+  border-radius: 14px;
+  padding: 12px 18px;
+  color: #172554;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.dctControlBar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dctControlBar button {
+  border: none;
+  background: #0d2c72;
+  color: #ffffff;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(13, 44, 114, 0.18);
+  transition: 0.2s ease;
+}
+
+.dctControlBar button:hover {
+  background: #123c95;
+  transform: translateY(-1px);
+}
+
+.dctControlBar button:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.dctFlowBox {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 9px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.dctFlowBox b {
+  color: #dbeafe;
+}
+
+.dctProgressBox {
+  max-width: 620px;
+  width: 100%;
+  margin: 0 auto;
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+.dctProgressText {
+  text-align: center;
+  color: #0d2c72;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.dctProgressTrack {
+  width: 100%;
+  height: 10px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.dctProgressFill {
+  height: 100%;
+  background: #0d2c72;
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
+.dctMainGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(310px, 1fr) minmax(270px, 0.8fr) minmax(310px, 1fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+.dctBlockCard,
+.dctCalculationCard {
+  background: #ffffff;
+  border: 1px solid #dbe4ee;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.dctCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.dctCardHeader h3,
+.dctCalculationCard h3 {
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.dctCardHeader span {
+  background: #eef4ff;
+  color: #0d2c72;
+  border: 1px solid #cfd9e4;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.dctMatrixGrid {
+  display: grid;
+  grid-template-columns: repeat(8, 35px);
+  gap: 5px;
+  justify-content: center;
+}
+
+.dctInputCell,
+.dctOutputCell {
+  width: 35px;
+  height: 31px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.dctInputCell {
+  background: #f8fafc;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+}
+
+.dctOutputCell {
+  border: 1px solid #dbe4ee;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.dctOutputCell:hover {
+  transform: scale(1.06);
+  border-color: #0d2c72;
+}
+
+.hiddenDctCell {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+
+.visibleDctCell {
+  background: #eef4ff;
+  color: #0d2c72;
+  border-color: #0d2c72;
+}
+
+.selectedDctCell {
+  background: #dbeafe !important;
+  color: #0d2c72 !important;
+  border: 2px solid #0d2c72 !important;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 3px rgba(13, 44, 114, 0.14);
+}
+
+.dcCoefficientCell {
+  background: #fff7ed;
+  border-color: #fb923c;
+  color: #9a3412;
+}
+
+.dcCoefficientCell.visibleDctCell {
+  background: #ffedd5;
+  border-color: #ea580c;
+  color: #9a3412;
+}
+
+.dctSelectedMeta {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 9px;
+  margin: 12px 0;
+}
+
+.dctSelectedMeta div {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 9px 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.dctSelectedMeta span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.dctSelectedMeta strong {
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.dctFormulaBox {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 11px 12px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.35;
+  margin: 10px 0;
+}
+
+.dctCalculationResult {
+  background: #f8fbff;
+  border: 1px solid #cfd9e4;
+  border-radius: 12px;
+  padding: 12px;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.dctCalcArrow {
+  color: #0d2c72;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin: 3px 0;
+}
+
+.dctMeaningBox {
+  margin-top: 9px;
+  background: #eef4ff;
+  color: #0d2c72;
+  border: 1px solid #cfd9e4;
+  border-radius: 10px;
+  padding: 9px 10px;
+  font-size: 12.5px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.pendingDctBox {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #9a3412;
+  border-radius: 12px;
+  padding: 13px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.dctSummaryRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.dctSummaryRow div {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+}
+
+.dctSummaryRow span {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.dctSummaryRow strong {
+  color: #0d2c72;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+@media (max-width: 1350px) {
+  .dctMainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .dctBlockCard,
+  .dctCalculationCard {
+    max-width: 780px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .dctFlowBox {
+    border-radius: 14px;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .dctMatrixGrid {
+    grid-template-columns: repeat(8, 28px);
+    gap: 4px;
+  }
+
+  .dctInputCell,
+  .dctOutputCell {
+    width: 28px;
+    height: 26px;
+    font-size: 8.5px;
+  }
+
+  .dctSummaryRow {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dctCardHeader {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dctControlBar button {
+    width: 100%;
+    max-width: 290px;
+  }
+}
+
+.welcomeInputBox {
+  width: 330px !important;
+  min-height: auto !important;
+}
+
+.welcomeMatrixPreview {
+  margin: 10px auto 0;
+  width: fit-content;
+  max-width: 100%;
+  background: #0f172a;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.welcomePreviewTitle {
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.welcomePreviewGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 34px);
+  gap: 5px;
+  justify-content: center;
+}
+
+.welcomePreviewPixel {
+  width: 34px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 9.5px;
+  font-weight: 900;
+}
+
+.welcomePreviewNote {
+  color: #cbd5e1;
+  font-size: 10.5px;
+  font-weight: 800;
+  text-align: center;
+  margin-top: 7px;
+}
+
+@media (max-width: 760px) {
+  .welcomeInputBox {
+    width: 280px !important;
+  }
+
+  .welcomePreviewGrid {
+    grid-template-columns: repeat(4, 30px);
+  }
+
+  .welcomePreviewPixel {
+    width: 30px;
+    height: 25px;
+    font-size: 8.5px;
+  }
+}
+
+.stepsList li.lockedStep {
+  opacity: 0.6;
+  cursor: not-allowed !important;
+}
+
+.stepsList li.unlockedStep {
+  background: #ffffff;
+  color: #0d2c72;
+  border-color: #b8c7e6;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.stepsList li.unlockedStep .stepCircle {
+  background: #eaf2ff;
+  color: #0d2c72;
+}
+
+.rgbPixelCell {
+  padding: 0 !important;
+}
+
+.rgbTupleCell {
+  border-radius: 6px !important;
+}
+
+.channelGrid span {
+  border-radius: 5px !important;
+}
+
+.pixelInspectorCard {
+  padding: 14px !important;
+}
+
+.componentItem {
+  min-height: 34px !important;
+}
+
+@media (max-width: 1450px) {
+  .rgbInteractiveRow.improvedRgbRow {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dynamicInputCard,
+  .rgbTupleCard,
+  .pixelInspectorCard {
+    max-width: 760px !important;
+    margin: 0 auto !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .rgbPixelGrid {
+    grid-template-columns: repeat(4, 32px) !important;
+  }
+
+  .rgbTupleMatrix {
+    grid-template-columns: repeat(2, minmax(90px, 1fr)) !important;
+  }
+
+  .channelGrid {
+    grid-template-columns: repeat(4, 30px) !important;
+  }
+}
+
+.rgbTupleCard {
+  width: 100% !important;
+  max-width: 780px !important;
+}
+
+.rgbTupleCell {
+  text-overflow: clip !important;
+}
+
+.dynamicOutputCard .channelGrid {
+  grid-template-columns: repeat(8, 30px) !important;
+  gap: 4px !important;
+}
+
+.dynamicOutputCard .channelGrid span {
+  width: 30px !important;
+  height: 25px !important;
+  font-size: 8.5px !important;
+}
+
+.rgbInteractiveRow.improvedRgbRow {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 16px !important;
+  align-items: center !important;
+  justify-items: center !important;
+  width: 100% !important;
+  overflow: visible !important;
+}
+
+.dynamicInputCard,
+.rgbTupleCard,
+.pixelInspectorCard {
+  width: 100% !important;
+  max-width: 900px !important;
+  overflow: visible !important;
+}
+
+.rgbPixelGrid {
+  display: grid !important;
+  grid-template-columns: repeat(8, 38px) !important;
+  gap: 7px !important;
+  justify-content: center !important;
+}
+
+.rgbPixelCell {
+  width: 38px !important;
+  height: 34px !important;
+  font-size: 10px !important;
+  border-radius: 7px !important;
+}
+
+.rgbTupleMatrix {
+  display: grid !important;
+  grid-template-columns: repeat(8, 92px) !important;
+  gap: 7px !important;
+  justify-content: center !important;
+}
+
+.rgbTupleCell {
+  width: 92px !important;
+  min-height: 32px !important;
+  font-size: 9.5px !important;
+  font-weight: 800 !important;
+  padding: 0 3px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+.pixelInspectorCard {
+  max-width: 520px !important;
+}
+
+.dynamicOutputCard {
+  width: 100% !important;
+  max-width: 1000px !important;
+  margin: 0 auto !important;
+}
+
+.dynamicOutputCard .channelMatrixRow {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 14px !important;
+  flex-wrap: wrap !important;
+}
+
+.channelGrid {
+  display: grid !important;
+  grid-template-columns: repeat(8, 34px) !important;
+  gap: 5px !important;
+  justify-content: center !important;
+}
+
+.channelGrid span {
+  width: 34px !important;
+  height: 28px !important;
+  font-size: 9.5px !important;
+}
+
+@media (max-width: 760px) {
+  .rgbPixelGrid {
+    grid-template-columns: repeat(4, 38px) !important;
+  }
+
+  .rgbTupleMatrix {
+    grid-template-columns: repeat(2, 120px) !important;
+  }
+
+  .channelGrid {
+    grid-template-columns: repeat(4, 34px) !important;
+  }
+}
+
+.stepWorkspace h2 {
+  font-size: 26px !important;
+}
+
+.rgbMatrixCard h3,
+.pixelInspectorCard h3 {
+  font-size: 17px !important;
+}
+
+.stepConceptNote {
+  font-size: 13.5px !important;
+  line-height: 1.45 !important;
+}
+
+.selectedPixelLabel,
+.selectedRgbValue {
+  font-size: 15px !important;
+}
+
+.componentItem span {
+  font-size: 13px !important;
+}
+
+.componentItem strong {
+  font-size: 14px !important;
+}
+
+.matrixNote {
+  font-size: 12.5px !important;
+  line-height: 1.35 !important;
+}
+
+.rgbInfoBox {
+  font-size: 14px !important;
+}
+
+.ycbcrTopGrid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px) !important;
+  gap: 14px !important;
+  align-items: stretch !important;
+}
+
+.ycbcrInputCard {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  max-width: 1050px !important;
+  margin: 0 auto !important;
+}
+
+.conversionFormulaCard {
+  grid-column: 1 / 2 !important;
+  width: 100% !important;
+  max-width: 680px !important;
+  margin-left: auto !important;
+}
+
+.selectedConversionCard {
+  grid-column: 2 / 3 !important;
+  width: 100% !important;
+  max-width: 360px !important;
+  margin-right: auto !important;
+}
+
+.formulaList {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 8px !important;
+}
+
+.formulaList div {
+  min-height: 78px !important;
+  padding: 10px !important;
+}
+
+.formulaList span {
+  font-size: 12px !important;
+  line-height: 1.25 !important;
+}
+
+@media (max-width: 1100px) {
+  .ycbcrTopGrid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .conversionFormulaCard,
+  .selectedConversionCard {
+    grid-column: 1 / -1 !important;
+    max-width: 760px !important;
+    margin: 0 auto !important;
+  }
+
+  .formulaList {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.chromaInputMatricesGrid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 16px !important;
+  justify-items: center !important;
+}
+
+.chromaInputMatricesGrid .chromaMatrixCard {
+  width: 100% !important;
+  max-width: 760px !important;
+}
+
+.chromaOutputMatricesGrid {
+  display: grid !important;
+  grid-template-columns: minmax(420px, 560px) minmax(260px, 360px) minmax(260px, 360px) !important;
+  gap: 16px !important;
+  align-items: start !important;
+  justify-content: center !important;
+}
+
+.chromaOutputMatricesGrid .chromaMatrixCard {
+  width: 100% !important;
+}
+
+.chromaCell {
+  min-height: 34px !important;
+  font-size: 12px !important;
+  border-radius: 8px !important;
+}
+
+.calcValues span {
+  width: 46px !important;
+  height: 38px !important;
+  font-size: 16px !important;
+}
+
+@media (max-width: 1300px) {
+  .chromaOutputMatricesGrid {
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+  }
+
+  .chromaOutputMatricesGrid .chromaMatrixCard {
+    max-width: 760px !important;
+  }
+}
+
+.blockMainGrid {
+  display: grid !important;
+  grid-template-columns: minmax(420px, 1fr) minmax(420px, 520px) !important;
+  gap: 18px !important;
+  align-items: start !important;
+  width: 100% !important;
+}
+
+.blockInputCard,
+.blockOutputCard {
+  background: #ffffff !important;
+  border: 1px solid #d9e2ec !important;
+  border-radius: 14px !important;
+  padding: 18px !important;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08) !important;
+  overflow: hidden !important;
+}
+
+.blockCardHeader {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin-bottom: 14px !important;
+}
+
+.blockCardHeader h3 {
+  color: #0d2c72 !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  margin: 0 !important;
+}
+
+.blockCardHeader span {
+  background: #dbeafe !important;
+  color: #0d2c72 !important;
+  border-radius: 999px !important;
+  padding: 7px 12px !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+
+.blockMatrix8Preview {
+  display: grid !important;
+  grid-template-columns: repeat(8, 42px) !important;
+  gap: 6px !important;
+  justify-content: center !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  padding: 12px !important;
+  background: #0f172a !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+.block8PreviewCell {
+  width: 42px !important;
+  height: 34px !important;
+  border-radius: 7px !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+}
+
+.selectedBlockGrid8 {
+  display: grid !important;
+  grid-template-columns: repeat(8, 42px) !important;
+  gap: 6px !important;
+  justify-content: center !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+
+.selectedBlockGrid8 span {
+  width: 42px !important;
+  height: 34px !important;
+  border-radius: 7px !important;
+  border: 1px solid #2563eb !important;
+  background: #dbeafe !important;
+  color: #0d2c72 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+}
+
+.hiddenBlockValue {
+  background: #f8fafc !important;
+  color: #94a3b8 !important;
+  border-style: dashed !important;
+}
+
+.selectedBlockInfo {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 12px !important;
+  margin-top: 16px !important;
+}
+
+.selectedBlockInfo div {
+  background: #f8fafc !important;
+  border: 1px solid #d9e2ec !important;
+  border-radius: 10px !important;
+  padding: 12px !important;
+  text-align: center !important;
+}
+
+.selectedBlockInfo span {
+  display: block !important;
+  color: #64748b !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  margin-bottom: 5px !important;
+}
+
+.selectedBlockInfo strong {
+  color: #0f172a !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+}
+
+.blockSummaryRow {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 12px !important;
+  background: #ecfeff !important;
+  border: 1px solid #bae6fd !important;
+  border-radius: 14px !important;
+  padding: 16px !important;
+  margin-top: 18px !important;
+}
+
+.blockSummaryRow div {
+  background: #ffffff !important;
+  border: 1px solid #bae6fd !important;
+  border-radius: 10px !important;
+  padding: 12px !important;
+  text-align: center !important;
+}
+
+.blockSummaryRow span {
+  display: block !important;
+  color: #475569 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  margin-bottom: 5px !important;
+}
+
+.blockSummaryRow strong {
+  color: #0d2c72 !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+}
+
+@media (max-width: 1250px) {
+  .blockMainGrid {
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+  }
+
+  .blockInputCard,
+  .blockOutputCard {
+    width: 100% !important;
+    max-width: 720px !important;
+  }
+
+  .blockSummaryRow {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .blockMatrix8Preview,
+  .selectedBlockGrid8 {
+    grid-template-columns: repeat(4, 42px) !important;
+  }
+
+  .blockSummaryRow,
+  .selectedBlockInfo {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.step4BlockLayout {
+  display: grid !important;
+  grid-template-columns: minmax(420px, 1fr) minmax(420px, 1fr) !important;
+  gap: 18px !important;
+  align-items: start !important;
+  width: 100% !important;
+}
+
+.step4BlockCard {
+  background: #ffffff !important;
+  border: 1px solid #d9e2ec !important;
+  border-radius: 14px !important;
+  padding: 18px !important;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08) !important;
+  overflow: hidden !important;
+}
+
+.step4YPreviewGrid,
+.step4ProcessingGrid {
+  display: grid !important;
+  grid-template-columns: repeat(8, 42px) !important;
+  gap: 6px !important;
+  justify-content: center !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+
+.step4YPreviewGrid span,
+.step4ProcessingGrid span {
+  width: 42px !important;
+  height: 34px !important;
+  border-radius: 7px !important;
+  border: 1px solid #2563eb !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+}
+
+.step4ProcessingGrid .visibleBlockValue {
+  background: #dbeafe !important;
+  color: #0d2c72 !important;
+}
+
+.step4ProcessingGrid .hiddenBlockValue {
+  background: #f8fafc !important;
+  color: #94a3b8 !important;
+  border: 1px dashed #cbd5e1 !important;
+}
+
+@media (max-width: 1250px) {
+  .step4BlockLayout {
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+  }
+
+  .step4BlockCard {
+    width: 100% !important;
+    max-width: 760px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .step4YPreviewGrid,
+  .step4ProcessingGrid {
+    grid-template-columns: repeat(4, 42px) !important;
+  }
+}
+
+.step4WorkingLayout {
+  display: grid !important;
+  grid-template-columns: minmax(420px, 1fr) 50px minmax(420px, 1fr) !important;
+  gap: 18px !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+.step4WorkingCard {
+  background: #ffffff !important;
+  border: 1px solid #d9e2ec !important;
+  border-radius: 14px !important;
+  padding: 18px !important;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08) !important;
+}
+
+.step4ArrowBox {
+  color: #0d2c72 !important;
+  font-size: 34px !important;
+  font-weight: 900 !important;
+  text-align: center !important;
+}
+
+.step4MatrixGrid {
+  display: grid !important;
+  grid-template-columns: repeat(8, 42px) !important;
+  gap: 6px !important;
+  justify-content: center !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+
+.step4MatrixGrid span {
+  width: 42px !important;
+  height: 34px !important;
+  border-radius: 7px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+}
+
+.sourceCell {
+  background: #eef4ff !important;
+  color: #0d2c72 !important;
+  border: 1px solid #2563eb !important;
+}
+
+.activeSourceCell {
+  background: #fef3c7 !important;
+  color: #7c2d12 !important;
+  border-color: #f59e0b !important;
+}
+
+.visibleBlockCell {
+  background: #dbeafe !important;
+  color: #0d2c72 !important;
+  border: 1px solid #2563eb !important;
+}
+
+.hiddenBlockCell {
+  background: #f8fafc !important;
+  color: #94a3b8 !important;
+  border: 1px dashed #cbd5e1 !important;
+}
+
+@media (max-width: 1250px) {
+  .step4WorkingLayout {
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+  }
+
+  .step4ArrowBox {
+    transform: rotate(90deg) !important;
+  }
+
+  .step4WorkingCard {
+    width: 100% !important;
+    max-width: 760px !important;
+  }
+}
+/* ================================
+   Step 1 RGB Image Input - Clean UI
+   ================================ */
+
+.step1Page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.step1IntroGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.step1InfoCard,
+.step1FormulaCard,
+.step1MatrixCard,
+.step1InspectorCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step1InfoCard h3,
+.step1FormulaCard h3,
+.step1MatrixCard h3,
+.step1InspectorCard h3 {
+  margin: 0 0 8px;
+  color: #0d2c72;
+  font-size: 17px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step1InfoCard p,
+.step1FormulaCard p {
+  margin: 0;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.validText {
+  color: #15803d;
+}
+
+.invalidText {
+  color: #b91c1c;
+}
+
+.step1FormulaList {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.step1FormulaList div {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 9px;
+  padding: 7px 9px;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step1FormulaNote {
+  margin-top: 8px !important;
+  color: #64748b !important;
+  font-size: 12px !important;
+}
+
+.step1MainGrid {
+  display: grid;
+  grid-template-columns: minmax(520px, 1fr) minmax(320px, 420px);
+  gap: 14px;
+  align-items: start;
+}
+
+.step1PatchGrid {
+  display: grid;
+  gap: 5px;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 12px;
+  background: #0f172a;
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.step1PixelCell {
+  width: 30px;
+  height: 28px;
+  border: 1px solid rgba(15, 23, 42, 0.2);
+  border-radius: 6px;
+  font-size: 8px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.step1PixelCell:hover {
+  transform: scale(1.08);
+  border-color: #0d2c72;
+}
+
+.step1SelectedPixel {
+  border: 3px solid #0d2c72 !important;
+  box-shadow: 0 0 0 4px rgba(13, 44, 114, 0.25);
+  transform: scale(1.1);
+}
+
+.step1InspectorCard {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.step1PositionBox {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px 10px;
+  text-align: center;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.step1CalculationBox {
+  background: #f8fbff;
+  border: 1px solid #cfd9e4;
+  border-radius: 12px;
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.step1CalculationBox h4 {
+  margin: 0;
+  color: #0d2c72;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step1CalculationBox div {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 6px 8px;
+  color: #0f172a;
+  font-size: 11.5px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.step1CalculationBox b {
+  color: #0d2c72;
+}
+
+.step1ActionRow {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step1ActionRow button {
+  border: none;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transition: 0.2s ease;
+}
+
+.step1ActionRow button:hover {
+  background: #0d2c72;
+  transform: translateY(-1px);
+}
+
+.step1TupleScroll {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.step1TupleGrid {
+  display: grid;
+  gap: 6px;
+  width: fit-content;
+  min-width: 100%;
+  justify-content: center;
+}
+
+.step1TupleCell {
+  height: 28px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 7px;
+  font-size: 9px;
+  font-weight: 850;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.step1TupleCell:hover {
+  background: #eef4ff;
+  border-color: #0d2c72;
+}
+
+.step1SelectedTuple {
+  background: #0d2c72 !important;
+  color: #ffffff !important;
+  border-color: #0d2c72 !important;
+}
+
+.step1ProcessStrip {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 12px;
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step1ChannelMatrixRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(300px, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.step1ChannelCard {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 12px;
+  padding: 10px;
+  overflow-x: auto;
+}
+
+.step1ChannelCard h4 {
+  margin: 0 0 8px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.step1RedChannel h4 {
+  color: #dc2626;
+}
+
+.step1GreenChannel h4 {
+  color: #16a34a;
+}
+
+.step1BlueChannel h4 {
+  color: #2563eb;
+}
+
+.step1ChannelGrid {
+  display: grid;
+  gap: 4px;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.step1ChannelGrid span {
+  width: 24px;
+  height: 22px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 5px;
+  font-size: 8px;
+  font-weight: 900;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.step1SelectedChannelCell {
+  background: #facc15 !important;
+  border-color: #ca8a04 !important;
+  color: #111827 !important;
+  transform: scale(1.12);
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+}
+
+.step1FadeIn {
+  animation: step1FadeIn 0.25s ease;
+}
+
+@keyframes step1FadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1400px) {
+  .step1IntroGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step1MainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step1InspectorCard {
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .step1ChannelMatrixRow {
+    grid-template-columns: 1fr;
+  }
+
+  .step1ChannelCard {
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .step1PatchGrid {
+    grid-template-columns: repeat(8, 30px) !important;
+  }
+
+  .step1TupleGrid {
+    grid-template-columns: repeat(4, 84px) !important;
+  }
+
+  .step1ChannelGrid {
+    grid-template-columns: repeat(8, 24px) !important;
+  }
+
+  .step1InfoCard p,
+  .step1FormulaCard p {
+    text-align: left;
+  }
+}
+/* ================================
+   Step 1 Simplified Professional UI
+   ================================ */
+
+.step1SimplePage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.step1SimpleConceptBox {
+  width: 100%;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-left: 5px solid #0d2c72;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.step1SimpleConceptBox strong,
+.step1SimpleConceptBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step1ValidText {
+  color: #15803d;
+  font-weight: 900;
+}
+
+.step1ErrorText {
+  color: #b91c1c;
+  font-weight: 900;
+}
+
+.step1SimpleMainGrid {
+  display: grid;
+  grid-template-columns: minmax(520px, 1fr) minmax(320px, 380px);
+  gap: 14px;
+  align-items: start;
+}
+
+.step1SimpleCard,
+.step1SimpleInspector {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step1SimpleCard h3,
+.step1SimpleInspector h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 17px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step1SimplePatchGrid {
+  display: grid;
+  gap: 5px;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 12px;
+  background: #0f172a;
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.step1SimplePixel {
+  width: 30px;
+  height: 28px;
+  border: 1px solid rgba(15, 23, 42, 0.2);
+  border-radius: 6px;
+  font-size: 8px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.step1SimplePixel:hover {
+  transform: scale(1.08);
+  border-color: #0d2c72;
+}
+
+.step1SimplePixelActive {
+  border: 3px solid #0d2c72 !important;
+  box-shadow: 0 0 0 4px rgba(13, 44, 114, 0.25);
+  transform: scale(1.1);
+}
+
+.step1SimpleInspector {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.step1SimplePosition {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px 10px;
+  text-align: center;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.step1SimpleActionRow {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step1SimpleActionRow button {
+  border: none;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transition: 0.2s ease;
+}
+
+.step1SimpleActionRow button:hover {
+  background: #0d2c72;
+  transform: translateY(-1px);
+}
+
+.step1SimpleFormulaIntro {
+  margin: 0 auto 12px;
+  max-width: 900px;
+  text-align: center;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.step1SimpleFormulaGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.step1SimpleFormulaGrid div {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 10px;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step1SimpleCalculation {
+  margin-top: 12px;
+  background: #f8fbff;
+  border: 1px solid #cfd9e4;
+  border-radius: 12px;
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.step1SimpleCalculation h4 {
+  margin: 0;
+  color: #0d2c72;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step1SimpleCalculation div {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 7px 9px;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.step1SimpleCalculation b {
+  color: #0d2c72;
+}
+
+.step1SimpleTupleScroll {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.step1SimpleTupleGrid {
+  display: grid;
+  gap: 6px;
+  width: fit-content;
+  min-width: 100%;
+  justify-content: center;
+}
+
+.step1SimpleTupleCell {
+  height: 28px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 7px;
+  font-size: 9px;
+  font-weight: 850;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.step1SimpleTupleCell:hover {
+  background: #eef4ff;
+  border-color: #0d2c72;
+}
+
+.step1SimpleTupleActive {
+  background: #0d2c72 !important;
+  color: #ffffff !important;
+  border-color: #0d2c72 !important;
+}
+
+.step1SimpleProcess {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 12px;
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step1SimpleChannelRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(300px, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.step1SimpleChannelCard {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 12px;
+  padding: 10px;
+  overflow-x: auto;
+}
+
+.step1SimpleChannelCard h4 {
+  margin: 0 0 8px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.step1RedMatrix h4 {
+  color: #dc2626;
+}
+
+.step1GreenMatrix h4 {
+  color: #16a34a;
+}
+
+.step1BlueMatrix h4 {
+  color: #2563eb;
+}
+
+.step1SimpleChannelGrid {
+  display: grid;
+  gap: 4px;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.step1SimpleChannelGrid span {
+  width: 24px;
+  height: 22px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 5px;
+  font-size: 8px;
+  font-weight: 900;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.step1SimpleSelectedCell {
+  background: #facc15 !important;
+  border-color: #ca8a04 !important;
+  color: #111827 !important;
+  transform: scale(1.12);
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+}
+
+.step1SimpleFade {
+  animation: step1SimpleFade 0.25s ease;
+}
+
+@keyframes step1SimpleFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1400px) {
+  .step1SimpleMainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step1SimpleInspector {
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .step1SimpleFormulaGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step1SimpleChannelRow {
+    grid-template-columns: 1fr;
+  }
+
+  .step1SimpleChannelCard {
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .step1SimplePatchGrid {
+    grid-template-columns: repeat(8, 30px) !important;
+  }
+
+  .step1SimpleTupleGrid {
+    grid-template-columns: repeat(4, 84px) !important;
+  }
+
+  .step1SimpleChannelGrid {
+    grid-template-columns: repeat(8, 24px) !important;
+  }
+
+  .step1SimpleConceptBox {
+    font-size: 12px;
+  }
+}
+/* Step 1 layout polish */
+.step1SimpleMainGrid {
+  grid-template-columns: minmax(480px, 1fr) minmax(300px, 360px) !important;
+  gap: 18px !important;
+}
+
+.step1SimpleInspector {
+  width: 100% !important;
+  max-width: 360px !important;
+  margin-right: auto !important;
+}
+
+.step1SimpleCard {
+  min-width: 0 !important;
+}
+
+@media (max-width: 1350px) {
+  .step1SimpleMainGrid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .step1SimpleInspector {
+    max-width: 520px !important;
+    margin: 0 auto !important;
+  }
+}
+/* Step 1 compact pixel grid */
+.step1SimplePatchGrid {
+  gap: 4px !important;
+  padding: 10px !important;
+}
+
+.step1SimplePixel {
+  width: 27px !important;
+  height: 25px !important;
+  font-size: 7.5px !important;
+}/* Step 1 final polish */
+
+.step1SimpleMainGrid {
+  grid-template-columns: minmax(460px, 1fr) minmax(300px, 360px) !important;
+  gap: 18px !important;
+}
+
+.step1SimpleInspector {
+  width: 100% !important;
+  max-width: 360px !important;
+  margin-right: auto !important;
+}
+
+.step1SimplePatchGrid {
+  gap: 4px !important;
+  padding: 10px !important;
+  border-radius: 13px !important;
+}
+
+.step1SimplePixel {
+  width: 27px !important;
+  height: 25px !important;
+  font-size: 7.5px !important;
+  color: #06142f !important;
+}
+
+.step1SimplePixelActive {
+  border: 3px solid #0d2c72 !important;
+  box-shadow: 0 0 0 4px rgba(13, 44, 114, 0.28) !important;
+}
+
+.step1SimpleCard h3,
+.step1SimpleInspector h3 {
+  font-size: 16px !important;
+}
+
+.step1SimpleConceptBox {
+  padding: 10px 14px !important;
+  font-size: 12.8px !important;
+}
+
+.step1SimpleActionRow {
+  margin-top: 2px !important;
+}
+
+.step1SimpleActionRow button {
+  padding: 9px 14px !important;
+  font-size: 12.5px !important;
+}
+
+@media (max-width: 1350px) {
+  .step1SimpleMainGrid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .step1SimpleInspector {
+    max-width: 520px !important;
+    margin: 0 auto !important;
+  }
+}
+/* ================================
+   Step 1 Final Polish
+   ================================ */
+
+.step1SimpleMainGrid {
+  grid-template-columns: minmax(460px, 1fr) minmax(300px, 360px) !important;
+  gap: 18px !important;
+}
+
+.step1SimpleInspector {
+  width: 100% !important;
+  max-width: 360px !important;
+  margin-right: auto !important;
+}
+
+.step1SimpleCard {
+  min-width: 0 !important;
+}
+
+.step1SimplePatchGrid {
+  gap: 4px !important;
+  padding: 10px !important;
+  border-radius: 13px !important;
+}
+
+.step1SimplePixel {
+  width: 27px !important;
+  height: 25px !important;
+  font-size: 7.5px !important;
+  color: #06142f !important;
+}
+
+.step1SimplePixelActive {
+  border: 3px solid #0d2c72 !important;
+  box-shadow: 0 0 0 4px rgba(13, 44, 114, 0.28) !important;
+}
+
+.step1SimpleCard h3,
+.step1SimpleInspector h3 {
+  font-size: 16px !important;
+}
+
+.step1SimpleConceptBox {
+  padding: 10px 14px !important;
+  font-size: 12.8px !important;
+}
+
+.step1SimpleActionRow {
+  margin-top: 2px !important;
+}
+
+.step1SimpleActionRow button {
+  padding: 9px 14px !important;
+  font-size: 12.5px !important;
+}
+
+@media (max-width: 1350px) {
+  .step1SimpleMainGrid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .step1SimpleInspector {
+    max-width: 520px !important;
+    margin: 0 auto !important;
+  }
+}
+/* ================================
+   Step 2 RGB to YCbCr Conversion
+   ================================ */
+
+.step2SimplePage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.step2ConceptBox {
+  width: 100%;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-left: 5px solid #0d2c72;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.step2ConceptBox strong,
+.step2ConceptBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step2FormulaBox,
+.step2Card,
+.step2SelectedCard,
+.step2OutputCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step2FormulaBox h3,
+.step2Card h3,
+.step2SelectedCard h3,
+.step2OutputCard h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 17px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step2FormulaGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  gap: 10px;
+}
+
+.step2FormulaGrid div {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 10px;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step2FormulaGrid b {
+  color: #0d2c72;
+}
+
+.step2FormulaBox p {
+  margin: 10px 0 0;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.step2ControlBar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step2ControlBar button {
+  border: none;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transition: 0.2s ease;
+}
+
+.step2ControlBar button:hover:not(:disabled) {
+  background: #0d2c72;
+  transform: translateY(-1px);
+}
+
+.step2ControlBar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.step2ProgressBox {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+.step2ProgressTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.step2ProgressTop strong {
+  color: #0d2c72;
+}
+
+.step2ProgressTrack {
+  width: 100%;
+  height: 10px;
+  background: #e5eaf1;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.step2ProgressFill {
+  height: 100%;
+  background: #0d2c72;
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.step2MainGrid {
+  display: grid;
+  grid-template-columns: minmax(520px, 1fr) minmax(320px, 420px);
+  gap: 14px;
+  align-items: start;
+}
+
+.step2RgbGrid {
+  display: grid;
+  gap: 4px;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+  background: #0f172a;
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.step2RgbPixel {
+  width: 28px;
+  height: 25px;
+  border: 1px solid rgba(15, 23, 42, 0.2);
+  border-radius: 6px;
+  font-size: 7.4px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.step2RgbPixel:hover {
+  transform: scale(1.08);
+  border-color: #0d2c72;
+}
+
+.step2SelectedRgbPixel {
+  border: 3px solid #0d2c72 !important;
+  box-shadow: 0 0 0 4px rgba(13, 44, 114, 0.25);
+  transform: scale(1.08);
+}
+
+.step2ConvertedRgbPixel {
+  box-shadow: inset 0 0 0 2px rgba(34, 197, 94, 0.55);
+}
+
+.step2SmallNote {
+  margin: 10px auto 0;
+  max-width: 900px;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 750;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.step2SelectedCard {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.step2SelectedLabel,
+.step2PositionBox,
+.step2RgbValue,
+.step2YcbcrValue {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px 10px;
+  text-align: center;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.step2YcbcrValue {
+  background: #eef6ff;
+  color: #0d2c72;
+}
+
+.step2DownArrow {
+  color: #0d2c72;
+  font-size: 20px;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1;
+}
+
+.step2ComponentResultGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.step2ComponentResultGrid div {
+  border-radius: 10px;
+  padding: 8px;
+  display: grid;
+  gap: 4px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step2ComponentResultGrid span {
+  color: #334155;
+}
+
+.step2ComponentResultGrid strong {
+  font-size: 16px;
+}
+
+.step2YResult {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+}
+
+.step2CbResult {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.step2CrResult {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+}
+
+.step2CalculationBox {
+  background: #f8fbff;
+  border: 1px solid #cfd9e4;
+  border-radius: 12px;
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.step2CalculationBox div {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 7px 9px;
+  color: #0f172a;
+  font-size: 11.5px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.step2CalculationBox b {
+  color: #0d2c72;
+}
+
+.step2PendingBox {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 14px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.step2OutputHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.step2OutputHeader h3 {
+  text-align: left;
+  margin: 0 0 4px;
+}
+
+.step2OutputHeader p {
+  margin: 0;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 750;
+}
+
+.step2MatrixTabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.step2MatrixTabs button {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.step2MatrixTabs .step2ActiveTab {
+  background: #0d2c72;
+  color: #ffffff;
+  border-color: #0d2c72;
+}
+
+.step2ActiveMatrixTitle {
+  width: fit-content;
+  margin: 0 auto 10px;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-radius: 999px;
+  padding: 8px 16px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step2ActiveMatrixTitle strong {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step2OutputGrid {
+  display: grid;
+  gap: 4px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+  background: #f8fafc;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.step2OutputGrid span {
+  width: 28px;
+  height: 24px;
+  border-radius: 5px;
+  border: 1px solid #cbd5e1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 7.6px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.step2YCell {
+  background: #fff7ed;
+}
+
+.step2CbCell {
+  background: #eff6ff;
+}
+
+.step2CrCell {
+  background: #fff1f2;
+}
+
+.step2HiddenOutputCell {
+  background: #eef2f7 !important;
+  color: #94a3b8 !important;
+}
+
+.step2RevealedOutputCell {
+  animation: step2Reveal 0.2s ease;
+}
+
+.step2SelectedOutputCell {
+  background: #facc15 !important;
+  border-color: #ca8a04 !important;
+  color: #111827 !important;
+  transform: scale(1.12);
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+}
+
+@keyframes step2Reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 1400px) {
+  .step2MainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step2SelectedCard {
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .step2FormulaGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .step2RgbGrid,
+  .step2OutputGrid {
+    grid-template-columns: repeat(8, 28px) !important;
+  }
+
+  .step2OutputHeader {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .step2OutputHeader h3 {
+    text-align: center;
+  }
+
+  .step2ActiveMatrixTitle {
+    border-radius: 12px;
+    flex-direction: column;
+    text-align: center;
+  }
+}
+/* ================================
+   Step 3 Chroma Subsampling
+   ================================ */
+
+.step3SimplePage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.step3ConceptBox {
+  width: 100%;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-left: 5px solid #0d2c72;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.step3ConceptBox strong,
+.step3ConceptBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step3SummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.step3SummaryGrid div {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  display: grid;
+  gap: 5px;
+  text-align: center;
+}
+
+.step3SummaryGrid span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step3SummaryGrid strong {
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.step3SummaryGrid small {
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 750;
+}
+
+.step3ControlBar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step3ControlBar button {
+  border: none;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transition: 0.2s ease;
+}
+
+.step3ControlBar button:hover:not(:disabled) {
+  background: #0d2c72;
+  transform: translateY(-1px);
+}
+
+.step3ControlBar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.step3ProgressBox {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+.step3ProgressTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.step3ProgressTop strong {
+  color: #0d2c72;
+}
+
+.step3ProgressTrack {
+  width: 100%;
+  height: 10px;
+  background: #e5eaf1;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.step3ProgressFill {
+  height: 100%;
+  background: #0d2c72;
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.step3Tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.step3Tabs button {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.step3Tabs .step3ActiveTab {
+  background: #0d2c72;
+  color: #ffffff;
+  border-color: #0d2c72;
+}
+
+.step3MainGrid {
+  display: grid;
+  grid-template-columns: minmax(430px, 1fr) minmax(300px, 360px) minmax(300px, 420px);
+  gap: 14px;
+  align-items: start;
+}
+
+.step3Card,
+.step3CalculationCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step3Card h3,
+.step3CalculationCard h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step3SourceGrid {
+  display: grid;
+  gap: 4px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+  background: #0f172a;
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.step3SourceCell {
+  width: 27px;
+  height: 24px;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  border-radius: 5px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 7.5px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.step3SourceCell:hover {
+  transform: scale(1.08);
+  border-color: #0d2c72;
+}
+
+.step3SelectedGroupSourceCell {
+  background: #dbeafe !important;
+  border-color: #2563eb !important;
+  color: #06142f !important;
+}
+
+.step3SelectedSourcePixel {
+  background: #facc15 !important;
+  border: 3px solid #ca8a04 !important;
+  transform: scale(1.08);
+}
+
+.step3OutputGrid {
+  display: grid;
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.step3OutputCell {
+  width: 34px;
+  height: 30px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.step3HiddenOutputCell {
+  background: #eef2f7;
+  color: #94a3b8;
+}
+
+.step3VisibleOutputCell {
+  background: #eff6ff;
+  color: #0f172a;
+  animation: step3Reveal 0.2s ease;
+}
+
+.step3SelectedOutputCell {
+  background: #facc15 !important;
+  border-color: #ca8a04 !important;
+  color: #111827 !important;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+}
+
+@keyframes step3Reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.step3CalculationCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.step3SelectedMeta {
+  display: grid;
+  gap: 8px;
+}
+
+.step3SelectedMeta div {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step3SelectedMeta strong {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step3GroupValues {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.step3GroupValues div {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  padding: 8px;
+  display: grid;
+  gap: 4px;
+  text-align: center;
+}
+
+.step3GroupValues span {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.step3GroupValues strong {
+  color: #0f172a;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.step3FormulaBox {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 12.5px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step3CalculationResult {
+  background: #f8fbff;
+  border: 1px solid #cfd9e4;
+  border-radius: 12px;
+  padding: 10px;
+  display: grid;
+  gap: 7px;
+}
+
+.step3CalculationResult div {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 7px 9px;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.step3CalculationResult b {
+  color: #0d2c72;
+}
+
+.step3PendingBox {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 12px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.step3SmallNote {
+  margin: 10px auto 0;
+  max-width: 900px;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 750;
+  text-align: center;
+  line-height: 1.35;
+}
+
+@media (max-width: 1450px) {
+  .step3MainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step3CalculationCard {
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .step3SummaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .step3SourceGrid {
+    grid-template-columns: repeat(8, 27px) !important;
+  }
+
+  .step3OutputGrid {
+    grid-template-columns: repeat(4, 34px) !important;
+  }
+
+  .step3ConceptBox {
+    font-size: 12px;
+  }
+}
+/* ================================
+   Step 4 8×8 Block Preparation
+   ================================ */
+
+.step4SimplePage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.step4ConceptBox {
+  width: 100%;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-left: 5px solid #0d2c72;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.step4ConceptBox strong,
+.step4ConceptBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step4BlockSelectorGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.step4BlockSelectCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 12px;
+  cursor: pointer;
+  display: grid;
+  gap: 5px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  transition: 0.2s ease;
+}
+
+.step4BlockSelectCard strong {
+  color: #0d2c72;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.step4BlockSelectCard span {
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.step4BlockSelectCard small {
+  color: #64748b;
+  font-size: 11.5px;
+  font-weight: 750;
+}
+
+.step4BlockSelectCard:hover {
+  transform: translateY(-1px);
+  border-color: #0d2c72;
+}
+
+.step4ActiveBlockSelectCard {
+  background: #eaf2ff !important;
+  border-color: #0d2c72 !important;
+  box-shadow: 0 0 0 3px rgba(13, 44, 114, 0.16) !important;
+}
+
+.step4ControlBar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step4ControlBar button {
+  border: none;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transition: 0.2s ease;
+}
+
+.step4ControlBar button:hover:not(:disabled) {
+  background: #0d2c72;
+  transform: translateY(-1px);
+}
+
+.step4ControlBar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.step4FlowBox {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-radius: 999px;
+  padding: 9px 16px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  justify-content: center;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step4FlowBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step4MainGrid {
+  display: grid;
+  grid-template-columns: minmax(430px, 1fr) minmax(260px, 330px) minmax(310px, 420px);
+  gap: 14px;
+  align-items: start;
+}
+
+.step4Card,
+.step4SelectedInfoCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step4Card h3,
+.step4SelectedInfoCard h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step4SourceGrid {
+  display: grid;
+  grid-template-columns: repeat(16, 27px);
+  gap: 4px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+  background: #0f172a;
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.step4SourceCell {
+  width: 27px;
+  height: 24px;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  border-radius: 5px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 7.5px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.step4SourceCell:hover {
+  transform: scale(1.08);
+  border-color: #0d2c72;
+}
+
+.step4SelectedSourceBlockCell {
+  background: #dbeafe !important;
+  border-color: #2563eb !important;
+  color: #06142f !important;
+}
+
+.step4SelectedInfoCard {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.step4InfoRow {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step4InfoRow strong {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step4MiniFormula {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 900;
+}
+
+.step4BlockGrid {
+  display: grid;
+  grid-template-columns: repeat(8, 36px);
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.step4BlockCell {
+  width: 36px;
+  height: 30px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.step4HiddenBlockCell {
+  background: #eef2f7;
+  color: #94a3b8;
+}
+
+.step4VisibleBlockCell {
+  background: #eff6ff;
+  color: #0f172a;
+  animation: step4Reveal 0.2s ease;
+}
+
+@keyframes step4Reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.step4SmallNote {
+  margin: 10px auto 0;
+  max-width: 900px;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 750;
+  text-align: center;
+  line-height: 1.35;
+}
+
+@media (max-width: 1450px) {
+  .step4MainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step4SelectedInfoCard {
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .step4BlockSelectorGrid {
+    grid-template-columns: repeat(2, minmax(160px, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .step4SourceGrid {
+    grid-template-columns: repeat(8, 27px) !important;
+  }
+
+  .step4BlockSelectorGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step4FlowBox {
+    border-radius: 14px;
+  }
+}
+/* ================================
+   Step 5 Level Shifting
+   ================================ */
+
+.step5SimplePage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.step5ConceptBox {
+  width: 100%;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-left: 5px solid #0d2c72;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.step5ConceptBox strong,
+.step5ConceptBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step5SummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.step5SummaryGrid div {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  display: grid;
+  gap: 5px;
+  text-align: center;
+}
+
+.step5SummaryGrid span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step5SummaryGrid strong {
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.step5SummaryGrid small {
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 750;
+}
+
+.step5ControlBar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step5ControlBar button {
+  border: none;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transition: 0.2s ease;
+}
+
+.step5ControlBar button:hover:not(:disabled) {
+  background: #0d2c72;
+  transform: translateY(-1px);
+}
+
+.step5ControlBar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.step5ProgressBox {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+.step5ProgressTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.step5ProgressTop strong {
+  color: #0d2c72;
+}
+
+.step5ProgressTrack {
+  width: 100%;
+  height: 10px;
+  background: #e5eaf1;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.step5ProgressFill {
+  height: 100%;
+  background: #0d2c72;
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.step5FlowBox {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-radius: 999px;
+  padding: 9px 16px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  justify-content: center;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step5FlowBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step5MainGrid {
+  display: grid;
+  grid-template-columns: minmax(330px, 420px) minmax(300px, 360px) minmax(330px, 420px);
+  gap: 14px;
+  align-items: start;
+  justify-content: center;
+}
+
+.step5Card,
+.step5CalculationCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step5Card h3,
+.step5CalculationCard h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step5MatrixGrid {
+  display: grid;
+  grid-template-columns: repeat(8, 38px);
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.step5InputCell,
+.step5OutputCell {
+  width: 38px;
+  height: 31px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.step5InputCell {
+  background: #ffffff;
+  color: #0f172a;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.step5InputCell:hover {
+  transform: scale(1.08);
+  border-color: #0d2c72;
+}
+
+.step5SelectedInputCell {
+  background: #facc15 !important;
+  border: 3px solid #ca8a04 !important;
+  color: #111827 !important;
+  transform: scale(1.08);
+}
+
+.step5ProcessedInputCell {
+  box-shadow: inset 0 0 0 2px rgba(34, 197, 94, 0.45);
+}
+
+.step5HiddenOutputCell {
+  background: #eef2f7;
+  color: #94a3b8;
+}
+
+.step5VisibleOutputCell {
+  background: #eff6ff;
+  color: #0f172a;
+  animation: step5Reveal 0.2s ease;
+}
+
+.step5SelectedOutputCell {
+  background: #facc15 !important;
+  border-color: #ca8a04 !important;
+  color: #111827 !important;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+}
+
+@keyframes step5Reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.step5CalculationCard {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.step5InfoRow {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step5InfoRow strong {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step5FormulaBox {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 12.5px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step5CalculationResult {
+  background: #f8fbff;
+  border: 1px solid #cfd9e4;
+  border-radius: 12px;
+  padding: 10px;
+  display: grid;
+  gap: 7px;
+}
+
+.step5CalculationResult div {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 7px 9px;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.step5CalculationResult b {
+  color: #0d2c72;
+}
+
+.step5PendingBox {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 12px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.step5SmallNote {
+  margin: 10px auto 0;
+  max-width: 900px;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 750;
+  text-align: center;
+  line-height: 1.35;
+}
+
+@media (max-width: 1450px) {
+  .step5MainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step5CalculationCard,
+  .step5Card {
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .step5SummaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .step5MatrixGrid {
+    grid-template-columns: repeat(8, 34px);
+  }
+
+  .step5InputCell,
+  .step5OutputCell {
+    width: 34px;
+    height: 28px;
+    font-size: 8px;
+  }
+
+  .step5FlowBox {
+    border-radius: 14px;
+  }
+
+  .step5ConceptBox {
+    font-size: 12px;
+  }
+}
+/* ================================
+   Step 6 2D DCT / FDCT
+   ================================ */
+
+.step6SimplePage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.step6ConceptBox {
+  width: 100%;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-left: 5px solid #0d2c72;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.step6ConceptBox strong,
+.step6ConceptBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step6SummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.step6SummaryGrid div {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  display: grid;
+  gap: 5px;
+  text-align: center;
+}
+
+.step6SummaryGrid span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step6SummaryGrid strong {
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.step6SummaryGrid small {
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 750;
+}
+
+.step6FormulaBox,
+.step6Card,
+.step6CalculationCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step6FormulaBox h3,
+.step6Card h3,
+.step6CalculationCard h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step6FormulaText {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 900;
+  line-height: 1.45;
+}
+
+.step6FormulaBox p {
+  margin: 10px 0 0;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.step6ControlBar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step6ControlBar button {
+  border: none;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transition: 0.2s ease;
+}
+
+.step6ControlBar button:hover:not(:disabled) {
+  background: #0d2c72;
+  transform: translateY(-1px);
+}
+
+.step6ControlBar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.step6ProgressBox {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+.step6ProgressTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.step6ProgressTop strong {
+  color: #0d2c72;
+}
+
+.step6ProgressTrack {
+  width: 100%;
+  height: 10px;
+  background: #e5eaf1;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.step6ProgressFill {
+  height: 100%;
+  background: #0d2c72;
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.step6FlowBox {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-radius: 999px;
+  padding: 9px 16px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  justify-content: center;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step6FlowBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step6MainGrid {
+  display: grid;
+  grid-template-columns: minmax(330px, 430px) minmax(300px, 360px) minmax(330px, 430px);
+  gap: 14px;
+  align-items: start;
+  justify-content: center;
+}
+
+.step6MatrixGrid {
+  display: grid;
+  grid-template-columns: repeat(8, 44px);
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.step6InputCell,
+.step6OutputCell {
+  width: 44px;
+  height: 32px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 8.2px;
+  font-weight: 900;
+}
+
+.step6InputCell {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.step6OutputCell {
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.step6OutputCell:hover {
+  transform: scale(1.08);
+  border-color: #0d2c72;
+}
+
+.step6HiddenOutputCell {
+  background: #eef2f7;
+  color: #94a3b8;
+}
+
+.step6VisibleOutputCell {
+  background: #eff6ff;
+  color: #0f172a;
+  animation: step6Reveal 0.2s ease;
+}
+
+.step6SelectedOutputCell {
+  background: #facc15 !important;
+  border: 3px solid #ca8a04 !important;
+  color: #111827 !important;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+}
+
+@keyframes step6Reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.step6CalculationCard {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.step6InfoRow {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step6InfoRow strong {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step6MiniFormula {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 12.5px;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.step6CalculationResult {
+  background: #f8fbff;
+  border: 1px solid #cfd9e4;
+  border-radius: 12px;
+  padding: 10px;
+  display: grid;
+  gap: 7px;
+}
+
+.step6CalculationResult div {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 7px 9px;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.step6CalculationResult b {
+  color: #0d2c72;
+}
+
+.step6PendingBox {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 12px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.step6SmallNote {
+  margin: 10px auto 0;
+  max-width: 900px;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 750;
+  text-align: center;
+  line-height: 1.35;
+}
+
+@media (max-width: 1450px) {
+  .step6MainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step6CalculationCard,
+  .step6Card {
+    max-width: 540px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .step6SummaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .step6MatrixGrid {
+    grid-template-columns: repeat(8, 38px);
+  }
+
+  .step6InputCell,
+  .step6OutputCell {
+    width: 38px;
+    height: 30px;
+    font-size: 7.4px;
+  }
+
+  .step6FlowBox {
+    border-radius: 14px;
+  }
+
+  .step6ConceptBox {
+    font-size: 12px;
+  }
+
+  .step6FormulaText {
+    font-size: 11.5px;
+  }
+}
+/* ================================
+   Step 7 Quantization
+   ================================ */
+
+.step7SimplePage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.step7ConceptBox {
+  width: 100%;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-left: 5px solid #0d2c72;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.step7ConceptBox strong,
+.step7ConceptBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step7SummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.step7SummaryGrid div {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  display: grid;
+  gap: 5px;
+  text-align: center;
+}
+
+.step7SummaryGrid span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step7SummaryGrid strong {
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.step7SummaryGrid small {
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 750;
+}
+
+.step7FormulaBox,
+.step7Card,
+.step7CalculationCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step7FormulaBox h3,
+.step7Card h3,
+.step7CalculationCard h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step7FormulaText {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 900;
+  line-height: 1.45;
+}
+
+.step7FormulaBox p {
+  margin: 10px 0 0;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.step7ControlBar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step7ControlBar button {
+  border: none;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transition: 0.2s ease;
+}
+
+.step7ControlBar button:hover:not(:disabled) {
+  background: #0d2c72;
+  transform: translateY(-1px);
+}
+
+.step7ControlBar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.step7ProgressBox {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+.step7ProgressTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.step7ProgressTop strong {
+  color: #0d2c72;
+}
+
+.step7ProgressTrack {
+  width: 100%;
+  height: 10px;
+  background: #e5eaf1;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.step7ProgressFill {
+  height: 100%;
+  background: #0d2c72;
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.step7FlowBox {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-radius: 999px;
+  padding: 9px 16px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  justify-content: center;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step7FlowBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step7MainGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(270px, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+
+.step7MatrixGrid {
+  display: grid;
+  grid-template-columns: repeat(8, 38px);
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.step7Cell {
+  width: 38px;
+  height: 31px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 7.7px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.step7Cell:hover {
+  transform: scale(1.08);
+  border-color: #0d2c72;
+}
+
+.step7inputCell {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.step7tableCell {
+  background: #fff7ed;
+  color: #0f172a;
+}
+
+.step7outputCell {
+  background: #eff6ff;
+  color: #0f172a;
+}
+
+.step7HiddenCell {
+  background: #eef2f7 !important;
+  color: #94a3b8 !important;
+}
+
+.step7VisibleCell {
+  animation: step7Reveal 0.2s ease;
+}
+
+.step7SelectedCell {
+  background: #facc15 !important;
+  border: 3px solid #ca8a04 !important;
+  color: #111827 !important;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+}
+
+@keyframes step7Reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.step7CalculationCard {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.step7InfoRow {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step7InfoRow strong {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step7MiniFormula {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 12.5px;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.step7CalculationResult {
+  background: #f8fbff;
+  border: 1px solid #cfd9e4;
+  border-radius: 12px;
+  padding: 10px;
+  display: grid;
+  gap: 7px;
+}
+
+.step7CalculationResult div {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 7px 9px;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.step7CalculationResult b {
+  color: #0d2c72;
+}
+
+.step7PendingBox {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 12px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.step7SmallNote {
+  margin: 10px auto 0;
+  max-width: 900px;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 750;
+  text-align: center;
+  line-height: 1.35;
+}
+
+@media (max-width: 1500px) {
+  .step7MainGrid {
+    grid-template-columns: repeat(2, minmax(300px, 1fr));
+  }
+
+  .step7SummaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .step7MainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step7Card,
+  .step7CalculationCard {
+    max-width: 540px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .step7MatrixGrid {
+    grid-template-columns: repeat(8, 34px);
+  }
+
+  .step7Cell {
+    width: 34px;
+    height: 28px;
+    font-size: 7px;
+  }
+
+  .step7FlowBox {
+    border-radius: 14px;
+  }
+
+  .step7ConceptBox {
+    font-size: 12px;
+  }
+}
+/* ================================
+   Step 8 DC Difference Coding
+   ================================ */
+
+.step8SimplePage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.step8ConceptBox {
+  width: 100%;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-left: 5px solid #0d2c72;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.step8ConceptBox strong,
+.step8ConceptBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step8SummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.step8SummaryGrid div {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  display: grid;
+  gap: 5px;
+  text-align: center;
+}
+
+.step8SummaryGrid span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step8SummaryGrid strong {
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.step8SummaryGrid small {
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 750;
+}
+
+.step8ControlBar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step8ControlBar button {
+  border: none;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transition: 0.2s ease;
+}
+
+.step8ControlBar button:hover:not(:disabled) {
+  background: #0d2c72;
+  transform: translateY(-1px);
+}
+
+.step8ControlBar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.step8FlowBox {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-radius: 999px;
+  padding: 9px 16px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  justify-content: center;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step8FlowBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step8MainGrid {
+  display: grid;
+  grid-template-columns: minmax(330px, 430px) minmax(310px, 390px) minmax(310px, 390px);
+  gap: 14px;
+  align-items: start;
+  justify-content: center;
+}
+
+.step8Card,
+.step8CalculationCard,
+.step8OutputCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step8Card h3,
+.step8CalculationCard h3,
+.step8OutputCard h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step8MatrixGrid {
+  display: grid;
+  grid-template-columns: repeat(8, 38px);
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.step8MatrixCell {
+  width: 38px;
+  height: 31px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.step8DcMatrixCell {
+  background: #fff7ed;
+  border-color: #fb923c;
+}
+
+.step8ActiveDcCell {
+  background: #facc15 !important;
+  border: 3px solid #ca8a04 !important;
+  color: #111827 !important;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+}
+
+.step8CalculationCard {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.step8InfoRow,
+.step8InputRow {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step8InfoRow strong {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step8ActiveInfoRow {
+  background: #fff7ed;
+  border-color: #fb923c;
+}
+
+.step8InputRow label {
+  color: #334155;
+  font-weight: 900;
+}
+
+.step8InputRow input {
+  width: 90px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 8px;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step8PreviousNote {
+  margin: 0;
+  color: #64748b;
+  font-size: 11.5px;
+  font-weight: 750;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.step8MiniFormula {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 12.5px;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.step8FormulaResult {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 12px;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step8ShowFormulaResult {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #0f172a;
+}
+
+.step8FormulaResult b {
+  color: #0d2c72;
+}
+
+.step8EncodedPacket {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.step8EncodedPacket div {
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-radius: 10px;
+  padding: 8px;
+  display: grid;
+  gap: 4px;
+  text-align: center;
+}
+
+.step8EncodedPacket span {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.step8EncodedPacket strong {
+  color: #0d2c72;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.step8PendingBox {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 12px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.step8OutputFlow {
+  display: grid;
+  gap: 10px;
+}
+
+.step8OutputFlow div {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 12px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.step8OutputFlow div.active {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.step8OutputFlow span {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #e5eaf1;
+  color: #0d2c72;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step8OutputFlow div.active span {
+  background: #0d2c72;
+  color: #ffffff;
+}
+
+.step8OutputFlow strong {
+  color: #0f172a;
+  font-size: 12.5px;
+  font-weight: 900;
+}
+
+.step8OutputFlow small {
+  color: #0d2c72;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step8SmallNote {
+  margin: 10px auto 0;
+  max-width: 900px;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 750;
+  text-align: center;
+  line-height: 1.35;
+}
+
+@media (max-width: 1450px) {
+  .step8MainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step8Card,
+  .step8CalculationCard,
+  .step8OutputCard {
+    max-width: 540px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .step8SummaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .step8MatrixGrid {
+    grid-template-columns: repeat(8, 34px);
+  }
+
+  .step8MatrixCell {
+    width: 34px;
+    height: 28px;
+    font-size: 7.2px;
+  }
+
+  .step8FlowBox {
+    border-radius: 14px;
+  }
+
+  .step8ConceptBox {
+    font-size: 12px;
+  }
+
+  .step8EncodedPacket {
+    grid-template-columns: 1fr;
+  }
+
+  .step8OutputFlow div {
+    grid-template-columns: 28px 1fr;
+  }
+
+  .step8OutputFlow small {
+    grid-column: 2;
+  }
+}
+/* ================================
+   Step 9 Zig-Zag Scanning
+   ================================ */
+
+.step9SimplePage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.step9ConceptBox {
+  width: 100%;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-left: 5px solid #0d2c72;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.step9ConceptBox strong,
+.step9ConceptBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step9SummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.step9SummaryGrid div {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  display: grid;
+  gap: 5px;
+  text-align: center;
+}
+
+.step9SummaryGrid span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step9SummaryGrid strong {
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.step9SummaryGrid small {
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 750;
+}
+
+.step9ControlBar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step9ControlBar button {
+  border: none;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transition: 0.2s ease;
+}
+
+.step9ControlBar button:hover:not(:disabled) {
+  background: #0d2c72;
+  transform: translateY(-1px);
+}
+
+.step9ControlBar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.step9ProgressBox {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  display: grid;
+  gap: 6px;
+}
+
+.step9ProgressTop {
+  display: flex;
+  justify-content: space-between;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step9ProgressTop strong {
+  color: #0d2c72;
+}
+
+.step9ProgressTrack {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.step9ProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #0d2c72, #2563eb);
+  transition: width 0.2s ease;
+}
+
+.step9MainGrid {
+  display: grid;
+  grid-template-columns: minmax(340px, 430px) minmax(300px, 360px) minmax(320px, 400px);
+  gap: 14px;
+  align-items: start;
+  justify-content: center;
+}
+
+.step9Card,
+.step9CalculationCard,
+.step9OutputCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step9Card h3,
+.step9CalculationCard h3,
+.step9OutputCard h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step9MatrixGrid {
+  display: grid;
+  grid-template-columns: repeat(8, 42px);
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.step9MatrixCell {
+  width: 42px;
+  height: 38px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 900;
+  gap: 1px;
+  transition: 0.2s ease;
+}
+
+.step9MatrixCell small {
+  font-size: 7px;
+  color: #94a3b8;
+  font-weight: 800;
+}
+
+.step9DcCell {
+  background: #fff7ed;
+  border-color: #fb923c;
+}
+
+.step9ScannedCell {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.step9CurrentCell {
+  background: #facc15 !important;
+  border: 3px solid #ca8a04 !important;
+  color: #111827 !important;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+}
+
+.step9CalculationCard {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.step9InfoRow {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step9InfoRow strong {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step9MiniFormula {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.step9PreviousNote {
+  margin: 0;
+  color: #64748b;
+  font-size: 11.5px;
+  font-weight: 750;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.step9SequenceGrid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+  margin-bottom: 12px;
+}
+
+.step9SeqCell {
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.step9SeqDcCell {
+  border-color: #fb923c;
+}
+
+.step9SeqHidden {
+  background: #eef2f7;
+  color: #94a3b8;
+}
+
+.step9SeqRevealed {
+  background: #eff6ff;
+  color: #0f172a;
+  animation: step9Reveal 0.2s ease;
+}
+
+@keyframes step9Reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.step9SplitRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.step9SplitRow div {
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-radius: 10px;
+  padding: 8px;
+  display: grid;
+  gap: 4px;
+  text-align: center;
+}
+
+.step9SplitRow span {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.step9SplitRow strong {
+  color: #0d2c72;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.step9SplitRow small {
+  color: #475569;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.step9SmallNote {
+  margin: 10px auto 0;
+  max-width: 900px;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 750;
+  text-align: center;
+  line-height: 1.35;
+}
+
+@media (max-width: 1500px) {
+  .step9MainGrid {
+    grid-template-columns: repeat(2, minmax(300px, 1fr));
+  }
+
+  .step9SummaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .step9MainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step9Card,
+  .step9CalculationCard,
+  .step9OutputCard {
+    max-width: 540px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .step9MatrixGrid {
+    grid-template-columns: repeat(8, 34px);
+  }
+
+  .step9MatrixCell {
+    width: 34px;
+    height: 30px;
+    font-size: 8px;
+  }
+
+  .step9ConceptBox {
+    font-size: 12px;
+  }
+
+  .step9SequenceGrid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .step9SplitRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================================
+   Step 10 Run-Length Encoding
+   ================================ */
+
+.step10SimplePage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.step10ConceptBox {
+  width: 100%;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-left: 5px solid #0d2c72;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.step10ConceptBox strong,
+.step10ConceptBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step10SummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.step10SummaryGrid div {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  display: grid;
+  gap: 5px;
+  text-align: center;
+}
+
+.step10SummaryGrid span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step10SummaryGrid strong {
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.step10SummaryGrid small {
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 750;
+}
+
+.step10ControlBar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step10ControlBar button {
+  border: none;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transition: 0.2s ease;
+}
+
+.step10ControlBar button:hover:not(:disabled) {
+  background: #0d2c72;
+  transform: translateY(-1px);
+}
+
+.step10ControlBar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.step10ProgressBox {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  display: grid;
+  gap: 6px;
+}
+
+.step10ProgressTop {
+  display: flex;
+  justify-content: space-between;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step10ProgressTop strong {
+  color: #0d2c72;
+}
+
+.step10ProgressTrack {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.step10ProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #0d2c72, #2563eb);
+  transition: width 0.2s ease;
+}
+
+.step10MainGrid {
+  display: grid;
+  grid-template-columns: minmax(340px, 430px) minmax(300px, 360px) minmax(320px, 420px);
+  gap: 14px;
+  align-items: start;
+  justify-content: center;
+}
+
+.step10Card,
+.step10CalculationCard,
+.step10OutputCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step10Card h3,
+.step10CalculationCard h3,
+.step10OutputCard h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step10AcGrid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 5px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.step10AcCell {
+  height: 30px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 10px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.step10ZeroAcCell {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+
+.step10NonZeroAcCell {
+  background: #eff6ff;
+  color: #0d2c72;
+}
+
+.step10ActiveAcCell {
+  background: #facc15 !important;
+  border: 3px solid #ca8a04 !important;
+  color: #111827 !important;
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+}
+
+.step10CalculationCard {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.step10InfoRow {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.step10InfoRow strong {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step10MiniFormula {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.step10PreviousNote {
+  margin: 0;
+  color: #64748b;
+  font-size: 11.5px;
+  font-weight: 750;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.step10SymbolList {
+  display: grid;
+  gap: 8px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.step10SymbolCard {
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #334155;
+}
+
+.step10SymbolHidden {
+  color: #94a3b8;
+  background: #f1f5f9;
+}
+
+.step10SymbolRevealed {
+  animation: step10Reveal 0.2s ease;
+}
+
+@keyframes step10Reveal {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.step10EobCard {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+  text-align: center;
+}
+
+.step10ZrlCard {
+  background: #fff7ed;
+  border-color: #fb923c;
+  color: #9a3412;
+  text-align: center;
+}
+
+.step10SmallNote {
+  margin: 10px auto 0;
+  max-width: 900px;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 750;
+  text-align: center;
+  line-height: 1.35;
+}
+
+@media (max-width: 1500px) {
+  .step10MainGrid {
+    grid-template-columns: repeat(2, minmax(300px, 1fr));
+  }
+
+  .step10SummaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .step10MainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step10Card,
+  .step10CalculationCard,
+  .step10OutputCard {
+    max-width: 540px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .step10AcGrid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .step10ConceptBox {
+    font-size: 12px;
+  }
+
+  .step10SymbolList {
+    max-height: 280px;
+  }
+}
+
+/* ================================
+   Step 11 Huffman Encoding
+   ================================ */
+
+.step11SimplePage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.step11ConceptBox {
+  width: 100%;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-left: 5px solid #0d2c72;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.step11ConceptBox strong,
+.step11ConceptBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step11SummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.step11SummaryGrid div {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  display: grid;
+  gap: 5px;
+  text-align: center;
+}
+
+.step11SummaryGrid span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step11SummaryGrid strong {
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.step11SummaryGrid small {
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 750;
+}
+
+.step11ControlBar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step11ControlBar button {
+  border: none;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transition: 0.2s ease;
+}
+
+.step11ControlBar button:hover:not(:disabled) {
+  background: #0d2c72;
+  transform: translateY(-1px);
+}
+
+.step11ControlBar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.step11MainGrid {
+  display: grid;
+  grid-template-columns: minmax(280px, 340px) minmax(360px, 1fr);
+  gap: 14px;
+  align-items: start;
+  justify-content: center;
+}
+
+.step11Card {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step11Card h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step11InfoRow {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.step11InfoRow strong {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step11MiniFormula {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+.step11MiniFormula b {
+  color: #facc15;
+}
+
+.step11AcTable {
+  display: grid;
+  gap: 6px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.step11AcRow {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(120px, 1fr);
+  gap: 10px;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-radius: 10px;
+  padding: 8px 10px;
+  align-items: center;
+}
+
+.step11AcHidden {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+
+.step11AcRevealed {
+  animation: step11Reveal 0.2s ease;
+}
+
+@keyframes step11Reveal {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.step11AcLabel {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.step11AcCode {
+  color: #0d2c72;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: right;
+  word-break: break-all;
+}
+
+.step11WideCard {
+  min-width: 0;
+}
+
+.step11BitstreamCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step11BitstreamCard h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step11BitstreamBox {
+  background: #0f172a;
+  color: #4ade80;
+  border-radius: 12px;
+  padding: 14px;
+  font-family: "Courier New", monospace;
+  font-size: 12.5px;
+  font-weight: 700;
+  word-break: break-all;
+  line-height: 1.6;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.step11SmallNote {
+  margin: 10px auto 0;
+  max-width: 900px;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 750;
+  text-align: center;
+  line-height: 1.35;
+}
+
+@media (max-width: 1300px) {
+  .step11MainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step11Card {
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .step11SummaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .step11ConceptBox {
+    font-size: 12px;
+  }
+
+  .step11AcRow {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .step11AcCode {
+    text-align: center;
+  }
+
+  .step11BitstreamBox {
+    font-size: 11px;
+  }
+}
+
+/* ================================
+   Step 12 Final Compressed Output
+   ================================ */
+
+.step12SimplePage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.step12ConceptBox {
+  width: 100%;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-left: 5px solid #0d2c72;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.step12ConceptBox strong,
+.step12ConceptBox b {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step12PipelineBox {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step12PipelineBox h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step12PipelineFlow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.step12PipelineStage {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  padding: 6px 12px;
+  color: #0d2c72;
+  font-size: 11.5px;
+  font-weight: 900;
+}
+
+.step12PipelineArrow {
+  color: #94a3b8;
+  font-weight: 900;
+  margin-left: 4px;
+}
+
+.step12SummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.step12SummaryGrid div {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  display: grid;
+  gap: 5px;
+  text-align: center;
+}
+
+.step12SummaryGrid span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step12SummaryGrid strong {
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.step12SummaryGrid small {
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 750;
+}
+
+.step12ControlBar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step12ControlBar button {
+  border: none;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transition: 0.2s ease;
+}
+
+.step12ControlBar button:hover:not(:disabled) {
+  background: #0d2c72;
+  transform: translateY(-1px);
+}
+
+.step12MainGrid {
+  display: grid;
+  grid-template-columns: minmax(340px, 1fr) minmax(300px, 380px);
+  gap: 14px;
+  align-items: start;
+  justify-content: center;
+}
+
+.step12Card,
+.step12StatsCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step12Card h3,
+.step12StatsCard h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step12BitstreamBox {
+  background: #0f172a;
+  color: #4ade80;
+  border-radius: 12px;
+  padding: 14px;
+  font-family: "Courier New", monospace;
+  font-size: 12.5px;
+  font-weight: 700;
+  word-break: break-all;
+  line-height: 1.6;
+  max-height: 220px;
+  overflow-y: auto;
+  min-height: 80px;
+}
+
+.step12StatRow {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.step12StatRow strong {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step12RatioRow {
+  background: #ecfdf3;
+  border-color: #9ed7b8;
+}
+
+.step12RatioRow strong {
+  color: #15803d;
+}
+
+.step12SmallNote {
+  margin: 10px auto 0;
+  max-width: 900px;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 750;
+  text-align: center;
+  line-height: 1.35;
+}
+
+@media (max-width: 1300px) {
+  .step12MainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .step12SummaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .step12ConceptBox {
+    font-size: 12px;
+  }
+
+  .step12PipelineStage {
+    font-size: 10px;
+    padding: 5px 9px;
+  }
+
+  .step12BitstreamBox {
+    font-size: 11px;
+  }
+}
+
+/* ================================
+   New Feature Additions:
+   Real Photo Button, Quality Slider,
+   Zig-Zag Path Animation, Step 12 Reconstruction
+   ================================ */
+
+.realPhotoPresetBtn {
+  background: linear-gradient(135deg, #0d2c72, #2563eb) !important;
+  color: #ffffff !important;
+}
+
+.realPhotoPresetBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ---- Step 7 Quality Slider ---- */
+
+.step7QualityBox {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: grid;
+  gap: 8px;
+}
+
+.step7QualityBox label {
+  color: #0d2c72;
+  font-size: 13.5px;
+  font-weight: 900;
+}
+
+.step7QualityHint {
+  color: #64748b;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.step7QualityBox input[type="range"] {
+  width: 100%;
+  accent-color: #0d2c72;
+  cursor: pointer;
+}
+
+.step7QualityNote {
+  margin: 0;
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* ---- Step 9 Zig-Zag Path Animation ---- */
+
+.step9MatrixWrap {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.step9PathOverlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: calc(100% - 24px);
+  height: calc(100% - 24px);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.step9PathLine {
+  fill: none;
+  stroke: #2563eb;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.85;
+}
+
+.step9PathAnimating {
+  stroke-dasharray: 10 6;
+  animation: step9DashMove 0.6s linear infinite;
+}
+
+@keyframes step9DashMove {
+  from {
+    stroke-dashoffset: 16;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.step9PathDot {
+  fill: #facc15;
+  stroke: #ca8a04;
+  stroke-width: 2;
+}
+
+/* ---- Step 12 Before/After Reconstruction ---- */
+
+.step12ReconstructCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step12ReconstructCard h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step12ReconstructRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.step12GrayBlockWrap {
+  display: grid;
+  gap: 8px;
+  text-align: center;
+}
+
+.step12GrayBlockTitle {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step12GrayBlockGrid {
+  display: grid;
+  grid-template-columns: repeat(8, 32px);
+  gap: 2px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.step12GrayCell {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.9);
+}
+
+.step12ReconstructArrow {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.step12ErrorBox {
+  margin-top: 14px;
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 12.5px;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.step12ErrorBox b {
+  color: #facc15;
+}
+
+/* ---- Step 12 Real Image Compression Panel ---- */
+
+.step12RealImageCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step12RealImageCard h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.step12QualityPicker {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.step12QualityBtn {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #334155;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.step12QualityBtn:hover {
+  background: #eff6ff;
+}
+
+.step12QualityBtnActive {
+  background: #0d2c72;
+  color: #ffffff;
+  border-color: #0d2c72;
+}
+
+.step12RealImageRow {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.step12RealImageBox {
+  display: grid;
+  gap: 6px;
+  text-align: center;
+  max-width: 320px;
+}
+
+.step12RealImageBox img {
+  width: 100%;
+  max-width: 320px;
+  border-radius: 10px;
+  border: 1px solid #d9e2ec;
+  display: block;
+}
+
+.step12RealImageBox span {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.step12RealStatsRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.step12RealStatsRow div {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px;
+  text-align: center;
+  display: grid;
+  gap: 4px;
+}
+
+.step12RealStatsRow span {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.step12RealStatsRow strong {
+  color: #0d2c72;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.step12RatioHighlight {
+  background: #ecfdf3 !important;
+  border-color: #9ed7b8 !important;
+}
+
+.step12RatioHighlight strong {
+  color: #15803d !important;
+}
+
+@media (max-width: 900px) {
+  .step12RealStatsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .step12ReconstructRow {
+    flex-direction: column;
+  }
+
+  .step12GrayBlockGrid {
+    grid-template-columns: repeat(8, 26px);
+  }
+
+  .step12GrayCell {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+@media (max-width: 760px) {
+  .step7QualityBox {
+    font-size: 12px;
+  }
+
+  .step12RealImageBox img {
+    max-width: 100%;
+  }
+}
