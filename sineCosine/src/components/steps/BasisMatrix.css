@@ -1,0 +1,1425 @@
+.basisContainer{
+
+width:100%;
+
+max-width:1100px;
+
+margin:auto;
+
+display:flex;
+
+flex-direction:column;
+
+gap:28px;
+
+}
+
+.basisHeading{
+
+text-align:center;
+
+border-bottom:2px solid #dbeafe;
+
+padding-bottom:18px;
+
+}
+
+.basisHeading h2{
+
+font-size:30px;
+
+color:#123b8d;
+
+margin-bottom:10px;
+
+}
+
+.basisHeading p{
+
+color:#666;
+
+max-width:720px;
+
+margin:auto;
+
+line-height:1.7;
+
+}
+
+.topControls{
+
+display:flex;
+
+justify-content:center;
+
+gap:25px;
+
+flex-wrap:wrap;
+
+}
+
+.controlCard{
+
+background:white;
+
+padding:22px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+min-width:300px;
+
+text-align:center;
+
+}
+
+.controlCard h3{
+
+margin-bottom:15px;
+
+color:#123b8d;
+
+}
+
+.toggleButtons,
+.blockButtons{
+
+display:flex;
+
+justify-content:center;
+
+gap:12px;
+
+flex-wrap:wrap;
+
+}
+
+.toggleButtons button,
+.blockButtons button{
+
+padding:12px 22px;
+
+border:none;
+
+background:#e5e7eb;
+
+border-radius:10px;
+
+cursor:pointer;
+
+font-weight:600;
+
+transition:.3s;
+
+}
+
+.activeBtn{
+
+background:#2563eb !important;
+
+color:white;
+
+}
+
+.basisLayout{
+
+display:grid;
+
+grid-template-columns:420px 60px auto;
+
+align-items:center;
+
+justify-content:center;
+
+column-gap:25px;
+
+margin-top:30px;
+
+}
+
+.basisCard{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+text-align:center;
+
+overflow:visible;
+
+}
+
+.blockCard{
+
+width:390px;
+
+}
+
+.orthoMatrixCard{
+
+width:fit-content;
+
+position:relative;
+
+z-index:2;
+
+overflow:visible;
+
+}
+
+.basisCard h3{
+
+margin-bottom:20px;
+
+color:#123b8d;
+
+}
+
+.placeholderBox{
+
+height:250px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:34px;
+
+font-weight:700;
+
+border:2px dashed #2563eb;
+
+border-radius:14px;
+
+background:#f8fbff;
+
+}
+
+.basisArrow{
+
+font-size:48px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+color:#2563eb;
+
+font-weight:bold;
+
+position:relative;
+
+z-index:5;
+
+margin:0 -10px;
+
+}
+
+.generateButton{
+
+width:280px;
+
+margin:auto;
+
+padding:16px;
+
+border:none;
+
+border-radius:12px;
+
+background:#2563eb;
+
+color:white;
+
+font-size:17px;
+
+font-weight:700;
+
+cursor:pointer;
+
+transition:.3s;
+
+}
+
+.generateButton:hover{
+
+transform:translateY(-2px);
+
+}
+
+.basisGrid{
+
+display:grid;
+
+grid-template-columns:38px repeat(8,44px);
+
+justify-content:center;
+
+align-items:center;
+
+gap:5px;
+
+}
+
+.basisGrid span{
+
+height:34px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:10px;
+font-family:Consolas,monospace;
+font-weight:600;
+
+background:#edf4ff;
+
+border:1px solid #bfd4ff;
+
+border-radius:8px;
+
+animation:pop .25s;
+
+}
+
+.waitingText{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+height:250px;
+
+font-size:22px;
+
+font-weight:600;
+
+color:#888;
+
+}
+
+.progressCard{
+
+background:white;
+
+padding:22px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.progressBar{
+
+margin-top:18px;
+
+height:22px;
+
+background:#e5e7eb;
+
+border-radius:20px;
+
+overflow:hidden;
+
+}
+
+.progressFill{
+
+height:100%;
+
+background:linear-gradient(90deg,#2563eb,#60a5fa);
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+color:white;
+
+font-weight:700;
+
+transition:.4s;
+
+}
+
+@keyframes pop{
+
+from{
+
+opacity:0;
+
+transform:scale(.6);
+
+}
+
+to{
+
+opacity:1;
+
+transform:scale(1);
+
+}
+
+}
+
+.formulaGrid{
+
+display:grid;
+
+grid-template-columns:repeat(3,1fr);
+
+gap:18px;
+
+margin-top:20px;
+
+}
+
+.formulaBox{
+
+background:#f8fbff;
+
+border:1px solid #dbeafe;
+
+padding:20px;
+
+border-radius:14px;
+
+text-align:center;
+
+line-height:2;
+
+}
+
+.formulaBox h4{
+
+margin-bottom:15px;
+
+color:#123b8d;
+
+}
+
+.formulaBox hr{
+
+margin:15px 0;
+
+border:none;
+
+border-top:1px solid #ddd;
+
+}
+
+.formulaSection{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.formulaSection h3{
+
+margin-bottom:18px;
+
+color:#123b8d;
+
+}
+
+.formulaCard{
+
+background:#f8fbff;
+
+border-left:5px solid #2563eb;
+
+padding:20px;
+
+border-radius:12px;
+
+line-height:2;
+
+font-family:Cambria,serif;
+
+}
+
+.formulaCard h4{
+
+margin-top:8px;
+
+margin-bottom:10px;
+
+color:#123b8d;
+
+}
+
+.basisInfo{
+
+display:grid;
+
+grid-template-columns:repeat(3,1fr);
+
+gap:18px;
+
+}
+
+.basisInfo div{
+
+background:white;
+
+padding:20px;
+
+border-radius:15px;
+
+box-shadow:0 6px 15px rgba(0,0,0,.08);
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+gap:10px;
+
+}
+
+.basisInfo b{
+
+color:#123b8d;
+
+}
+
+.basisInfo span{
+
+font-weight:700;
+
+font-size:18px;
+
+}
+
+.conceptCard{
+
+background:linear-gradient(135deg,#eff6ff,#ffffff);
+
+padding:25px;
+
+border-radius:18px;
+
+border:2px solid #2563eb;
+
+line-height:1.8;
+
+}
+
+.conceptCard h3{
+
+margin-bottom:15px;
+
+color:#123b8d;
+
+}
+
+.activeVector{
+
+background:#2563eb !important;
+
+color:white;
+
+transform:scale(1.08);
+
+cursor:pointer;
+
+}
+
+.vectorInfoCard{
+
+background:white;
+
+padding:22px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+text-align:center;
+
+line-height:1.8;
+
+}
+
+.vectorInfoCard h2{
+
+color:#2563eb;
+
+margin:10px 0;
+
+}
+
+.frequencyBar{
+
+display:grid;
+
+grid-template-columns:repeat(8,70px);
+
+justify-content:center;
+
+gap:10px;
+
+margin:20px auto;
+
+}
+
+.frequencyCell{
+
+padding:12px 18px;
+
+background:#eef4ff;
+
+border-radius:10px;
+
+cursor:pointer;
+
+font-weight:700;
+
+transition:.3s;
+
+border:2px solid transparent;
+
+}
+
+.activeFrequency{
+
+background:#2563eb;
+
+color:white;
+
+border-color:#2563eb;
+
+}
+
+.currentCalculation{
+
+background:white;
+
+padding:22px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+line-height:1.8;
+
+}
+
+.currentCalculation h3{
+
+margin-bottom:18px;
+
+color:#123b8d;
+
+text-align:center;
+
+}
+
+.currentCalculation p{
+
+margin:8px 0;
+
+font-size:15px;
+
+}
+
+.currentCalculation b{
+
+color:#2563eb;
+
+}
+
+.waveCard{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.waveCard h3{
+
+text-align:center;
+
+margin-bottom:20px;
+
+color:#123b8d;
+
+}
+
+.waveContainer{
+
+height:170px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:flex-end;
+
+gap:12px;
+
+}
+
+.waveBar{
+
+width:26px;
+
+background:linear-gradient(
+
+180deg,
+
+#60a5fa,
+
+#2563eb
+
+);
+
+border-radius:8px 8px 0 0;
+
+transition:.4s;
+
+}
+
+.waveDescription{
+
+margin-top:20px;
+
+padding:18px;
+
+background:#eef6ff;
+
+border-left:5px solid #2563eb;
+
+border-radius:10px;
+
+line-height:1.8;
+
+}
+
+.relationCard{
+
+background:white;
+
+padding:22px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+line-height:1.9;
+
+}
+
+.relationCard h3{
+
+margin-bottom:15px;
+
+color:#123b8d;
+
+}
+
+.pipelineCard{
+
+background:white;
+
+padding:30px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+text-align:center;
+
+}
+
+.pipelineCard h2{
+
+color:#123b8d;
+
+margin-bottom:15px;
+
+}
+
+.pipelineCard p{
+
+max-width:800px;
+
+margin:auto;
+
+line-height:1.8;
+
+color:#555;
+
+}
+
+.pipelineFlow{
+
+margin-top:35px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+gap:18px;
+
+flex-wrap:wrap;
+
+}
+
+.pipelineBox{
+
+width:170px;
+
+height:120px;
+
+background:#eff6ff;
+
+border:2px solid #2563eb;
+
+border-radius:15px;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+align-items:center;
+
+font-weight:700;
+
+transition:.3s;
+
+animation:pulseBox 2s infinite;
+
+}
+
+.pipelineOperator{
+
+font-size:42px;
+
+font-weight:bold;
+
+color:#2563eb;
+
+}
+
+.pipelineResult{
+
+width:180px;
+
+height:120px;
+
+background:#2563eb;
+
+color:white;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+text-align:center;
+
+border-radius:15px;
+
+font-weight:700;
+
+font-size:18px;
+
+animation:resultGlow 2s infinite;
+
+}
+
+.equationCard{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+margin-top:25px;
+
+line-height:1.9;
+
+}
+
+.equationCard h3{
+
+margin-bottom:18px;
+
+color:#123b8d;
+
+}
+
+.equationCard p{
+
+font-size:18px;
+
+font-weight:600;
+
+}
+
+.equationCard ul{
+
+margin-top:18px;
+
+padding-left:20px;
+
+}
+
+.nextStepCard{
+
+background:linear-gradient(135deg,#eff6ff,#ffffff);
+
+padding:25px;
+
+border-radius:18px;
+
+border:2px solid #2563eb;
+
+margin-top:25px;
+
+}
+
+.nextStepCard h3{
+
+margin-bottom:20px;
+
+color:#123b8d;
+
+}
+
+.nextSteps{
+
+display:grid;
+
+grid-template-columns:repeat(2,1fr);
+
+gap:15px;
+
+}
+
+.nextSteps div{
+
+padding:15px;
+
+background:white;
+
+border-radius:10px;
+
+box-shadow:0 4px 10px rgba(0,0,0,.08);
+
+font-weight:600;
+
+}
+
+@keyframes pulseBox{
+
+0%{
+
+transform:scale(1);
+
+}
+
+50%{
+
+transform:scale(1.04);
+
+}
+
+100%{
+
+transform:scale(1);
+
+}
+
+}
+
+@keyframes resultGlow{
+
+0%{
+
+box-shadow:0 0 0px rgba(37,99,235,.4);
+
+}
+
+50%{
+
+box-shadow:0 0 22px rgba(37,99,235,.6);
+
+}
+
+100%{
+
+box-shadow:0 0 0px rgba(37,99,235,.4);
+
+}
+
+}
+
+.selectedBlockPreview{
+
+display:grid;
+
+grid-template-columns:repeat(8,28px);
+
+gap:4px;
+
+justify-content:center;
+
+}
+
+.blockPixel{
+
+width:28px;
+
+height:28px;
+
+border-radius:4px;
+
+border:1px solid #d1d5db;
+
+}
+
+.selectedBlockPreview{
+
+display:grid;
+
+grid-template-columns:repeat(8,30px);
+
+gap:4px;
+
+justify-content:center;
+
+padding:20px;
+
+}
+
+.blockPixel{
+
+width:30px;
+
+height:30px;
+
+border-radius:4px;
+
+border:1px solid #dbeafe;
+
+}
+
+.matrixHeader{
+
+width:38px;
+
+height:34px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-weight:700;
+
+color:#123b8d;
+
+}
+
+.equation{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+gap:18px;
+
+margin-top:18px;
+
+font-size:26px;
+
+font-family:"Cambria Math",serif;
+
+font-weight:600;
+
+}
+
+.leftPart{
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+}
+
+.fraction{
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+min-width:180px;
+
+}
+
+.numerator{
+
+padding-bottom:8px;
+
+}
+
+.line{
+
+width:180px;
+
+height:2px;
+
+background:#222;
+
+margin:2px 0;
+
+}
+
+.denominator{
+
+padding-top:8px;
+
+}
+
+.equation div{
+
+text-align:center;
+
+}
+
+.piecewise{
+
+display:flex;
+
+flex-direction:column;
+
+gap:15px;
+
+margin-top:18px;
+
+}
+
+.pieceRow{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:14px 18px;
+
+background:#eef5ff;
+
+border-radius:10px;
+
+font-size:20px;
+
+font-family:"Cambria Math",serif;
+
+}
+
+.pieceRow div:last-child{
+
+color:#2563eb;
+
+font-weight:bold;
+
+}
+
+.miniFormula{
+
+margin-top:15px;
+
+padding:18px;
+
+background:#eef6ff;
+
+border-left:4px solid #2563eb;
+
+border-radius:8px;
+
+font-family:"Cambria Math",serif;
+
+font-size:18px;
+
+text-align:center;
+
+line-height:1.8;
+
+}
+
+.orthoMatrixCard{
+
+width:fit-content;
+
+max-width:100%;
+
+min-width:0;
+
+margin:0 auto;
+
+overflow:visible;
+
+}
+
+.equationDisplay{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+gap:18px;
+
+margin-top:18px;
+
+font-size:28px;
+
+font-family:"Cambria Math",Cambria,serif;
+
+font-weight:600;
+
+flex-wrap:wrap;
+
+}
+
+.fractionFormula{
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+min-width:180px;
+
+}
+
+.numerator{
+
+padding-bottom:8px;
+
+font-size:26px;
+
+}
+
+.fractionLine{
+
+width:170px;
+
+border-top:2px solid #111;
+
+margin:2px 0;
+
+}
+
+.denominator{
+
+padding-top:8px;
+
+font-size:26px;
+
+}
+
+.waveSvg{
+
+width:100%;
+
+max-width:520px;
+
+display:block;
+
+margin:auto;
+
+}
+
+.axisLine{
+
+stroke:#cbd5e1;
+
+stroke-width:2;
+
+}
+
+.wavePoint{
+
+fill:#2563eb;
+
+transition:.3s;
+
+}
+
+.wavePoint:hover{
+
+fill:#0f172a;
+
+r:7;
+
+}
+
+.waveLabel{
+
+font-size:13px;
+
+font-weight:700;
+
+fill:#123b8d;
+
+}
+
+.waveLegend{
+
+margin-top:20px;
+
+display:flex;
+
+justify-content:center;
+
+gap:35px;
+
+flex-wrap:wrap;
+
+font-weight:600;
+
+color:#123b8d;
+
+}
+/* ============ Responsive fixes: Step 4 (Basis Matrix) ============ */
+
+@media(max-width:1150px){
+  .basisLayout{
+    grid-template-columns:1fr;
+    row-gap:20px;
+  }
+  .basisArrow{
+    transform:rotate(90deg);
+    margin:0 auto;
+  }
+  .blockCard{
+    width:100%;
+    max-width:480px;
+    margin:0 auto;
+  }
+  .orthoMatrixCard{
+    width:fit-content;
+    max-width:100%;
+    margin:0 auto;
+  }
+}
+
+@media(max-width:900px){
+  .frequencyBar{
+    grid-template-columns:repeat(4,70px);
+  }
+  .equation{
+    flex-wrap:wrap;
+    font-size:20px;
+  }
+  .equationDisplay{
+    font-size:22px;
+  }
+}
+
+@media(max-width:768px){
+  .basisGrid{
+    grid-template-columns:36px repeat(8,40px);
+    gap:4px;
+  }
+  .basisGrid span,
+  .basisGrid div{
+    font-size:9px;
+  }
+  .blockCard,
+  .orthoMatrixCard{
+    max-width:100%;
+  }
+  .waveSvg{
+    max-width:100%;
+  }
+  .fraction,
+  .fractionFormula{
+    min-width:120px;
+  }
+  .line,
+  .fractionLine{
+    width:120px;
+  }
+  .equation{
+    font-size:16px;
+    gap:10px;
+  }
+  .numerator,
+  .denominator{
+    font-size:18px;
+  }
+  .pipelineBox,
+  .pipelineResult{
+    width:130px;
+    height:100px;
+    font-size:13px;
+  }
+  .placeholderBox{
+    height:180px;
+    font-size:22px;
+  }
+}
+
+@media(max-width:480px){
+  .frequencyBar{
+    grid-template-columns:repeat(2,70px);
+  }
+  .selectedBlockPreview{
+    grid-template-columns:repeat(8,22px) !important;
+  }
+  .blockPixel{
+    width:22px !important;
+    height:22px !important;
+  }
+}

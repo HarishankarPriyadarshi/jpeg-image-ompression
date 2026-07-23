@@ -1,0 +1,1366 @@
+.transformContainer{
+
+width:100%;
+max-width:1100px;
+margin:auto;
+display:flex;
+flex-direction:column;
+gap:28px;
+
+}
+
+.transformHeading{
+
+text-align:center;
+border-bottom:2px solid #dbeafe;
+padding-bottom:18px;
+
+}
+
+.transformHeading h2{
+
+font-size:30px;
+color:#123b8d;
+margin-bottom:10px;
+
+}
+
+.transformHeading p{
+
+max-width:720px;
+margin:auto;
+line-height:1.7;
+color:#666;
+
+}
+
+.topControls{
+
+display:flex;
+justify-content:center;
+gap:25px;
+flex-wrap:wrap;
+
+}
+
+.controlCard{
+
+background:white;
+padding:22px;
+border-radius:18px;
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+min-width:300px;
+text-align:center;
+
+}
+
+.controlCard h3{
+
+margin-bottom:15px;
+color:#123b8d;
+
+}
+
+.toggleButtons,
+.blockButtons{
+
+display:flex;
+justify-content:center;
+gap:12px;
+flex-wrap:wrap;
+
+}
+
+.toggleButtons button,
+.blockButtons button{
+
+padding:12px 22px;
+border:none;
+background:#e5e7eb;
+border-radius:10px;
+cursor:pointer;
+font-weight:600;
+transition:.3s;
+
+}
+
+.activeBtn{
+
+background:#2563eb;
+color:white;
+
+}
+
+.selectedBlockCard{
+
+background:white;
+padding:25px;
+border-radius:18px;
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+text-align:center;
+
+}
+
+.selectedBlockCard h3{
+
+margin-bottom:20px;
+color:#123b8d;
+
+}
+
+.selectedBlockPreview{
+
+display:grid;
+grid-template-columns:repeat(8,30px);
+gap:4px;
+justify-content:center;
+margin:20px 0;
+
+}
+
+.blockPixel{
+
+width:30px;
+height:30px;
+border-radius:4px;
+border:1px solid #dbeafe;
+
+}
+
+.transformLayout{
+
+display:grid;
+
+grid-template-columns:minmax(0,1fr) 60px minmax(0,1fr) 60px minmax(0,1fr);
+
+align-items:center;
+
+justify-content:center;
+
+gap:18px;
+
+margin-top:30px;
+
+}
+
+.matrixCard{
+
+background:white;
+
+padding:20px;
+
+border-radius:18px;
+
+box-shadow:0 8px 18px rgba(0,0,0,.08);
+
+width:100%;
+
+min-width:0;
+
+max-width:360px;
+
+margin:0 auto;
+
+text-align:center;
+
+overflow:auto;
+
+}
+
+.matrixCard h3{
+
+margin-bottom:18px;
+color:#123b8d;
+
+}
+
+.operator{
+
+font-size:52px;
+font-weight:bold;
+color:#2563eb;
+
+}
+
+.symbolBox{
+
+width:180px;
+height:180px;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+font-size:80px;
+font-weight:bold;
+
+border:2px dashed #2563eb;
+
+border-radius:18px;
+
+background:#eff6ff;
+
+color:#123b8d;
+
+}
+
+.equationPreview{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 18px rgba(0,0,0,.08);
+
+text-align:center;
+
+}
+
+.equationPreview h3{
+
+color:#123b8d;
+
+margin-bottom:15px;
+
+}
+
+.equationPreview h2{
+
+font-size:34px;
+
+color:#2563eb;
+
+margin-bottom:20px;
+
+}
+
+.equationPreview p{
+
+line-height:1.8;
+
+color:#555;
+
+}
+
+.miniMatrix{
+
+display:grid;
+
+grid-template-columns:repeat(8,26px);
+
+gap:3px;
+
+justify-content:center;
+
+margin:auto;
+
+}
+
+.miniMatrix span{
+
+width:24px;
+
+height:24px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:8px;
+
+font-family:Consolas,monospace;
+
+font-weight:600;
+
+background:#edf4ff;
+
+border:1px solid #bfd4ff;
+
+border-radius:5px;
+
+transition:.25s;
+
+cursor:pointer;
+
+}
+
+/* min-width override removed — see responsive .matrixCard rule above */
+
+.matrixInfoCard{
+
+display:grid;
+
+grid-template-columns:repeat(3,1fr);
+
+gap:18px;
+
+margin-top:25px;
+
+}
+
+.matrixInfoCard div{
+
+background:white;
+
+padding:18px;
+
+border-radius:14px;
+
+box-shadow:0 6px 15px rgba(0,0,0,.08);
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+gap:8px;
+
+}
+
+.matrixInfoCard b{
+
+color:#123b8d;
+
+}
+
+.matrixInfoCard span{
+
+font-weight:700;
+
+color:#2563eb;
+
+}
+
+.transformProgressCard{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+text-align:center;
+
+}
+
+.progressTrack{
+
+height:20px;
+
+background:#e5e7eb;
+
+border-radius:20px;
+
+overflow:hidden;
+
+margin:20px 0;
+
+}
+
+.progressFill{
+
+height:100%;
+
+background:linear-gradient(90deg,#2563eb,#60a5fa);
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+color:white;
+
+font-weight:bold;
+
+transition:.3s;
+
+}
+
+.transformButton{
+
+margin-top:20px;
+
+padding:14px 28px;
+
+background:#2563eb;
+
+color:white;
+
+border:none;
+
+border-radius:10px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+font-size:15px;
+
+}
+
+.multiplicationFlow{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+gap:18px;
+
+flex-wrap:wrap;
+
+margin-top:25px;
+
+}
+
+.flowBox{
+
+padding:18px 24px;
+
+background:#eef2ff;
+
+border-radius:12px;
+
+font-weight:700;
+
+border:2px solid #cbd5e1;
+
+transition:.3s;
+
+}
+
+.activeFlowBox{
+
+background:#2563eb;
+
+color:white;
+
+border-color:#2563eb;
+
+box-shadow:0 0 20px rgba(37,99,235,.55);
+
+animation:flowPulse 1s infinite;
+
+}
+
+@keyframes flowPulse{
+
+0%{
+
+transform:scale(1);
+
+}
+
+50%{
+
+transform:scale(1.08);
+
+}
+
+100%{
+
+transform:scale(1);
+
+}
+
+}
+
+.flowArrow{
+
+font-size:28px;
+
+font-weight:bold;
+
+color:#2563eb;
+
+}
+
+.frequencyCard{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+margin-top:25px;
+
+text-align:center;
+
+}
+
+.frequencyCard h3{
+
+margin-bottom:20px;
+
+color:#123b8d;
+
+}
+
+.frequencyPositive{
+
+background:#dbeafe;
+
+}
+
+.frequencyNegative{
+
+background:#fee2e2;
+
+}
+
+.frequencyZero{
+
+background:#f3f4f6;
+
+}
+.coefficientLegend{
+
+display:flex;
+
+justify-content:center;
+
+gap:30px;
+
+margin-top:25px;
+
+}
+
+.coefficientLegend div{
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+font-weight:600;
+
+}
+
+.legendPositive,
+
+.legendNegative,
+
+.legendZero{
+
+width:20px;
+
+height:20px;
+
+border-radius:4px;
+
+display:inline-block;
+
+}
+
+.legendPositive{
+
+background:#dbeafe;
+
+}
+
+.legendNegative{
+
+background:#fee2e2;
+
+}
+
+.legendZero{
+
+background:#f3f4f6;
+
+}
+
+.coefficientCard{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+text-align:center;
+
+}
+
+.coefficientCard h2{
+
+color:#123b8d;
+
+margin-top:10px;
+
+}
+
+.coefficientCard h1{
+
+font-size:42px;
+
+color:#2563eb;
+
+margin:20px 0;
+
+}
+
+.frequencyTypeCard{
+
+background:#eef6ff;
+
+padding:20px;
+
+border-left:5px solid #2563eb;
+
+border-radius:12px;
+
+text-align:center;
+
+}
+
+.frequencyTypeCard h3{
+
+margin-bottom:10px;
+
+color:#123b8d;
+
+}
+
+.coefficientExplanation{
+
+background:white;
+
+padding:22px;
+
+line-height:1.9;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+.energyCard{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+text-align:center;
+
+}
+
+.energyGrid{
+
+display:grid;
+
+grid-template-columns:repeat(8,28px);
+
+gap:6px;
+
+justify-content:center;
+
+margin:20px auto;
+
+}
+
+.energyGrid div{
+
+width:28px;
+
+height:28px;
+
+border-radius:6px;
+
+}
+
+.energyVeryHigh{
+
+background:#ef4444;
+
+color:white;
+
+}
+
+.energyHigh{
+
+background:#fb923c;
+
+}
+
+.energyMedium{
+
+background:#facc15;
+
+}
+
+.energyLow{
+
+background:#4ade80;
+
+}
+
+.energyVeryLow{
+
+background:#bfdbfe;
+
+}
+
+.activeCoefficient{
+
+border:3px solid #1d4ed8;
+
+transform:scale(1.15);
+
+transition:.3s;
+
+}
+
+.energyLegend{
+
+display:flex;
+
+justify-content:center;
+
+gap:20px;
+
+flex-wrap:wrap;
+
+margin-top:15px;
+
+}
+
+.energyLegend div{
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+font-weight:600;
+
+}
+
+.legend{
+
+width:20px;
+
+height:20px;
+
+border-radius:4px;
+
+display:inline-block;
+
+}
+
+.legend.veryHigh{
+
+background:#ef4444;
+
+}
+
+.legend.high{
+
+background:#fb923c;
+
+}
+
+.legend.medium{
+
+background:#facc15;
+
+}
+
+.legend.low{
+
+background:#4ade80;
+
+}
+
+.legend.veryLow{
+
+background:#bfdbfe;
+
+}
+
+.jpegObservation{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+line-height:2;
+
+}
+
+.jpegObservation h3{
+
+margin-bottom:15px;
+
+color:#123b8d;
+
+}
+
+.jpegObservation ul{
+
+padding-left:22px;
+
+text-align:left;
+
+}
+.transformButton:disabled{
+
+opacity:.6;
+
+cursor:not-allowed;
+
+}
+.largestCoeffCard,
+.dcAcCard,
+.compressionInsight,
+.stepSummary{
+
+background:white;
+
+padding:24px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.largestCoeffCard{
+
+text-align:center;
+
+}
+
+.largestCoeffCard h1{
+
+font-size:46px;
+
+color:#2563eb;
+
+margin:15px 0;
+
+}
+
+.dcAcGrid{
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:20px;
+
+margin-top:20px;
+
+}
+
+.dcAcGrid div{
+
+background:#eef4ff;
+
+padding:18px;
+
+border-radius:12px;
+
+text-align:center;
+
+}
+
+.compressionInsight ul{
+
+line-height:2;
+
+padding-left:20px;
+
+}
+
+.summaryFlow{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+gap:18px;
+
+flex-wrap:wrap;
+
+margin-top:20px;
+
+font-weight:700;
+
+}
+.matrixAnimationCard{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+text-align:center;
+
+}
+
+.matrixAnimation{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+gap:16px;
+
+flex-wrap:wrap;
+
+margin:25px 0;
+
+}
+
+.miniMatrixBox{
+
+width:70px;
+
+height:70px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:30px;
+
+font-weight:bold;
+
+border-radius:14px;
+
+background:#eef4ff;
+
+border:2px solid #dbeafe;
+
+transition:.35s;
+
+}
+
+.miniActiveMatrix{
+
+background:#2563eb;
+
+color:white;
+
+transform:scale(1.08);
+
+box-shadow:0 0 20px rgba(37,99,235,.35);
+
+}
+
+.matrixOperator{
+
+font-size:34px;
+
+font-weight:bold;
+
+color:#2563eb;
+
+}
+
+.matrixResult{
+
+width:80px;
+
+height:80px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:34px;
+
+font-weight:bold;
+
+border-radius:16px;
+
+background:#e5e7eb;
+
+transition:.4s;
+
+}
+
+.activeResult{
+
+background:#16a34a;
+
+color:white;
+
+box-shadow:0 0 18px rgba(22,163,74,.45);
+
+}
+.energyDistribution{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+text-align:center;
+
+}
+
+.energyBar{
+
+display:flex;
+
+height:38px;
+
+border-radius:12px;
+
+overflow:hidden;
+
+margin:25px 0;
+
+}
+
+.dcBar{
+
+width:70%;
+
+background:#2563eb;
+
+color:white;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-weight:bold;
+
+}
+
+.lowBar{
+
+width:20%;
+
+background:#60a5fa;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-weight:bold;
+
+}
+
+.mediumBar{
+
+width:8%;
+
+background:#facc15;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-weight:bold;
+
+}
+
+.highBar{
+
+width:2%;
+
+background:#ef4444;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-weight:bold;
+
+font-size:10px;
+
+}
+
+.energyLabels{
+
+display:flex;
+
+justify-content:space-between;
+
+margin-top:10px;
+
+font-weight:700;
+
+}
+
+.calculationPanel{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+text-align:center;
+
+line-height:2;
+
+}
+
+.calculationPanel h2{
+
+color:#2563eb;
+
+margin:15px 0;
+
+}
+
+.calculationPanel b{
+
+font-size:22px;
+
+color:#16a34a;
+
+}
+.calculationPanel{
+
+background:white;
+
+padding:30px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.calculationPanel h3{
+
+text-align:center;
+
+margin-bottom:25px;
+
+color:#123b8d;
+
+}
+
+.formulaDisplay{
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+gap:18px;
+
+}
+
+.sigmaEquation{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+font-size:22px;
+
+font-weight:700;
+
+flex-wrap:wrap;
+
+justify-content:center;
+
+}
+
+.sigma{
+
+font-size:52px;
+
+line-height:40px;
+
+color:#2563eb;
+
+}
+
+.calculationResult{
+
+margin-top:30px;
+
+padding:22px;
+
+background:#eff6ff;
+
+border-radius:15px;
+
+text-align:center;
+
+}
+
+.calculationResult h1{
+
+font-size:46px;
+
+color:#2563eb;
+
+margin-top:12px;
+
+}
+
+.calculationExplanation{
+
+margin-top:25px;
+
+background:#fafcff;
+
+padding:22px;
+
+border-left:5px solid #2563eb;
+
+border-radius:12px;
+
+line-height:2;
+
+}
+
+.calculationExplanation b{
+
+color:#123b8d;
+
+}
+
+.researchNote{
+
+background:linear-gradient(135deg,#eef6ff,#ffffff);
+
+padding:25px;
+
+border-radius:18px;
+
+border:2px solid #2563eb;
+
+line-height:1.9;
+
+}
+
+.researchNote h3{
+
+margin-bottom:15px;
+
+color:#123b8d;
+
+}
+/* ============ Responsive fixes: Step 5 (Transform Computation) ============ */
+
+@media(max-width:1150px){
+  .transformLayout{
+    grid-template-columns:1fr;
+    row-gap:20px;
+  }
+  .transformLayout .operator{
+    transform:rotate(90deg);
+    margin:0 auto;
+  }
+  .matrixCard{
+    max-width:480px;
+  }
+}
+
+@media(max-width:900px){
+  .topControls{
+    gap:14px;
+  }
+  .controlCard{
+    min-width:0;
+    width:100%;
+  }
+  .symbolBox{
+    width:130px;
+    height:130px;
+    font-size:56px;
+  }
+  .equationPreview h2{
+    font-size:24px;
+  }
+  .matrixInfoCard{
+    grid-template-columns:repeat(2,1fr) !important;
+  }
+}
+
+@media(max-width:768px){
+  .transformHeading h2{
+    font-size:22px;
+  }
+  .miniMatrix{
+    grid-template-columns:repeat(8,26px) !important;
+  }
+  .miniMatrix span{
+    width:24px !important;
+    height:22px !important;
+    font-size:8px !important;
+  }
+  .selectedBlockPreview{
+    grid-template-columns:repeat(8,24px) !important;
+  }
+  .blockPixel{
+    width:24px !important;
+    height:24px !important;
+  }
+  .matrixCard{
+    max-width:100%;
+  }
+}
+
+@media(max-width:480px){
+  .matrixInfoCard{
+    grid-template-columns:1fr !important;
+  }
+  .symbolBox{
+    width:100px;
+    height:100px;
+    font-size:44px;
+  }
+}

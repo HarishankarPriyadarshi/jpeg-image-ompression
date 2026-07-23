@@ -1,0 +1,126 @@
+.invContainer{
+  width:100%;
+  max-width:1100px;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+}
+
+.invHeading{
+  text-align:center;
+  border-bottom:2px solid #dbeafe;
+  padding-bottom:18px;
+}
+
+.invHeading h2{
+  font-size:30px;
+  color:#123b8d;
+  margin-bottom:10px;
+}
+
+.invHeading p{
+  max-width:800px;
+  margin:auto;
+  line-height:1.8;
+  color:#666;
+}
+
+.invWarning{
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#9a3412;
+  padding:14px 18px;
+  border-radius:12px;
+  text-align:center;
+  font-weight:600;
+}
+
+.invControls{
+  background:#fff;
+  padding:22px;
+  border-radius:18px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  text-align:center;
+}
+
+.invButton{
+  padding:14px 26px;
+  background:#2563eb;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+  margin-bottom:16px;
+}
+
+.invButton:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.invStatus{
+  margin-top:10px;
+  color:#64748b;
+  font-size:13px;
+}
+
+.invMatricesGrid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 60px minmax(0,1fr) 60px minmax(0,1fr);
+  align-items:center;
+  gap:16px;
+}
+
+.invImagesRow{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+
+.invImageCard{
+  background:#fff;
+  padding:20px;
+  border-radius:18px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  text-align:center;
+}
+
+.invImageCard h3{
+  color:#123b8d;
+  margin-bottom:14px;
+  font-size:15px;
+}
+
+.invPixelGrid{
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  gap:1px;
+  width:180px;
+  aspect-ratio:1/1;
+  margin:auto;
+  border:1px solid #e2e8f0;
+  border-radius:8px;
+  overflow:hidden;
+}
+
+.invEmptyPixel{
+  background:#e2e8f0;
+}
+
+@media(max-width:1000px){
+  .invMatricesGrid{
+    grid-template-columns:1fr;
+  }
+  .invMatricesGrid .operator{
+    transform:rotate(90deg);
+  }
+  .invImagesRow{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:768px){
+  .invHeading h2{ font-size:22px; }
+}

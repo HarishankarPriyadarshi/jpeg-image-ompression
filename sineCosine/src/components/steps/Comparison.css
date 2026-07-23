@@ -1,0 +1,202 @@
+.cmpContainer{
+  width:100%;
+  max-width:1150px;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+}
+
+.cmpWarning{
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#9a3412;
+  padding:16px 20px;
+  border-radius:12px;
+  text-align:center;
+  font-weight:600;
+}
+
+.cmpHeading{
+  text-align:center;
+  border-bottom:2px solid #dbeafe;
+  padding-bottom:18px;
+}
+
+.cmpHeading h2{
+  font-size:30px;
+  color:#123b8d;
+  margin-bottom:10px;
+}
+
+.cmpHeading p{
+  max-width:820px;
+  margin:auto;
+  line-height:1.8;
+  color:#666;
+}
+
+.cmpControls{
+  display:flex;
+  justify-content:center;
+  gap:22px;
+  flex-wrap:wrap;
+}
+
+.cmpControls .controlCard{
+  background:#fff;
+  padding:20px;
+  border-radius:18px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  text-align:center;
+  min-width:260px;
+}
+
+.cmpControls input{
+  width:100%;
+  margin-top:14px;
+}
+
+.cmpPipeline{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.cmpImageBlock{
+  background:#fff;
+  padding:20px;
+  border-radius:18px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  text-align:center;
+  width:250px;
+}
+
+.cmpImageBlock h3{
+  color:#123b8d;
+  font-size:14px;
+  margin-bottom:14px;
+  min-height:34px;
+}
+
+.cmpImageBlock p{
+  margin-top:12px;
+  font-size:11px;
+  color:#64748b;
+}
+
+.cmpPixelGrid16{
+  display:grid;
+  grid-template-columns:repeat(16,1fr);
+  gap:0;
+  width:100%;
+  aspect-ratio:1/1;
+  border:1px solid #e2e8f0;
+  border-radius:8px;
+  overflow:hidden;
+}
+
+.cmpArrow{
+  font-size:32px;
+  font-weight:bold;
+  color:#2563eb;
+}
+
+.cmpMetricsGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+
+.cmpMetricCard{
+  background:#fff;
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  text-align:center;
+  border-top:4px solid #2563eb;
+}
+
+.cmpCoeffStats,
+.cmpDiffSection,
+.cmpConclusion{
+  background:#fff;
+  padding:25px;
+  border-radius:18px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.cmpCoeffStats h3,
+.cmpDiffSection h3,
+.cmpConclusion h3{
+  color:#123b8d;
+  margin-bottom:16px;
+  text-align:center;
+}
+
+.cmpCoeffLegend{
+  display:flex;
+  justify-content:center;
+  gap:30px;
+  margin-top:14px;
+  font-size:13px;
+  font-weight:600;
+  color:#475569;
+  flex-wrap:wrap;
+}
+
+.cmpDotZero,
+.cmpDotNonZero{
+  display:inline-block;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  margin-right:6px;
+}
+
+.cmpDotZero{ background:#16a34a; }
+.cmpDotNonZero{ background:#2563eb; }
+
+.cmpDiffGrid{
+  max-width:400px;
+  margin:0 auto;
+}
+
+.cmpDiffCaption{
+  text-align:center;
+  font-size:13px;
+  color:#64748b;
+  margin-top:12px;
+}
+
+.cmpConclusion p{
+  line-height:1.9;
+  color:#334155;
+  text-align:center;
+  max-width:850px;
+  margin:auto;
+}
+
+@media(max-width:900px){
+  .cmpPipeline{
+    flex-direction:column;
+  }
+  .cmpArrow{
+    transform:rotate(90deg);
+  }
+  .cmpMetricsGrid{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media(max-width:768px){
+  .cmpHeading h2{ font-size:22px; }
+  .cmpImageBlock{ width:100%; max-width:280px; }
+  .cmpMetricsGrid{ grid-template-columns:1fr; }
+}
