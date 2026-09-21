@@ -1,5 +1,8 @@
 import { useState } from "react";
 import steps from "../data/steps";
+import guidedTutorContent from "../data/guidedTutorContent";
+import guidedTourSteps from "../data/guidedTourSteps";
+import GuidedTour from "./GuidedTour";
 import { useMatrix } from "../context/MatrixContext";
 import InputImage from "./steps/InputImage";
 import ImageBlocking from "./steps/ImageBlocking";
@@ -13,7 +16,8 @@ import Comparison from "./steps/Comparison";
 function ConceptModal({ onClose }) {
 
 
-const { selectedMatrix, blockCreated, setBlockCreated, selectedBlock, basisGenerated, frequencyMatrix, quantizedMatrix, zigzagArray, encodedRuns, popupMessage, setPopupMessage } = useMatrix();
+const matrixCtx = useMatrix();
+const { selectedMatrix, blockCreated, setBlockCreated, selectedBlock, basisGenerated, frequencyMatrix, quantizedMatrix, zigzagArray, encodedRuns, popupMessage, setPopupMessage } = matrixCtx;
 
 const nextStep = () => {
   if (!started) return;
@@ -76,13 +80,20 @@ const [started, setStarted] = useState(true);
 
 const [activeStep, setActiveStep] = useState(1);
 
+const [showGuidedTutor, setShowGuidedTutor] = useState(false);
+
+const [tourMuted, setTourMuted] = useState(false);
+
+const activeTutor = guidedTutorContent.find((item) => item.id === activeStep);
+
+const activeTourSteps = guidedTourSteps[activeStep];
 
 const startSimulation = () => {
   setStarted(true);
   setActiveStep(1);
 };
 
-  
+
 
   return (
 
@@ -100,9 +111,45 @@ const startSimulation = () => {
   </div>
 )}
 
+{showGuidedTutor && activeTourSteps && (
+  <GuidedTour
+    steps={activeTourSteps}
+    ctx={matrixCtx}
+    muted={tourMuted}
+    onToggleMute={() => setTourMuted((m) => !m)}
+    onClose={() => setShowGuidedTutor(false)}
+  />
+)}
+
+{showGuidedTutor && !activeTourSteps && activeTutor && (
+  <div className="guidedTutorOverlay" onClick={() => setShowGuidedTutor(false)}>
+    <div className="guidedTutorBox" onClick={(e) => e.stopPropagation()}>
+      <div className="guidedTutorHeader">
+        <h3>{activeTutor.title}</h3>
+        <button className="guidedTutorCloseBtn" onClick={() => setShowGuidedTutor(false)} aria-label="Close guided tutor">✕</button>
+      </div>
+      <p className="guidedTutorIntro">{activeTutor.intro}</p>
+      <ul className="guidedTutorTips">
+        {activeTutor.tips.map((tip, index) => (
+          <li key={index}>{tip}</li>
+        ))}
+      </ul>
+      <button className="guidedTutorGotIt" onClick={() => setShowGuidedTutor(false)}>Got it</button>
+    </div>
+  </div>
+)}
+
 <div className="headerBar">
   <div className="headerTitle">Sine & Cosine Compression Visualizer</div>
   <div className="headerActions">
+    <button
+      className="speakerBtn"
+      title={tourMuted ? "Unmute narration" : "Mute narration"}
+      onClick={() => setTourMuted((m) => !m)}
+    >
+      {tourMuted ? "🔇" : "🔊"}
+    </button>
+    <button className="guidedTutorBtn" onClick={() => setShowGuidedTutor(true)}>GUIDED TUTOR</button>
     <button className="closeHeaderBtn" onClick={() => onClose && onClose()}>CLOSE</button>
   </div>
 </div>
@@ -148,16 +195,8 @@ const startSimulation = () => {
       onClick={nextStep}
       disabled={!started || activeStep === steps.length}
     >
-      {activeStep === steps.length ? "Finish" : "Next"}
+      {activeStep === 1 ? "Start" : activeStep === steps.length ? "Finish" : "Next"}
     </button>
-
-    <button
-      onClick={startSimulation}
-      disabled={started}
-    >
-      Start
-    </button>
-
 
   </div>
 
@@ -173,7 +212,7 @@ const startSimulation = () => {
   
 
 
-<div className="ioContainer">
+<div className={`ioContainer${[3,4,5,6,7,8].includes(activeStep) ? " ioFullWidth" : ""}`}>
 
 {activeStep === 1 ? (
 

@@ -30,6 +30,7 @@ function Quantization() {
   const [currentRow, setCurrentRow] = useState(-1);
   const [currentCol, setCurrentCol] = useState(-1);
   const [selectedCell, setSelectedCell] = useState({ row: 0, col: 0 });
+  const [hasRun, setHasRun] = useState(quantizedMatrix && quantizedMatrix.length ? true : false);
   const intervalRef = useRef(null);
   const prevKey = useRef(selectedBlock + "_" + transform);
   const prevQF = useRef(qualityFactor);
@@ -48,6 +49,7 @@ function Quantization() {
     setProgress(0);
     setCurrentRow(-1);
     setCurrentCol(-1);
+    setHasRun(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedBlock, transform, selectedMatrix]);
 
@@ -73,6 +75,8 @@ function Quantization() {
   useEffect(() => () => intervalRef.current && clearInterval(intervalRef.current), []);
 
   const performQuantization = () => {
+    if (hasRun) return;
+    setHasRun(true);
     if (intervalRef.current) clearInterval(intervalRef.current);
 
     setStatus("Performing Quantization...");
@@ -121,9 +125,55 @@ function Quantization() {
   const selectedF = currentFrequency[selectedCell.row][selectedCell.col];
   const selectedT = scaledQuantMatrix[selectedCell.row][selectedCell.col];
   const selectedDivision = selectedF / selectedT;
+  const selectedRounded = Math.round(selectedDivision);
   const selectedQuantized = quantizedMatrix.length ? quantizedMatrix[selectedCell.row][selectedCell.col] : null;
 
   const isBaseTable = JSON.stringify(scaledQuantMatrix) === JSON.stringify(baseQuantizationTable);
+
+  // -------- Coefficient calculation timeline (same pattern as Steps 3 & 4) --------
+  const quantSteps = () => [
+    {
+      label: "Formula",
+      node: <>Q(u,v) = Round( F(u,v) / T(u,v) )</>
+    },
+    {
+      label: "Selected position",
+      node: <>u = <b>{selectedCell.row}</b>, v = <b>{selectedCell.col}</b></>
+    },
+    {
+      label: "Substitute & divide",
+      node: <>F(u,v) = <b>{Number(selectedF).toFixed(2)}</b>, T(u,v) = <b>{selectedT}</b> &nbsp;→&nbsp; {Number(selectedF).toFixed(2)} ÷ {selectedT} = <b>{selectedDivision.toFixed(3)}</b></>
+    },
+    {
+      label: "Round to nearest integer",
+      node: <>Round({selectedDivision.toFixed(3)}) = <b>{selectedRounded}</b> &nbsp;→&nbsp; Q(u,v) = <b>{selectedRounded}</b></>,
+      isResult: true
+    }
+  ];
+
+  const quantTimelineSteps = quantSteps();
+
+  const [calcStep, setCalcStep] = useState(quantTimelineSteps.length);
+
+  useEffect(() => {
+    setCalcStep(quantTimelineSteps.length);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCell, frequencyMatrix, scaledQuantMatrix]);
+
+  const playCalc = () => {
+    setCalcStep(0);
+    let s = 0;
+    const total = quantTimelineSteps.length;
+    const interval = setInterval(() => {
+      s++;
+      setCalcStep(s);
+      if (s >= total) clearInterval(interval);
+    }, 700);
+  };
+
+  const fastForwardCalc = () => {
+    setCalcStep(quantTimelineSteps.length);
+  };
 
   return (
     <div className="quantContainer">
@@ -145,6 +195,7 @@ function Quantization() {
           step="10"
           value={qualityFactor}
           onChange={(e) => setQualityFactor(Number(e.target.value))}
+          disabled={hasRun}
         />
         <div className="qfMarks">
           {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((q) => (
@@ -228,8 +279,8 @@ function Quantization() {
       </div>
 
       <div className="progressCard">
-        <button className="quantButton" onClick={performQuantization}>
-          {quantizedMatrix.length ? "Re-run Quantization" : "Perform Quantization"}
+        <button className="quantButton" onClick={performQuantization} disabled={hasRun}>
+          Perform Quantization
         </button>
       </div>
 
@@ -250,18 +301,31 @@ function Quantization() {
       </div>
 
       <div className="currentCalculation">
-        <h3>Selected Coefficient — Interactive Panel</h3>
-        <p>Row (u) : <b>{selectedCell.row}</b>   Column (v) : <b>{selectedCell.col}</b></p>
-        <div className="mathSteps">
-          <div className="mathStep"><span>F(u,v)</span><b>{Number(selectedF).toFixed(2)}</b></div>
-          <div className="mathStep"><span>T(u,v)</span><b>{selectedT}</b></div>
-          <div className="mathStep"><span>Division</span><b>{selectedDivision.toFixed(3)}</b></div>
-          <div className="mathStep"><span>Round( )</span><b>{Math.round(selectedDivision)}</b></div>
-          <div className="mathStep highlight">
-            <span>Q(u,v)</span>
-            <b>{selectedQuantized !== null ? selectedQuantized : "Run quantization \u2192"}</b>
-          </div>
+        <div className="calcHeaderRow">
+          <h3>Selected Coefficient Calculation</h3>
+          <span className="calcCellBadge">u = {selectedCell.row}, v = {selectedCell.col}</span>
         </div>
+
+        <div className="playControls">
+          <button className="calcPlayBtn" onClick={playCalc}>▶ Play</button>
+          <button className="calcPlayBtn calcFastForward" onClick={fastForwardCalc}>⚡ Show All</button>
+        </div>
+
+        <div className="calcTimeline">
+          {quantTimelineSteps.slice(0, calcStep).map((step, i) => (
+            <div key={i} className={step.isResult ? "calcTimelineItem calcResultItem" : "calcTimelineItem"}>
+              <div className="calcStepBadge">{step.isResult ? "✓" : i + 1}</div>
+              <div className="calcStepBody">
+                <div className="calcStepLabel">{step.label}</div>
+                <div className="calcStepExpr">{step.node}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {selectedQuantized === null && (
+          <p className="calcHint">Click &quot;Perform Quantization&quot; above to also reveal this coefficient in the Quantized Matrix.</p>
+        )}
       </div>
 
       <div className="zeroStatsSection">

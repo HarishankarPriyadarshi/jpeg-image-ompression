@@ -1,7 +1,27 @@
+/* the shared .ioContainer wrapper shrink-wraps its content by default,
+   which was leaving this step's matrix cards far smaller than the
+   available panel width. Stretch it to full width for this step too
+   (same fix applied to Step 3 / BasisMatrix). */
+.ioContainer:has(.transformContainer){
+  width:100%;
+  align-items:stretch;
+}
+
+/* .stepWorkspace applies transform:scale(0.9) globally to fit content
+   within the viewport height on most steps. For this step that shrink
+   was eating up the full width we just freed on the matrix cards
+   (visible as dead whitespace left/right of the cards) and, combined
+   with rounding from the 0.9 scale, was clipping a couple of digits at
+   the card edges. Render this step at true 1:1 scale instead. */
+.stepWorkspace:has(.transformContainer){
+  transform:none;
+  width:100%;
+}
+
 .transformContainer{
 
-width:100%;
-max-width:1750px;
+width:100% !important;
+max-width:none !important;
 margin:auto;
 display:flex;
 flex-direction:column;
@@ -12,8 +32,6 @@ gap:28px;
 .transformHeading{
 
 text-align:center;
-border-bottom:2px solid #dbeafe;
-padding-bottom:18px;
 
 }
 
@@ -134,33 +152,37 @@ border:1px solid #dbeafe;
 
 display:grid;
 
-grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr) 40px minmax(0,1fr);
+width:100% !important;
 
-align-items:center;
+grid-template-columns:minmax(0,1fr) 26px minmax(0,1fr) 26px minmax(0,1fr);
+
+align-items:stretch;
 
 justify-content:center;
 
-gap:18px;
+gap:10px;
 
 margin-top:30px;
 
+padding:0;
+
 }
 
-.matrixCard{
+.transformContainer .matrixCard{
 
 background:white;
 
-padding:20px;
+padding:12px 6px;
 
 border-radius:18px;
 
 box-shadow:0 8px 18px rgba(0,0,0,.08);
 
-width:100%;
+width:100% !important;
 
 min-width:0;
 
-max-width:560px;
+max-width:none !important;
 
 margin:0 auto;
 
@@ -174,16 +196,18 @@ align-items:center;
 
 justify-content:center;
 
+container-type:inline-size;
+
 }
 
-.matrixCard h3{
+.transformContainer .matrixCard h3{
 
 margin-bottom:18px;
 color:#123b8d;
 
 }
 
-.operator{
+.transformContainer .operator{
 
 font-size:36px;
 font-weight:bold;
@@ -253,23 +277,29 @@ color:#555;
 
 }
 
-.miniMatrix{
+.transformContainer .miniMatrix{
 
-display:inline-grid;
+display:grid;
 
-grid-template-columns:repeat(8,54px);
+grid-template-columns:repeat(8,minmax(0,1fr)) !important;
 
-gap:4px;
+gap:3px;
+
+width:100% !important;
 
 margin:auto;
 
 }
 
-.miniMatrix span{
+.transformContainer .miniMatrix span{
 
-width:54px;
+width:100% !important;
 
-height:44px;
+height:auto !important;
+
+aspect-ratio:1;
+
+box-sizing:border-box;
 
 display:flex;
 
@@ -277,21 +307,129 @@ justify-content:center;
 
 align-items:center;
 
-font-size:10px;
+font-size:clamp(9px,3.3cqw,17px);
 
 font-family:Consolas,monospace;
 
-font-weight:600;
+font-weight:900;
+
+text-shadow:0.4px 0 0 currentColor,-0.4px 0 0 currentColor;
+
+letter-spacing:-.5px;
 
 background:#edf4ff;
 
 border:1px solid #bfd4ff;
 
-border-radius:5px;
+border-radius:6px;
 
 transition:.25s;
 
 cursor:pointer;
+
+overflow:hidden;
+
+text-overflow:ellipsis;
+
+white-space:nowrap;
+
+padding:1px;
+
+}
+
+.transformContainer .miniMatrix span:hover{
+
+background:#dbeafe;
+
+transform:scale(1.05);
+
+}
+
+/* Compact bordered spreadsheet-style grid for the Frequency Coefficient
+   Matrix — same sizing convention as the Orthogonal Basis Matrix in Step 3
+   (.basisGrid): thin borders, small cells, row/column headers, hover state. */
+.freqGrid{
+  display:grid;
+  grid-template-columns:minmax(30px,0.55fr) repeat(8,minmax(0,1fr));
+  gap:0;
+  border:1px solid #c7d7ff;
+  border-radius:10px;
+  overflow:hidden;
+  background:#c7d7ff;
+  max-width:560px;
+  width:100%;
+  margin:20px auto 0;
+  container-type:inline-size;
+}
+
+.freqGrid > *{
+  border-right:1px solid #e3ecff;
+  border-bottom:1px solid #e3ecff;
+}
+
+.freqGrid > *:nth-child(9n){
+  border-right:none;
+}
+
+.freqHeader,
+.freqCorner{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#eef4ff;
+  color:#123b8d;
+  font-weight:700;
+  font-size:clamp(8px,2.6cqw,11px);
+  height:100%;
+  min-height:32px;
+}
+
+.freqGrid span{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  height:auto;
+  aspect-ratio:1;
+  background:#fff;
+  color:#1e293b;
+  font-weight:700;
+  font-size:clamp(8px,2.8cqw,12px);
+  cursor:pointer;
+  transition:.2s;
+  box-sizing:border-box;
+  overflow:hidden;
+}
+
+.freqGrid span:hover:not(.frequencyBlankCell){
+  filter:brightness(0.95);
+}
+
+.dcAcNote{
+  font-size:12px;
+  color:#667;
+  margin-top:4px;
+}
+
+.frequencyBlankCell{
+
+background:#f3f6fc !important;
+
+border:1px dashed #cbd8f0 !important;
+
+cursor:default !important;
+
+}
+
+.maxCoefficientCell{
+
+background:#dc2626 !important;
+
+color:white !important;
+
+border-color:#991b1b !important;
+
+box-shadow:0 0 12px rgba(220,38,38,.6);
 
 }
 
@@ -395,21 +533,59 @@ transition:.3s;
 
 margin-top:20px;
 
-padding:14px 28px;
+width:280px;
 
-background:#2563eb;
+max-width:100%;
 
-color:white;
+padding:16px;
 
 border:none;
 
-border-radius:10px;
+border-radius:24px;
+
+background:linear-gradient(135deg,#7c3aed,#2563eb,#0ea5e9);
+
+background-size:200% 200%;
+
+animation:tcGradientShift 3s ease infinite;
+
+color:white;
+
+font-size:17px;
+
+font-weight:700;
+
+letter-spacing:.3px;
 
 cursor:pointer;
 
-font-weight:bold;
+box-shadow:0 4px 14px rgba(37,99,235,.4);
 
-font-size:15px;
+transition:.25s;
+
+}
+
+.transformButton:hover:not(:disabled){
+
+transform:translateY(-3px) scale(1.03);
+
+box-shadow:0 8px 22px rgba(37,99,235,.55);
+
+}
+
+.transformButton:active:not(:disabled){
+
+transform:translateY(0) scale(.98);
+
+}
+
+@keyframes tcGradientShift{
+
+0%{background-position:0% 50%;}
+
+50%{background-position:100% 50%;}
+
+100%{background-position:0% 50%;}
 
 }
 
@@ -505,6 +681,42 @@ margin-top:25px;
 
 text-align:center;
 
+animation:frequencyCardIn .5s cubic-bezier(.22,1,.36,1) both;
+
+container-type:inline-size;
+
+}
+
+@keyframes frequencyCardIn{
+0%{
+opacity:0;
+transform:translateY(24px) scale(.97);
+}
+100%{
+opacity:1;
+transform:translateY(0) scale(1);
+}
+}
+
+.freqGrid span:not(.frequencyBlankCell){
+
+animation:cellSlideIn .3s ease;
+
+}
+
+@keyframes cellSlideIn{
+0%{
+opacity:0;
+transform:scale(.6);
+}
+60%{
+opacity:1;
+transform:scale(1.15);
+}
+100%{
+opacity:1;
+transform:scale(1);
+}
 }
 
 .frequencyCard h3{
@@ -594,7 +806,7 @@ background:#f3f4f6;
 
 background:white;
 
-padding:25px;
+padding:18px;
 
 border-radius:18px;
 
@@ -614,11 +826,11 @@ margin-top:10px;
 
 .coefficientCard h1{
 
-font-size:42px;
+font-size:32px;
 
 color:#2563eb;
 
-margin:20px 0;
+margin:16px 0;
 
 }
 
@@ -626,7 +838,7 @@ margin:20px 0;
 
 background:#eef6ff;
 
-padding:20px;
+padding:16px;
 
 border-left:5px solid #2563eb;
 
@@ -638,7 +850,7 @@ text-align:center;
 
 .frequencyTypeCard h3{
 
-margin-bottom:10px;
+margin-bottom:8px;
 
 color:#123b8d;
 
@@ -648,9 +860,9 @@ color:#123b8d;
 
 background:white;
 
-padding:22px;
+padding:16px;
 
-line-height:1.9;
+line-height:1.8;
 
 border-radius:18px;
 
@@ -661,7 +873,7 @@ box-shadow:0 8px 20px rgba(0,0,0,.08);
 
 background:white;
 
-padding:25px;
+padding:18px;
 
 border-radius:18px;
 
@@ -809,19 +1021,19 @@ background:#bfdbfe;
 
 background:white;
 
-padding:25px;
+padding:18px;
 
 border-radius:18px;
 
 box-shadow:0 8px 20px rgba(0,0,0,.08);
 
-line-height:2;
+line-height:1.8;
 
 }
 
 .jpegObservation h3{
 
-margin-bottom:15px;
+margin-bottom:12px;
 
 color:#123b8d;
 
@@ -848,7 +1060,7 @@ cursor:not-allowed;
 
 background:white;
 
-padding:24px;
+padding:18px;
 
 border-radius:18px;
 
@@ -864,11 +1076,11 @@ text-align:center;
 
 .largestCoeffCard h1{
 
-font-size:46px;
+font-size:34px;
 
 color:#2563eb;
 
-margin:15px 0;
+margin:12px 0;
 
 }
 
@@ -878,9 +1090,9 @@ display:grid;
 
 grid-template-columns:1fr 1fr;
 
-gap:20px;
+gap:14px;
 
-margin-top:20px;
+margin-top:16px;
 
 }
 
@@ -888,11 +1100,21 @@ margin-top:20px;
 
 background:#eef4ff;
 
-padding:18px;
+padding:14px;
 
 border-radius:12px;
 
 text-align:center;
+
+}
+
+.dcAcGrid h2{
+
+font-size:22px;
+
+color:#2563eb;
+
+margin-top:6px;
 
 }
 
@@ -953,9 +1175,9 @@ margin:25px 0;
 
 .miniMatrixBox{
 
-width:70px;
+width:54px;
 
-height:70px;
+height:54px;
 
 display:flex;
 
@@ -963,11 +1185,11 @@ justify-content:center;
 
 align-items:center;
 
-font-size:30px;
+font-size:22px;
 
 font-weight:bold;
 
-border-radius:14px;
+border-radius:12px;
 
 background:#eef4ff;
 
@@ -991,7 +1213,7 @@ box-shadow:0 0 20px rgba(37,99,235,.35);
 
 .matrixOperator{
 
-font-size:34px;
+font-size:24px;
 
 font-weight:bold;
 
@@ -1001,9 +1223,9 @@ color:#2563eb;
 
 .matrixResult{
 
-width:80px;
+width:62px;
 
-height:80px;
+height:62px;
 
 display:flex;
 
@@ -1011,11 +1233,11 @@ justify-content:center;
 
 align-items:center;
 
-font-size:34px;
+font-size:26px;
 
 font-weight:bold;
 
-border-radius:16px;
+border-radius:14px;
 
 background:#e5e7eb;
 
@@ -1140,11 +1362,35 @@ font-weight:700;
 
 }
 
+.energyLabels span{
+
+flex:1;
+
+text-align:center;
+
+font-size:13px;
+
+font-weight:600;
+
+color:#123b8d;
+
+line-height:1.5;
+
+}
+
+.energyLabels b{
+
+color:#2563eb;
+
+font-size:15px;
+
+}
+
 .calculationPanel{
 
 background:white;
 
-padding:25px;
+padding:18px;
 
 border-radius:18px;
 
@@ -1152,7 +1398,7 @@ box-shadow:0 8px 20px rgba(0,0,0,.08);
 
 text-align:center;
 
-line-height:2;
+line-height:1.9;
 
 }
 
@@ -1160,13 +1406,13 @@ line-height:2;
 
 color:#2563eb;
 
-margin:15px 0;
+margin:12px 0;
 
 }
 
 .calculationPanel b{
 
-font-size:22px;
+font-size:18px;
 
 color:#16a34a;
 
@@ -1175,7 +1421,7 @@ color:#16a34a;
 
 background:white;
 
-padding:30px;
+padding:20px;
 
 border-radius:18px;
 
@@ -1187,7 +1433,7 @@ box-shadow:0 8px 20px rgba(0,0,0,.08);
 
 text-align:center;
 
-margin-bottom:25px;
+margin-bottom:18px;
 
 color:#123b8d;
 
@@ -1207,9 +1453,16 @@ text-align:center;
 
 width:100%;
 
-gap:18px;
+gap:14px;
 
-margin:20px auto 0;
+margin:10px auto 0;
+
+}
+
+.formulaDisplay h2{
+
+font-size:18px;
+color:#2563eb;
 
 }
 
@@ -1219,9 +1472,9 @@ display:flex;
 
 align-items:center;
 
-gap:12px;
+gap:10px;
 
-font-size:22px;
+font-size:18px;
 
 font-weight:700;
 
@@ -1233,9 +1486,9 @@ justify-content:center;
 
 .sigma{
 
-font-size:52px;
+font-size:38px;
 
-line-height:40px;
+line-height:32px;
 
 color:#2563eb;
 
@@ -1243,9 +1496,9 @@ color:#2563eb;
 
 .calculationResult{
 
-margin-top:30px;
+margin-top:20px;
 
-padding:22px;
+padding:16px;
 
 background:#eff6ff;
 
@@ -1257,33 +1510,123 @@ text-align:center;
 
 .calculationResult h1{
 
-font-size:46px;
+font-size:32px;
 
 color:#2563eb;
 
-margin-top:12px;
+margin-top:10px;
 
 }
 
 .calculationExplanation{
 
-margin-top:25px;
+margin-top:18px;
 
 background:#fafcff;
 
-padding:22px;
+padding:16px;
 
 border-left:5px solid #2563eb;
 
 border-radius:12px;
 
-line-height:2;
+line-height:1.8;
 
 }
 
 .calculationExplanation b{
 
 color:#123b8d;
+
+}
+
+.calcPositionLine{
+
+text-align:center;
+
+margin-bottom:18px;
+
+}
+
+.calcPositionLine b{
+
+color:#123b8d;
+
+}
+
+.multiplyRow{
+
+display:flex;
+
+flex-wrap:wrap;
+
+justify-content:center;
+
+align-items:center;
+
+gap:8px;
+
+background:#fafcff;
+
+border:2px dashed #bfd4ff;
+
+border-radius:14px;
+
+padding:14px;
+
+margin-bottom:10px;
+
+}
+
+.multiplyChip{
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+font-family:Consolas,monospace;
+
+font-weight:700;
+
+font-size:13px;
+
+background:#edf4ff;
+
+border:1px solid #bfd4ff;
+
+border-radius:8px;
+
+padding:6px 10px;
+
+color:#123b8d;
+
+}
+
+.plusSign{
+
+font-weight:900;
+
+color:#2563eb;
+
+margin-right:4px;
+
+}
+
+.equalsChip{
+
+font-weight:900;
+
+font-size:18px;
+
+color:#16a34a;
+
+background:#dcfce7;
+
+border-radius:10px;
+
+padding:10px 16px;
 
 }
 
@@ -1319,8 +1662,9 @@ color:#123b8d;
     transform:rotate(90deg);
     margin:0 auto;
   }
-  .matrixCard{
-    max-width:480px;
+  .transformContainer .matrixCard{
+    max-width:560px;
+    margin:0 auto;
   }
 }
 
@@ -1337,25 +1681,48 @@ color:#123b8d;
     height:130px;
     font-size:56px;
   }
-  .equationPreview h2{
-    font-size:24px;
-  }
-  .matrixInfoCard{
-    grid-template-columns:repeat(2,1fr) !important;
-  }
 }
 
 @media(max-width:768px){
   .transformHeading h2{
     font-size:22px;
   }
-  .miniMatrix{
-    grid-template-columns:repeat(8,26px) !important;
+  .transformHeading p{
+    white-space:normal;
   }
-  .miniMatrix span{
-    width:24px !important;
-    height:22px !important;
-    font-size:8px !important;
+  .formulaDisplay h2{
+    font-size:18px;
+  }
+  .transformLayout{
+    padding:0 8px;
+    gap:16px;
+  }
+  .transformContainer .miniMatrix{
+    grid-template-columns:repeat(8,minmax(0,1fr)) !important;
+    gap:2px !important;
+  }
+  .transformContainer .miniMatrix span{
+    width:100% !important;
+    aspect-ratio:1.1 !important;
+    height:auto !important;
+    font-size:clamp(10px,3.6cqw,15px) !important;
+    font-weight:900 !important;
+    letter-spacing:-.3px;
+    overflow:hidden !important;
+    text-overflow:ellipsis;
+    padding:1px !important;
+  }
+  .freqGrid{
+    max-width:100%;
+  }
+  .freqHeader,
+  .freqCorner{
+    min-height:26px;
+    font-size:clamp(7px,2.4cqw,10px);
+  }
+  .freqGrid span{
+    font-size:clamp(7px,2.6cqw,11px);
+    font-weight:800;
   }
   .selectedBlockPreview{
     grid-template-columns:repeat(8,24px) !important;
@@ -1364,18 +1731,235 @@ color:#123b8d;
     width:24px !important;
     height:24px !important;
   }
-  .matrixCard{
+  .transformContainer .matrixCard{
     max-width:100%;
+    padding:14px 8px;
+  }
+  .multiplyRow{
+    padding:12px;
+    gap:6px;
+  }
+  .multiplyChip{
+    font-size:10px;
+    padding:5px 7px;
+  }
+  .miniMatrixBox{
+    width:42px;
+    height:42px;
+    font-size:17px;
+  }
+  .matrixOperator{
+    font-size:18px;
+  }
+  .matrixResult{
+    width:48px;
+    height:48px;
+    font-size:19px;
+  }
+  .matrixAnimation{
+    gap:8px;
+  }
+  .transformButton{
+    width:100%;
+  }
+  .energyBar{
+    flex-direction:column;
+    height:auto;
+    gap:2px;
+  }
+  .energyBar > div{
+    width:100% !important;
+    height:32px;
+    font-size:13px;
+  }
+  .coefficientCard{
+    padding:14px;
+  }
+  .coefficientCard h3{
+    font-size:15px;
+  }
+  .coefficientCard h2{
+    font-size:18px;
+  }
+  .coefficientCard h1{
+    font-size:26px;
+    margin:10px 0;
+  }
+  .coefficientCard p{
+    font-size:13px;
+  }
+  .largestCoeffCard,
+  .dcAcCard,
+  .compressionInsight,
+  .stepSummary{
+    padding:14px;
+  }
+  .largestCoeffCard h3,
+  .compressionInsight h3,
+  .jpegObservation h3,
+  .researchNote h3,
+  .frequencyTypeCard h3{
+    font-size:15px;
+  }
+  .largestCoeffCard h1{
+    font-size:26px;
+  }
+  .largestCoeffCard p{
+    font-size:13px;
+  }
+  .compressionInsight ul,
+  .jpegObservation ul{
+    font-size:13px;
+    line-height:1.7;
+  }
+  .dcAcGrid{
+    gap:10px;
+  }
+  .dcAcGrid div{
+    padding:10px;
+  }
+  .dcAcGrid h2{
+    font-size:18px;
+  }
+  .calculationPanel{
+    padding:14px;
+  }
+  .calculationPanel h3{
+    font-size:16px;
+    margin-bottom:12px;
+  }
+  .formulaDisplay h2{
+    font-size:16px;
+  }
+  .sigma{
+    font-size:28px;
+    line-height:24px;
+  }
+  .sigmaEquation{
+    font-size:15px;
+    gap:6px;
+  }
+  .calculationResult{
+    padding:12px;
+    margin-top:14px;
+  }
+  .calculationResult h1{
+    font-size:24px;
+  }
+  .calculationExplanation{
+    padding:12px;
+    line-height:1.6;
+  }
+  .frequencyTypeCard{
+    padding:12px;
+  }
+  .frequencyTypeCard p{
+    font-size:13px;
+  }
+  .coefficientExplanation{
+    padding:12px;
+    font-size:13px;
+    line-height:1.6;
+  }
+  .energyCard{
+    padding:14px;
+  }
+  .jpegObservation{
+    padding:14px;
+  }
+  .researchNote{
+    padding:14px;
+    line-height:1.6;
+  }
+  .researchNote p{
+    font-size:13px;
+  }
+  .activeCoefficient{
+    transform:scale(1.06);
+    z-index:2;
+    position:relative;
+  }
+  .maxCoefficientCell{
+    z-index:1;
+    position:relative;
   }
 }
 
 @media(max-width:480px){
-  .matrixInfoCard{
-    grid-template-columns:1fr !important;
-  }
   .symbolBox{
     width:100px;
     height:100px;
     font-size:44px;
+  }
+  .transformContainer .miniMatrix{
+    grid-template-columns:repeat(8,minmax(0,1fr)) !important;
+    gap:1.5px !important;
+  }
+  .transformContainer .miniMatrix span{
+    width:100% !important;
+    aspect-ratio:1 !important;
+    height:auto !important;
+    font-size:clamp(9px,3.3cqw,12px) !important;
+    letter-spacing:-.5px;
+    overflow:hidden !important;
+    text-overflow:ellipsis;
+    padding:0 !important;
+  }
+  .freqHeader,
+  .freqCorner{
+    min-height:22px;
+    font-size:7px;
+  }
+  .freqGrid span{
+    font-size:clamp(6px,2.4cqw,9px);
+    font-weight:800;
+  }
+  .transformContainer .matrixCard{
+    padding:12px 6px;
+  }
+  .coefficientCard h1{
+    font-size:22px;
+  }
+  .coefficientCard h3{
+    font-size:14px;
+  }
+  .largestCoeffCard h1{
+    font-size:22px;
+  }
+  .largestCoeffCard h3,
+  .compressionInsight h3,
+  .jpegObservation h3,
+  .researchNote h3,
+  .frequencyTypeCard h3{
+    font-size:14px;
+  }
+  .compressionInsight ul,
+  .jpegObservation ul,
+  .coefficientExplanation,
+  .frequencyTypeCard p,
+  .researchNote p{
+    font-size:12px;
+  }
+  .dcAcGrid h2{
+    font-size:16px;
+  }
+  .sigma{
+    font-size:24px;
+    line-height:20px;
+  }
+  .sigmaEquation{
+    font-size:13px;
+  }
+  .calculationResult h1{
+    font-size:20px;
+  }
+  .activeCoefficient{
+    transform:scale(1.04);
+    z-index:2;
+    position:relative;
+  }
+  .maxCoefficientCell{
+    z-index:1;
+    position:relative;
   }
 }

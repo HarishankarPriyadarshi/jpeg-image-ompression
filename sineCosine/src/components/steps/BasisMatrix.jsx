@@ -2,6 +2,19 @@ import "./BasisMatrix.css";
 import React,{useState} from "react";
 import { useMatrix } from "../../context/MatrixContext";
 
+// Small inline "numerator over denominator" display, used inside the
+// calculation timeline so any division always renders as a proper stacked
+// fraction instead of a plain "a / b" string.
+function Frac({num,den}){
+return (
+<span className="inlineFrac">
+<span className="inlineFracNum">{num}</span>
+<span className="inlineFracLine"></span>
+<span className="inlineFracDen">{den}</span>
+</span>
+);
+}
+
 function BasisMatrix(){
 
 const { selectedMatrix, selectedBlock, transform, setTransform, basisMatrix, setBasisMatrix, basisGenerated, setBasisGenerated } = useMatrix();
@@ -46,8 +59,6 @@ selectedMatrix.data
 .slice(rowStart,rowStart+8)
 .map(row=>row.slice(colStart,colStart+8));
 
-
-
 const [selectedCell,setSelectedCell]=useState(null);
 
 const [calcStep,setCalcStep]=useState(0);
@@ -70,6 +81,8 @@ let u=0,x=0;
 const interval=setInterval(()=>{
 matrix[u][x]=computeValue(u,x).toFixed(4);
 setBasisMatrix(matrix.map(r=>[...r]));
+setSelectedCell({row:u,col:x});
+setCalcStep(cellSteps(u,x).length);
 x++;
 if(x>=N){x=0;u++;}
 if(u>=N){
@@ -86,24 +99,62 @@ const angle=(num*Math.PI)/16;
 const cosVal=Math.cos(angle);
 const alpha=u===0?Math.sqrt(1/8):Math.sqrt(2/8);
 return [
-`Step 1 — Formula: C(${u},${x}) = α(u) · cos[ (2x+1)uπ / 2N ]`,
-`Step 2 — Plug in u=${u}, x=${x}: numerator = (2×${x}+1)×${u} = ${num}`,
-`Step 3 — Angle = ${num}π / 16 = ${angle.toFixed(4)} radians`,
-`Step 4 — cos(${angle.toFixed(4)}) = ${cosVal.toFixed(4)}`,
-`Step 5 — Normalization α(u): u=${u} → α = ${u===0?"√(1/8)":"√(2/8)"} = ${alpha.toFixed(4)}`,
-`Step 6 — Final: ${alpha.toFixed(4)} × ${cosVal.toFixed(4)} = ${(alpha*cosVal).toFixed(4)}`
+{
+label:"Formula",
+node:<>C(u,x) = α(u) · cos<Frac num="(2x+1)uπ" den="2N" /></>
+},
+{
+label:"Substitute u & x",
+node:<>u = <b>{u}</b>, x = <b>{x}</b> &nbsp;→&nbsp; (2×{x}+1)×{u} = <b>{num}</b></>
+},
+{
+label:"Compute the angle",
+node:<>angle = <Frac num={`${num}π`} den="16" /> = <b>{angle.toFixed(4)}</b> rad</>
+},
+{
+label:"Apply cosine",
+node:<>cos({angle.toFixed(4)}) = <b>{cosVal.toFixed(4)}</b></>
+},
+{
+label:"Normalize with α(u)",
+node:<>α = {u===0?"√(1/8)":"√(2/8)"} = <b>{alpha.toFixed(4)}</b></>
+},
+{
+label:"Final value",
+node:<>{alpha.toFixed(4)} × {cosVal.toFixed(4)} = <b>{(alpha*cosVal).toFixed(4)}</b></>,
+isResult:true
+}
 ];
 }
 const angle=((u+1)*(x+1)*Math.PI)/9;
 const sinVal=Math.sin(angle);
 const coeff=Math.sqrt(2/9);
 return [
-`Step 1 — Formula: S(${u},${x}) = √(2/(N+1)) · sin[ (u+1)(x+1)π / (N+1) ]`,
-`Step 2 — Plug in u=${u}, x=${x}: (${u}+1)×(${x}+1) = ${(u+1)*(x+1)}`,
-`Step 3 — Angle = ${(u+1)*(x+1)}π / 9 = ${angle.toFixed(4)} radians`,
-`Step 4 — sin(${angle.toFixed(4)}) = ${sinVal.toFixed(4)}`,
-`Step 5 — Coefficient √(2/9) = ${coeff.toFixed(4)}`,
-`Step 6 — Final: ${coeff.toFixed(4)} × ${sinVal.toFixed(4)} = ${(coeff*sinVal).toFixed(4)}`
+{
+label:"Formula",
+node:<>S(u,x) = <Frac num="2" den="N+1" /><sup>½</sup> · sin<Frac num="(u+1)(x+1)π" den="N+1" /></>
+},
+{
+label:"Substitute u & x",
+node:<>u = <b>{u}</b>, x = <b>{x}</b> &nbsp;→&nbsp; ({u}+1)×({x}+1) = <b>{(u+1)*(x+1)}</b></>
+},
+{
+label:"Compute the angle",
+node:<>angle = <Frac num={`${(u+1)*(x+1)}π`} den="9" /> = <b>{angle.toFixed(4)}</b> rad</>
+},
+{
+label:"Apply sine",
+node:<>sin({angle.toFixed(4)}) = <b>{sinVal.toFixed(4)}</b></>
+},
+{
+label:"Coefficient",
+node:<>√<Frac num="2" den="9" /> = <b>{coeff.toFixed(4)}</b></>
+},
+{
+label:"Final value",
+node:<>{coeff.toFixed(4)} × {sinVal.toFixed(4)} = <b>{(coeff*sinVal).toFixed(4)}</b></>,
+isResult:true
+}
 ];
 };
 
@@ -215,13 +266,11 @@ DST
 
 <div className="basisLayout">
 
-
-
 <div className="basisCard blockCard">
 
-<h3>Selected Processing Block</h3>
+<h3>Selected Processing Block ({selectedBlock ? `B${selectedBlock}` : "—"})</h3>
 
-<div className="selectedBlockPreview" style={{display:"grid",gridTemplateColumns:"repeat(8,54px)",gap:"4px",width:"fit-content",margin:"20px auto"}}>
+<div className="basisBlockPreview">
 
 {processingBlock.map((row,rowIndex)=>
 
@@ -229,8 +278,8 @@ row.map((value,colIndex)=>(
 
 <div
 key={rowIndex+"-"+colIndex}
-className="blockPixel"
-style={{background:`rgb(${value},${value},${value})`,width:"54px",height:"54px"}}
+className="basisBlockPixel"
+style={{background:`rgb(${value},${value},${value})`}}
 >
 </div>
 
@@ -258,7 +307,7 @@ Orthogonal Basis Matrix ( C )
 
 <div className="basisGrid">
 
-    <div></div>
+    <div className="matrixCorner"></div>
 
 {
 
@@ -283,7 +332,17 @@ basisMatrix.length===0
 
 ?
 
-null
+Array.from({length:8}).map((_,rowIndex)=>(
+<React.Fragment key={"ph"+rowIndex}>
+
+<div className="matrixHeader">u={rowIndex}</div>
+
+{Array.from({length:8}).map((_,colIndex)=>(
+<span key={"ph"+rowIndex+"-"+colIndex} className="emptyBasisCell"></span>
+))}
+
+</React.Fragment>
+))
 
 :
 
@@ -306,6 +365,10 @@ row.map((value,colIndex)=>(
 key={rowIndex+"-"+colIndex}
 
 className={
+value===null
+?
+"emptyBasisCell"
+:
 selectedCell && (selectedCell?.row??0)===rowIndex && selectedCell.col===colIndex
 ?
 "activeVector"
@@ -313,11 +376,11 @@ selectedCell && (selectedCell?.row??0)===rowIndex && selectedCell.col===colIndex
 ""
 }
 
-onClick={()=>{setSelectedCell({row:rowIndex,col:colIndex});setCalcStep(0);}}
+onClick={()=>{if(value!==null){setSelectedCell({row:rowIndex,col:colIndex});setCalcStep(0);}}}
 
 >
 
-{value}
+{value===null?"":value}
 
 </span>
 
@@ -356,31 +419,49 @@ Generate Basis Matrix
 
 <div className="currentCalculation">
 
+<div className="calcHeaderRow">
+
 <h3>Current Basis Calculation</h3>
+
+{selectedCell && (
+<span className="calcCellBadge">u = {(selectedCell?.row??0)}, x = {selectedCell.col}</span>
+)}
+
+</div>
 
 {!selectedCell ? (
 
-<p>Click any cell in the matrix above to see its calculation.</p>
+<p className="calcHint">Click any cell in the matrix above to see its calculation, step by step.</p>
 
 ) : (
 
 <>
 
-<p>Selected Cell : <b>u = {(selectedCell?.row??0)}, x = {selectedCell.col}</b></p>
-
 <div className="playControls">
 
-<button className="generateButton" onClick={playCalc}>▶ Play</button>
+<button className="calcPlayBtn" onClick={playCalc}>▶ Play</button>
 
-<button className="generateButton fastForward" onClick={fastForwardCalc}>⏩ Fast Forward</button>
+<button className="calcPlayBtn calcFastForward" onClick={fastForwardCalc}>⏩ Show All</button>
 
 </div>
 
-<div className="calcSteps">
+<div className="calcTimeline">
 
-{cellSteps((selectedCell?.row??0),selectedCell.col).slice(0,calcStep).map((line,i)=>(
+{cellSteps((selectedCell?.row??0),selectedCell.col).slice(0,calcStep).map((step,i)=>(
 
-<p key={i} className="calcStepLine">{line}</p>
+<div key={i} className={step.isResult ? "calcTimelineItem calcResultItem" : "calcTimelineItem"}>
+
+<div className="calcStepBadge">{step.isResult ? "✓" : i+1}</div>
+
+<div className="calcStepBody">
+
+<div className="calcStepLabel">{step.label}</div>
+
+<div className="calcStepExpr">{step.node}</div>
+
+</div>
+
+</div>
 
 ))}
 
@@ -630,266 +711,6 @@ u = {(selectedCell?.row??0)}
 "High-frequency basis vector. Represents edges and fine details."
 
 }
-
-</div>
-
-<div className="relationCard">
-
-<h3>
-
-Relation With Selected Block
-
-</h3>
-
-<p>
-
-Selected Block :
-
-<b>
-
-B{selectedBlock}
-
-</b>
-
-</p>
-
-<p>
-
-The basis matrix is generated only once because it depends on the block size (8 × 8).
-
-The selected block supplies the pixel values.
-
-During the next step, this basis matrix will be multiplied with the selected block to generate frequency coefficients.
-
-</p>
-
-</div>
-
-
-
-<div className="basisInfo">
-
-<div>
-
-<b>Selected Block</b>
-
-<span>
-
-B{selectedBlock}
-
-</span>
-
-</div>
-
-<div>
-
-<b>Transform</b>
-
-<span>
-
-{transform}
-
-</span>
-
-</div>
-
-<div>
-
-<b>Matrix Size</b>
-
-<span>
-
-8 × 8
-
-</span>
-
-</div>
-
-<div>
-
-<b>Orthogonal</b>
-
-<span>
-
-YES
-
-</span>
-
-</div>
-
-<div>
-
-<b>Normalization</b>
-
-<span>
-
-Enabled
-
-</span>
-
-</div>
-
-<div>
-
-<b>Basis Vectors</b>
-
-<span>
-
-8
-
-</span>
-
-</div>
-
-</div>
-
-<div className="conceptCard">
-
-<h3>
-
-Concept Explanation
-
-</h3>
-
-<p>
-
-The selected processing block is
-
-<b>
-
-B{selectedBlock}
-
-</b>
-
-.
-
-However, the generated
-
-<b>
-
-{transform}
-
-Basis Matrix
-
-</b>
-
-does not change.
-
-</p>
-
-<p>
-
-This is because the basis matrix depends only on
-
-the block size
-
-<b>
-
-(8 × 8)
-
-</b>
-
-and not on the pixel values.
-
-Every processing block uses the same orthogonal
-
-basis vectors during transform coding.
-
-</p>
-
-</div>
-
-<div className="equationCard">
-
-<h3>
-
-Transform Equation
-
-</h3>
-
-{
-
-transform==="DCT"
-
-?
-
-<p>
-
-F = C × A × Cᵀ
-
-</p>
-
-:
-
-<p>
-
-F = S × A × Sᵀ
-
-</p>
-
-}
-
-<p>
-
-Where,
-
-</p>
-
-<ul>
-
-<li>
-
-A → Selected 8 × 8 Image Block
-
-</li>
-
-<li>
-
-{
-
-transform==="DCT"
-
-?
-
-"C"
-
-:
-
-"S"
-
-}
-
-→ Basis Matrix
-
-</li>
-
-<li>
-
-{
-
-transform==="DCT"
-
-?
-
-"Cᵀ"
-
-:
-
-"Sᵀ"
-
-}
-
-→ Transpose Basis Matrix
-
-</li>
-
-<li>
-
-F → Frequency Coefficient Matrix
-
-</li>
-
-</ul>
 
 </div>
 

@@ -3,11 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { useMatrix } from "../../context/MatrixContext";
 import { runLengthEncode } from "../../utils/transformUtils";
 
-function toBinary8(value) {
-  const v = ((value % 256) + 256) % 256;
-  return v.toString(2).padStart(8, "0");
-}
-
 function Encoding() {
   const { zigzagArray, encodedRuns, setEncodedRuns, selectedBlock, transform } = useMatrix();
 
@@ -99,7 +94,7 @@ function Encoding() {
           ))}
         </div>
         <button className="encButton" onClick={runEncode} disabled={!hasZigzag || pairs.length>0}>
-          {pairs.length ? "Encoding Completed \u2713" : "Start Run-Length Encoding"}
+          Start Run-Length Encoding
         </button>
       </div>
 
@@ -150,20 +145,6 @@ function Encoding() {
             </div>
           ))}
           {pairs.length > 0 && fullResult.hasEOB && <div className="encEOB">EOB</div>}
-        </div>
-      </div>
-
-      <div className="encBinaryCard">
-        <h3>Binary Representation (Illustrative)</h3>
-        <p className="encBinaryNote">Each (run, value) pair shown as an 8-bit run count followed by an 8-bit two's-complement-style value:</p>
-        <div className="encBinaryStream">
-          {pairs.length === 0 && <span className="encEmpty">—</span>}
-          {pairs.map((p, i) => (
-            <span key={i} className="encBinaryChip">
-              {toBinary8(p.run)}<b> {toBinary8(p.value)}</b>
-            </span>
-          ))}
-          {pairs.length > 0 && fullResult.hasEOB && <span className="encBinaryChip encBinaryEOB">1111 1111</span>}
         </div>
       </div>
 

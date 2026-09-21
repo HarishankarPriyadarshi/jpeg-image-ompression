@@ -115,7 +115,7 @@ function ZigZagScan() {
             </div>
           </div>
           <button className="zzButton" onClick={runScan} disabled={!hasQuantized || zigzagArray.length>0}>
-            {zigzagArray.length ? "Scan Completed ✓" : "Start Zig-Zag Scan"}
+            Start Zig-Zag Scan
           </button>
         </div>
 

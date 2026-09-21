@@ -167,11 +167,33 @@ gap:12px;
 .headerTitle{
 font-size:18px;
 font-weight:700;
+text-align:center;
 }
 
 .headerActions{
 display:flex;
 gap:10px;
+align-items:center;
+}
+
+.speakerBtn{
+background:rgba(255,255,255,.15);
+border:none;
+color:white;
+width:38px;
+height:38px;
+border-radius:50%;
+font-size:16px;
+cursor:pointer;
+}
+
+.guidedTutorBtn{
+background:#f3c400;
+border:none;
+padding:10px 20px;
+border-radius:25px;
+font-weight:700;
+cursor:pointer;
 }
 
 .guideBtn{
@@ -985,6 +1007,14 @@ align-items:center;
 gap:10px;
 }
 
+/* Explicit full-width mode for steps whose content should use the
+   entire available panel width (added directly in JSX, doesn't rely
+   on :has() support). */
+.ioContainer.ioFullWidth{
+width:100% !important;
+align-items:stretch !important;
+}
+
 .ioBox{
 width:260px;
 height:130px;
@@ -1547,24 +1577,53 @@ margin-bottom:15px;
 
 @media (max-width:768px){
 
+.overlay,.modal,.contentArea{
+max-width:100vw;
+overflow-x:hidden;
+}
+
 .contentArea{
 display:block;
-padding:10px;
+padding:4px;
 overflow:auto;
 }
 
 
 .headerBar{
-padding:10px;
+padding:8px 10px;
+height:auto;
+min-height:55px;
+flex-wrap:wrap;
+row-gap:6px;
 }
 
 .headerTitle{
-font-size:18px;
-line-height:1.2;
+font-size:14px;
+line-height:1.25;
+flex:1 1 100%;
+order:1;
+text-align:center;
+}
+
+.headerActions{
+order:2;
+flex:1 1 100%;
+justify-content:center;
 }
 
 .closeHeaderBtn{
 padding:8px 14px;
+font-size:13px;
+}
+
+.guidedTutorBtn{
+padding:8px 12px;
+font-size:12px;
+}
+
+.speakerBtn{
+width:32px;
+height:32px;
 font-size:13px;
 }
 
@@ -1632,14 +1691,16 @@ font-size:13px;
 .controlButtons{
 
 position:relative;
+flex-direction:row;
 
 }
 
 .controlButtons button{
 
-height:42px;
+height:44px;
 
 font-size:14px;
+flex:1;
 
 }
 
@@ -1661,7 +1722,7 @@ margin-bottom:15px;
 
 width:100%;
 
-padding:12px;
+padding:6px;
 
 border-radius:10px;
 
@@ -1674,6 +1735,24 @@ transform:none;
 
 width:100%;
 
+}
+
+.explanationBox{
+padding:14px;
+border-radius:12px;
+border-left-width:4px;
+margin-top:12px;
+min-height:auto;
+}
+
+.explanationBox h3{
+font-size:17px;
+margin-bottom:8px;
+}
+
+.explanationBox p{
+font-size:13px;
+line-height:1.55;
 }
 
 }
@@ -1874,4 +1953,108 @@ border:none;
 border-radius:8px;
 font-weight:600;
 cursor:pointer;
+}
+
+.guidedTutorOverlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.5);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+padding:20px;
+}
+
+.guidedTutorBox{
+background:#fff;
+width:100%;
+max-width:520px;
+max-height:85vh;
+overflow-y:auto;
+border-radius:16px;
+padding:26px 28px;
+box-shadow:0 12px 34px rgba(0,0,0,.35);
+box-sizing:border-box;
+}
+
+.guidedTutorHeader{
+display:flex;
+align-items:flex-start;
+justify-content:space-between;
+gap:12px;
+margin-bottom:12px;
+}
+
+.guidedTutorHeader h3{
+color:#0d2c72;
+font-size:20px;
+line-height:1.3;
+margin:0;
+}
+
+.guidedTutorCloseBtn{
+background:#f3f4f6;
+border:none;
+width:30px;
+height:30px;
+min-width:30px;
+border-radius:50%;
+font-size:14px;
+cursor:pointer;
+color:#374151;
+flex-shrink:0;
+}
+
+.guidedTutorIntro{
+color:#334155;
+font-size:15px;
+line-height:1.6;
+margin-bottom:14px;
+}
+
+.guidedTutorTips{
+list-style:disc;
+padding-left:20px;
+margin:0 0 20px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.guidedTutorTips li{
+color:#1e293b;
+font-size:14px;
+line-height:1.6;
+}
+
+.guidedTutorGotIt{
+width:100%;
+padding:12px;
+background:#0d2c72;
+color:#fff;
+border:none;
+border-radius:8px;
+font-weight:700;
+font-size:14px;
+cursor:pointer;
+}
+
+@media (max-width:768px){
+.guidedTutorBox{
+padding:20px 18px;
+border-radius:14px;
+}
+
+.guidedTutorHeader h3{
+font-size:17px;
+}
+
+.guidedTutorIntro{
+font-size:13.5px;
+}
+
+.guidedTutorTips li{
+font-size:13px;
+}
 }

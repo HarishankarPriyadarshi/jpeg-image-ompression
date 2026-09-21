@@ -1,10 +1,19 @@
 .zzContainer{
   width:100%;
-  max-width:1100px;
+  max-width:1600px;
   margin:auto;
   display:flex;
   flex-direction:column;
   gap:28px;
+}
+
+/* stepWorkspace applies transform:scale(0.9) globally to fit most
+   steps within the viewport height — that shrink was wasting the
+   width we're about to free up for this step's grids. Render this
+   step at true 1:1 scale, matching the fix applied to steps 4 and 5. */
+.stepWorkspace:has(.zzContainer){
+  transform:none;
+  width:100%;
 }
 
 .zzHeading{
@@ -60,9 +69,11 @@
 
 .zzGridWrap{
   position:relative;
-  width:320px;
-  height:320px;
+  width:100%;
+  max-width:560px;
+  aspect-ratio:1;
   margin:auto;
+  container-type:inline-size;
 }
 
 .zzSvg{
@@ -77,10 +88,10 @@
 
 .zzGrid{
   display:grid;
-  grid-template-columns:repeat(8,40px);
-  grid-template-rows:repeat(8,40px);
-  width:320px;
-  height:320px;
+  grid-template-columns:repeat(8,1fr);
+  grid-template-rows:repeat(8,1fr);
+  width:100%;
+  height:100%;
   margin:auto;
 }
 
@@ -91,19 +102,20 @@
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  font-size:10px;
+  font-size:clamp(9px,3.4cqw,18px);
   font-family:Consolas,monospace;
   position:relative;
   transition:.2s;
 }
 
 .zzValue{
-  font-weight:700;
+  font-weight:900;
   color:#123b8d;
+  text-shadow:0.4px 0 0 currentColor,-0.4px 0 0 currentColor;
 }
 
 .zzOrder{
-  font-size:7px;
+  font-size:0.6em;
   color:#94a3b8;
 }
 
@@ -119,18 +131,43 @@
 
 .zzButton{
   margin-top:18px;
-  padding:14px 26px;
-  background:#2563eb;
+  width:280px;
+  max-width:100%;
+  padding:16px;
+  background:linear-gradient(135deg,#7c3aed,#2563eb,#0ea5e9);
+  background-size:200% 200%;
+  animation:zzGradientShift 3s ease infinite;
   color:#fff;
   border:none;
-  border-radius:10px;
+  border-radius:24px;
+  font-size:17px;
   font-weight:700;
+  letter-spacing:.3px;
   cursor:pointer;
+  box-shadow:0 4px 14px rgba(37,99,235,.4);
+  transition:.25s;
+}
+
+.zzButton:hover:not(:disabled){
+  transform:translateY(-3px) scale(1.03);
+  box-shadow:0 8px 22px rgba(37,99,235,.55);
+}
+
+.zzButton:active:not(:disabled){
+  transform:translateY(0) scale(.98);
+}
+
+@keyframes zzGradientShift{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
 }
 
 .zzButton:disabled{
-  opacity:.5;
+  opacity:.6;
   cursor:not-allowed;
+  animation:none;
+  transform:none;
 }
 
 .zzStatus{
@@ -195,16 +232,38 @@
   .zzLayout{
     grid-template-columns:1fr;
   }
+  .zzHeading h2{ font-size:22px; }
+  .zzHeading p{ font-size:14px; }
+  .zzGridCard,
+  .zz1dCard{ padding:16px; }
+  .zzGridWrap{ max-width:420px; }
+  .zzButton{ width:100%; font-size:15px; padding:14px; }
+  .zz1dString{ font-size:14px; padding:16px; }
+  .zzFormula .formulaCard{ padding:14px; line-height:1.7; }
+  .zzFormula h2{ font-size:16px; }
+  .observationCard{ padding:14px; line-height:1.7; }
+  .observationCard h3{ font-size:16px; }
+  .observationCard ul{ padding-left:16px; font-size:14px; }
+  .zzActive{
+    transform:scale(1.06);
+    z-index:6;
+  }
 }
 
-@media(max-width:420px){
-  .zzGridWrap,
-  .zzGrid{
-    width:280px;
-    height:280px;
-    grid-template-columns:repeat(8,35px);
-    grid-template-rows:repeat(8,35px);
-  }
+@media(max-width:480px){
+  .zzHeading h2{ font-size:19px; }
+  .zzHeading p{ font-size:13px; }
+  .zzGridWrap{ max-width:320px; }
+  .zzGridCard,
+  .zz1dCard{ padding:12px; }
+  .zzButton{ font-size:14px; padding:12px; }
+  .zz1dString{ font-size:12px; padding:12px; }
+  .zzChip{ width:26px; height:24px; font-size:9px; }
+  .zzFormula .formulaCard{ padding:12px; line-height:1.6; }
+  .zzFormula h2{ font-size:14px; }
+  .observationCard{ padding:12px; line-height:1.6; }
+  .observationCard h3{ font-size:15px; }
+  .observationCard ul{ padding-left:14px; font-size:13px; }
 }
 
 .zz1dString{

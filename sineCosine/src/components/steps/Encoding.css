@@ -1,10 +1,18 @@
 .encContainer{
   width:100%;
-  max-width:1100px;
+  max-width:1600px;
   margin:auto;
   display:flex;
   flex-direction:column;
   gap:28px;
+}
+
+/* stepWorkspace applies transform:scale(0.9) globally to fit most
+   steps within the viewport height. Render this step at true 1:1
+   scale, matching the fix applied to steps 4, 5 and 6. */
+.stepWorkspace:has(.encContainer){
+  transform:none;
+  width:100%;
 }
 
 .encHeading{
@@ -61,16 +69,18 @@
 }
 
 .encChip{
-  width:32px;
-  height:28px;
-  border-radius:6px;
+  width:clamp(34px,3.4vw,52px);
+  height:clamp(30px,3vw,44px);
+  border-radius:8px;
   background:#f1f5f9;
   border:1px solid #e2e8f0;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:11px;
+  font-size:clamp(12px,1.3vw,18px);
   font-family:Consolas,monospace;
+  font-weight:900;
+  text-shadow:0.4px 0 0 currentColor,-0.4px 0 0 currentColor;
   color:#334155;
   transition:.2s;
 }
@@ -92,18 +102,43 @@
 
 .encButton{
   margin-top:18px;
-  padding:14px 26px;
-  background:#2563eb;
+  width:280px;
+  max-width:100%;
+  padding:16px;
+  background:linear-gradient(135deg,#7c3aed,#2563eb,#0ea5e9);
+  background-size:200% 200%;
+  animation:encGradientShift 3s ease infinite;
   color:#fff;
   border:none;
-  border-radius:10px;
+  border-radius:24px;
+  font-size:17px;
   font-weight:700;
+  letter-spacing:.3px;
   cursor:pointer;
+  box-shadow:0 4px 14px rgba(37,99,235,.4);
+  transition:.25s;
+}
+
+.encButton:hover:not(:disabled){
+  transform:translateY(-3px) scale(1.03);
+  box-shadow:0 8px 22px rgba(37,99,235,.55);
+}
+
+.encButton:active:not(:disabled){
+  transform:translateY(0) scale(.98);
+}
+
+@keyframes encGradientShift{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
 }
 
 .encButton:disabled{
-  opacity:.5;
+  opacity:.6;
   cursor:not-allowed;
+  animation:none;
+  transform:none;
 }
 
 .encStatus{
@@ -149,41 +184,65 @@
   font-style:italic;
 }
 
-.encBinaryNote{
-  color:#64748b;
-  font-size:13px;
-  margin-bottom:16px;
-}
-
-.encBinaryStream{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  justify-content:center;
-}
-
-.encBinaryChip{
-  background:#0f172a;
-  color:#93c5fd;
-  padding:8px 12px;
-  border-radius:8px;
-  font-family:Consolas,monospace;
-  font-size:12px;
-}
-
-.encBinaryChip b{
-  color:#fde68a;
-}
-
-.encBinaryEOB{
-  background:#16a34a;
-  color:#fff;
-}
-
 @media(max-width:768px){
-  .encChip{ width:26px; height:24px; font-size:9px; }
   .encHeading h2{ font-size:22px; }
-  .encBinaryChip{ font-size:10px; }
+  .encHeading p{ font-size:14px; }
+  .encWarning{ padding:12px 14px; font-size:13px; }
+  .encSequenceCard,
+  .encStreamCard{ padding:16px; }
+  .encChip{
+    width:clamp(24px,8vw,34px);
+    height:clamp(22px,7vw,30px);
+    font-size:clamp(10px,3.2vw,13px);
+  }
+  .encButton{ width:100%; font-size:15px; padding:14px; }
+  .encPair{ padding:6px 10px; font-size:13px; }
+  .encEOB{ padding:6px 12px; font-size:13px; }
+  .eobExplainCard{ padding:14px; line-height:1.55; margin-top:14px; }
+  .eobExplainCard h3{ font-size:15px; }
+  .eobExplainCard p{ font-size:13px; }
+  .eobExample{ padding:8px 10px; gap:4px; margin:10px 0; }
+  .eobBefore{ font-size:12px; }
+  .eobArrow{ font-size:11px; }
+  .eobAfter{ font-size:12px; padding:3px 8px; }
+  .eobNote{ font-size:12px; }
+  .compressionSection{ padding:14px; }
+  .compressionSection h3{ font-size:16px; }
+  .compressionCard{ padding:14px; }
+  .statValue{ font-size:20px; }
+  .observationCard{ padding:14px; line-height:1.7; }
+  .observationCard h3{ font-size:16px; }
+  .observationCard ul{ padding-left:16px; font-size:14px; }
+  .encChipCurrent{ transform:scale(1.08); }
+}
+
+@media(max-width:480px){
+  .encHeading h2{ font-size:19px; }
+  .encHeading p{ font-size:13px; }
+  .encSequenceCard,
+  .encStreamCard{ padding:12px; }
+  .encChip{
+    width:clamp(20px,9vw,28px);
+    height:clamp(18px,8vw,26px);
+    font-size:clamp(9px,3.4vw,11px);
+  }
+  .encButton{ font-size:14px; padding:12px; }
+  .encPair{ padding:5px 8px; font-size:12px; }
+  .eobExplainCard{ padding:10px; line-height:1.5; margin-top:12px; }
+  .eobExplainCard h3{ font-size:14px; }
+  .eobExplainCard p{ font-size:12px; }
+  .eobExample{ padding:7px 8px; gap:3px; margin:8px 0; }
+  .eobBefore{ font-size:11px; }
+  .eobArrow{ font-size:10px; }
+  .eobAfter{ font-size:11px; padding:2px 7px; }
+  .eobNote{ font-size:11px; }
+  .compressionSection{ padding:12px; }
+  .compressionSection h3{ font-size:15px; }
+  .compressionCard{ padding:12px; }
+  .statValue{ font-size:17px; }
+  .observationCard{ padding:12px; line-height:1.6; }
+  .observationCard h3{ font-size:15px; }
+  .observationCard ul{ padding-left:14px; font-size:13px; }
 }
 
 .eobExplainCard{

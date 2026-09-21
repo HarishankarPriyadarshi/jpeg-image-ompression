@@ -1,8 +1,16 @@
+/* the shared .ioContainer wrapper shrink-wraps its content by default,
+   which was leaving this step's cards far smaller than the available
+   panel width. Stretch it to full width for this step too. */
+.ioContainer:has(.basisContainer){
+  width:100%;
+  align-items:stretch;
+}
+
 .basisContainer{
 
 width:100%;
 
-max-width:1100px;
+max-width:none;
 
 margin:auto;
 
@@ -17,10 +25,6 @@ gap:28px;
 .basisHeading{
 
 text-align:center;
-
-border-bottom:2px solid #dbeafe;
-
-padding-bottom:18px;
 
 }
 
@@ -38,9 +42,9 @@ margin-bottom:10px;
 
 color:#666;
 
-max-width:none;
+max-width:600px;
 
-white-space:nowrap;
+white-space:normal;
 
 margin:auto;
 
@@ -64,13 +68,17 @@ flex-wrap:wrap;
 
 background:white;
 
-padding:22px;
+padding:14px 20px;
 
-border-radius:18px;
+border-radius:14px;
 
-box-shadow:0 8px 20px rgba(0,0,0,.08);
+box-shadow:0 6px 16px rgba(0,0,0,.08);
 
-min-width:300px;
+min-width:260px;
+
+max-width:360px;
+
+margin:0 auto;
 
 text-align:center;
 
@@ -78,7 +86,9 @@ text-align:center;
 
 .controlCard h3{
 
-margin-bottom:15px;
+margin-bottom:10px;
+
+font-size:15px;
 
 color:#123b8d;
 
@@ -100,7 +110,7 @@ flex-wrap:wrap;
 .toggleButtons button,
 .blockButtons button{
 
-padding:12px 22px;
+padding:8px 18px;
 
 border:none;
 
@@ -111,6 +121,8 @@ border-radius:10px;
 cursor:pointer;
 
 font-weight:600;
+
+font-size:14px;
 
 transition:.3s;
 
@@ -126,23 +138,89 @@ color:white;
 
 .basisLayout{
 
-display:grid;
-
-grid-template-columns:1fr 70px 1fr;
+display:flex;
 
 align-items:center;
 
 justify-content:center;
 
-column-gap:25px;
+flex-wrap:wrap;
+
+gap:20px;
 
 margin-top:30px;
 
-max-width:1400px;
+width:100%;
+
+max-width:none;
 
 margin-left:auto;
 
 margin-right:auto;
+
+}
+
+.blockCard{
+
+flex:0.85 1 320px;
+
+min-width:0;
+
+max-width:380px;
+
+margin:0;
+
+}
+
+.basisArrow{
+
+flex:0 0 auto;
+
+font-size:38px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+color:#2563eb;
+
+font-weight:bold;
+
+}
+
+.basisBlockPreview{
+
+display:grid;
+
+grid-template-columns:repeat(8,minmax(0,1fr));
+
+grid-auto-rows:1fr;
+
+gap:3px;
+
+width:100%;
+
+max-width:320px;
+
+margin:0 auto;
+
+box-sizing:border-box;
+
+}
+
+.basisBlockPixel{
+
+width:100%;
+
+aspect-ratio:1;
+
+box-sizing:border-box;
+
+border-radius:3px;
+
+border:1px solid #dbeafe;
 
 }
 
@@ -162,21 +240,22 @@ overflow:visible;
 
 }
 
-.blockCard{
-
-width:100%;
-
-}
-
 .orthoMatrixCard{
 
-width:fit-content;
+flex:1.15 1 380px;
+
+min-width:0;
+
+max-width:520px;
+
+margin:0;
 
 position:relative;
 
 z-index:2;
 
 overflow:visible;
+box-sizing:border-box;
 
 }
 
@@ -210,31 +289,10 @@ background:#f8fbff;
 
 }
 
-.basisArrow{
-
-font-size:48px;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-color:#2563eb;
-
-font-weight:bold;
-
-position:relative;
-
-z-index:5;
-
-margin:0 -10px;
-
-}
-
 .generateButton{
 
 width:280px;
+max-width:100%;
 
 margin:auto;
 
@@ -242,45 +300,89 @@ padding:16px;
 
 border:none;
 
-border-radius:12px;
+border-radius:24px;
 
-background:#2563eb;
+background:linear-gradient(135deg,#7c3aed,#2563eb,#0ea5e9);
+background-size:200% 200%;
+animation:basisGradientShift 3s ease infinite;
 
 color:white;
 
 font-size:17px;
 
 font-weight:700;
+letter-spacing:.3px;
 
 cursor:pointer;
 
-transition:.3s;
+box-shadow:0 4px 14px rgba(37,99,235,.4);
+
+transition:.25s;
 
 }
 
-.generateButton:hover{
+.generateButton:hover:not(:disabled){
 
-transform:translateY(-2px);
+transform:translateY(-3px) scale(1.03);
+box-shadow:0 8px 22px rgba(37,99,235,.55);
 
 }
 
+.generateButton:active:not(:disabled){
+transform:translateY(0) scale(.98);
+}
+
+@keyframes basisGradientShift{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+/* Redesigned as a clean spreadsheet-style table: a single hairline grid
+   (drawn with cell borders instead of a coloured background + gap), a
+   highlighted header row/column, and a subtle hover affordance so it's
+   obvious every cell is clickable. */
 .basisGrid{
 
 display:grid;
 
-grid-template-columns:44px repeat(8,54px);
+grid-template-columns:minmax(30px,0.55fr) repeat(8, minmax(0,1fr));
 
-justify-content:center;
+gap:0;
 
-align-items:center;
+width:100%;
 
-gap:6px;
+border:1px solid #c7d7ff;
+
+border-radius:10px;
+
+overflow:hidden;
+
+background:#c7d7ff;
+
+}
+
+.basisGrid > *{
+
+border-right:1px solid #e3ecff;
+
+border-bottom:1px solid #e3ecff;
+
+}
+
+.basisGrid > *:nth-child(9n){
+
+border-right:none;
 
 }
 
 .basisGrid span{
 
-height:44px;
+width:100%;
+
+aspect-ratio:1.35;
+
+box-sizing:border-box;
 
 display:flex;
 
@@ -288,19 +390,32 @@ justify-content:center;
 
 align-items:center;
 
-font-size:12px;
-font-family:Consolas,monospace;
-font-weight:600;
+overflow:hidden;
 
-background:#edf4ff;
+white-space:nowrap;
 
-border:1px solid #bfd4ff;
+padding:0 1px;
+letter-spacing:-.3px;
 
-border-radius:8px;
+font-size:clamp(9px,1.5vw,15px);
+font-variant-numeric:tabular-nums;
+font-weight:700;
+
+background:#ffffff;
+
+color:#1e293b;
+
+cursor:pointer;
+
+transition:background .15s;
 
 animation:pop .25s;
 
-cursor:pointer;
+}
+
+.basisGrid span:not(.emptyBasisCell):hover{
+
+background:#eef4ff;
 
 }
 
@@ -634,31 +749,294 @@ border-radius:18px;
 
 box-shadow:0 8px 20px rgba(0,0,0,.08);
 
-line-height:1.8;
-
 }
 
 .currentCalculation h3{
 
-margin-bottom:18px;
-
 color:#123b8d;
 
-text-align:center;
-
-}
-
-.currentCalculation p{
-
-margin:8px 0;
-
-font-size:15px;
+margin:0;
 
 }
 
 .currentCalculation b{
 
 color:#2563eb;
+
+}
+
+/* --- New calculation timeline: a simple numbered vertical list, one
+   plain-language line per step, with the final answer picked out. --- */
+
+.calcHeaderRow{
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:12px;
+
+flex-wrap:wrap;
+
+margin-bottom:6px;
+
+}
+
+.calcCellBadge{
+
+background:#eaf1ff;
+
+color:#123b8d;
+
+font-weight:700;
+
+font-size:13px;
+
+padding:5px 12px;
+
+border-radius:20px;
+
+}
+
+.calcHint{
+
+text-align:center;
+
+color:#888;
+
+font-size:14px;
+
+padding:10px 0 4px;
+
+}
+
+.calcTimeline{
+
+margin-top:18px;
+
+display:flex;
+
+flex-direction:column;
+
+gap:0;
+
+}
+
+.calcTimelineItem{
+
+display:flex;
+
+gap:14px;
+
+padding-bottom:18px;
+
+position:relative;
+
+}
+
+.calcTimelineItem:not(:last-child)::before{
+
+content:"";
+
+position:absolute;
+
+left:13px;
+
+top:28px;
+
+bottom:0;
+
+width:2px;
+
+background:#dbeafe;
+
+}
+
+.calcStepBadge{
+
+flex:0 0 auto;
+
+width:26px;
+
+height:26px;
+
+border-radius:50%;
+
+background:#eaf1ff;
+
+color:#123b8d;
+
+font-weight:700;
+
+font-size:13px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+position:relative;
+
+z-index:1;
+
+}
+
+.calcStepBody{
+
+flex:1;
+
+padding-top:2px;
+
+}
+
+.calcStepLabel{
+
+font-size:12px;
+
+font-weight:700;
+
+text-transform:uppercase;
+
+letter-spacing:.4px;
+
+color:#8a9bbf;
+
+margin-bottom:4px;
+
+}
+
+.calcStepExpr{
+
+font-size:15px;
+
+font-family:Consolas,monospace;
+
+color:#1e293b;
+
+display:flex;
+
+align-items:center;
+
+flex-wrap:wrap;
+
+gap:4px;
+
+}
+
+.calcResultItem .calcStepBadge{
+
+background:#16a34a;
+
+color:white;
+
+}
+
+.calcResultItem .calcStepLabel{
+
+color:#16a34a;
+
+}
+
+.calcResultItem .calcStepExpr{
+
+font-size:17px;
+
+font-weight:700;
+
+}
+
+.calcResultItem .calcStepExpr b{
+
+color:#16a34a;
+
+}
+
+/* Small inline fraction used inside calculation expressions, so any
+   "numerator / denominator" always renders as a proper stacked fraction. */
+
+.inlineFrac{
+
+display:inline-flex;
+
+flex-direction:column;
+
+align-items:center;
+
+margin:0 4px;
+
+vertical-align:middle;
+
+}
+
+.inlineFracNum,
+.inlineFracDen{
+
+font-size:12px;
+
+line-height:1.3;
+
+}
+
+.inlineFracLine{
+
+width:100%;
+
+height:1px;
+
+background:currentColor;
+
+margin:1px 0;
+
+}
+
+.playControls{
+
+display:flex;
+
+gap:10px;
+
+justify-content:center;
+
+margin-top:14px;
+
+}
+
+.calcPlayBtn{
+
+padding:9px 20px;
+
+border:none;
+
+border-radius:20px;
+
+background:#2563eb;
+
+color:white;
+
+font-weight:700;
+
+font-size:13px;
+
+cursor:pointer;
+
+transition:.2s;
+
+}
+
+.calcPlayBtn:hover{
+
+transform:translateY(-2px);
+
+box-shadow:0 6px 14px rgba(37,99,235,.3);
+
+}
+
+.calcFastForward{
+
+background:#0ea5e9;
 
 }
 
@@ -729,6 +1107,8 @@ background:#eef6ff;
 border-left:5px solid #2563eb;
 
 border-radius:10px;
+
+font-size:15px;
 
 line-height:1.8;
 
@@ -1002,69 +1382,22 @@ box-shadow:0 0 0px rgba(37,99,235,.4);
 
 }
 
-.selectedBlockPreview{
+.emptyBasisCell{
+background:#f8fafc !important;
+color:#cbd5e1;
+cursor:default;
+}
 
-display:grid;
-
-grid-template-columns:repeat(8,1fr);
-
-gap:4px;
+.matrixHeader,
+.matrixCorner{
 
 width:100%;
 
-max-width:520px;
+height:100%;
 
-margin:0 auto;
+min-height:34px;
 
-}
-
-.blockPixel{
-
-width:100%;
-
-aspect-ratio:1;
-
-border-radius:4px;
-
-border:1px solid #d1d5db;
-
-}
-
-.selectedBlockPreview{
-
-display:grid;
-
-grid-template-columns:repeat(8,1fr);
-
-gap:4px;
-
-width:100%;
-
-max-width:520px;
-
-margin:0 auto;
-
-padding:20px;
-
-}
-
-.blockPixel{
-
-width:100%;
-
-aspect-ratio:1;
-
-border-radius:4px;
-
-border:1px solid #dbeafe;
-
-}
-
-.matrixHeader{
-
-width:38px;
-
-height:34px;
+box-sizing:border-box;
 
 display:flex;
 
@@ -1074,7 +1407,11 @@ align-items:center;
 
 font-weight:700;
 
+font-size:clamp(10px,1.6vw,14px);
+
 color:#123b8d;
+
+background:#eaf1ff;
 
 }
 
@@ -1086,11 +1423,11 @@ justify-content:center;
 
 align-items:center;
 
-gap:18px;
+gap:10px;
 
-margin-top:18px;
+margin-top:10px;
 
-font-size:26px;
+font-size:16px;
 
 font-family:"Cambria Math",serif;
 
@@ -1116,19 +1453,19 @@ flex-direction:column;
 
 align-items:center;
 
-min-width:180px;
+min-width:110px;
 
 }
 
 .numerator{
 
-padding-bottom:8px;
+padding-bottom:4px;
 
 }
 
 .line{
 
-width:180px;
+width:110px;
 
 height:2px;
 
@@ -1140,7 +1477,7 @@ margin:2px 0;
 
 .denominator{
 
-padding-top:8px;
+padding-top:4px;
 
 }
 
@@ -1212,80 +1549,6 @@ line-height:1.8;
 
 }
 
-.orthoMatrixCard{
-
-width:fit-content;
-
-max-width:100%;
-
-min-width:0;
-
-margin:0 auto;
-
-overflow:visible;
-
-}
-
-.equationDisplay{
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-gap:18px;
-
-margin-top:18px;
-
-font-size:28px;
-
-font-family:"Cambria Math",Cambria,serif;
-
-font-weight:600;
-
-flex-wrap:wrap;
-
-}
-
-.fractionFormula{
-
-display:flex;
-
-flex-direction:column;
-
-align-items:center;
-
-min-width:180px;
-
-}
-
-.numerator{
-
-padding-bottom:8px;
-
-font-size:26px;
-
-}
-
-.fractionLine{
-
-width:170px;
-
-border-top:2px solid #111;
-
-margin:2px 0;
-
-}
-
-.denominator{
-
-padding-top:8px;
-
-font-size:26px;
-
-}
-
 .waveSvg{
 
 width:100%;
@@ -1353,21 +1616,18 @@ color:#123b8d;
 
 @media(max-width:1150px){
   .basisLayout{
-    grid-template-columns:1fr;
-    row-gap:20px;
+    flex-direction:column;
+    gap:20px;
   }
   .basisArrow{
     transform:rotate(90deg);
     margin:0 auto;
   }
-  .blockCard{
-    width:100%;
-    max-width:480px;
-    margin:0 auto;
-  }
+  .blockCard,
   .orthoMatrixCard{
-    width:fit-content;
-    max-width:100%;
+    flex:none;
+    width:100%;
+    max-width:600px;
     margin:0 auto;
   }
 }
@@ -1378,21 +1638,25 @@ color:#123b8d;
   }
   .equation{
     flex-wrap:wrap;
-    font-size:20px;
-  }
-  .equationDisplay{
-    font-size:22px;
+    font-size:15px;
   }
 }
 
 @media(max-width:768px){
-  .basisGrid{
-    grid-template-columns:36px repeat(8,40px);
-    gap:4px;
+  .basisHeading{
+    padding:0 6px;
   }
-  .basisGrid span,
-  .basisGrid div{
-    font-size:9px;
+  .basisHeading h2{
+    font-size:22px;
+  }
+  .basisHeading p{
+    font-size:13px;
+    line-height:1.5;
+  }
+  .waveDescription{
+    padding:12px 14px;
+    font-size:13px;
+    line-height:1.6;
   }
   .blockCard,
   .orthoMatrixCard{
@@ -1401,21 +1665,15 @@ color:#123b8d;
   .waveSvg{
     max-width:100%;
   }
-  .fraction,
-  .fractionFormula{
-    min-width:120px;
+  .fraction{
+    min-width:100px;
   }
-  .line,
-  .fractionLine{
-    width:120px;
+  .line{
+    width:100px;
   }
   .equation{
-    font-size:16px;
-    gap:10px;
-  }
-  .numerator,
-  .denominator{
-    font-size:18px;
+    font-size:14px;
+    gap:8px;
   }
   .pipelineBox,
   .pipelineResult{
@@ -1433,12 +1691,20 @@ color:#123b8d;
   .frequencyBar{
     grid-template-columns:repeat(2,70px);
   }
-  .selectedBlockPreview{
-    grid-template-columns:repeat(8,22px) !important;
+  .orthoMatrixCard{
+    padding:12px 6px;
   }
-  .blockPixel{
-    width:22px !important;
-    height:22px !important;
+  .basisGrid{
+    grid-template-columns:minmax(20px,0.4fr) repeat(8, minmax(0,1fr));
+  }
+  .basisGrid span{
+    font-size:clamp(7px,2.6vw,10px);
+    letter-spacing:-.6px;
+    padding:0;
+  }
+  .matrixHeader,
+  .matrixCorner{
+    font-size:clamp(7px,2.6vw,10px);
   }
 }
 
@@ -1452,35 +1718,10 @@ line-height:1.6;
 white-space:normal;
 }
 
-.playControls{
-display:flex;
-gap:14px;
-justify-content:center;
-}
-
-.fastForward{
-background:#0ea5e9;
-}
-
 .generateButton:disabled,
 .toggleButtons button:disabled{
 opacity:.5;
 cursor:not-allowed;
-}
-
-.calcSteps{
-margin-top:14px;
-text-align:left;
-}
-
-.calcStepLine{
-background:#f1f5f9;
-padding:8px 12px;
-border-radius:8px;
-margin-bottom:6px;
-font-family:Consolas,monospace;
-font-size:13px;
-color:#1e293b;
 }
 
 .miniFormulaText{

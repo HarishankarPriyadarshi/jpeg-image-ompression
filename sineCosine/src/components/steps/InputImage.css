@@ -1,708 +1,295 @@
 .inputImageContainer{
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:20px;
+  width:100%;
+  max-width:1450px;
+  margin:auto;
+  box-sizing:border-box;
+}
+
+.pageHeading{
+  text-align:center;
+  margin-bottom:20px;
+  border-bottom:2px solid #dbeafe;
+  padding-bottom:18px;
+}
+
+.pageHeading h2{
+  font-size:28px;
+  color:#0d2c72;
+  margin-bottom:10px;
+}
+
+.pageHeading p{
+  font-size:14px;
+  color:#666;
+  max-width:none;
+  line-height:1.6;
+}
+
+/* ---------- Matrix selection cards ---------- */
+
+.matrixSelection{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  align-items:stretch;
+  width:100%;
 }
 
 .matrixCard{
-    width:auto;
-    min-height:auto;
-
-    background:#fff;
-    padding:6px;
-    border-radius:8px;
-
-    border:2px solid transparent;
-    box-shadow:0 3px 8px rgba(0,0,0,.08);
-
-    text-align:center;
-    cursor:pointer;
-    transition:.3s;
-
-    box-sizing:border-box;
-}
-
-
-.matrixCard{
-background:#fff;
-padding:6px;
-border-radius:8px;
-cursor:pointer;
-text-align:center;
-border:2px solid transparent;
-transition:.3s;
-box-shadow:0 3px 8px rgba(0,0,0,.08);
-
-width:auto;
-min-height:auto;
+  width:auto;
+  min-height:auto;
+  background:#fff;
+  padding:6px;
+  border-radius:8px;
+  border:2px solid transparent;
+  box-shadow:0 3px 8px rgba(0,0,0,.08);
+  text-align:center;
+  cursor:pointer;
+  transition:.3s;
+  box-sizing:border-box;
 }
 
 .matrixCard:hover{
-
-transform:translateY(-6px);
-
-border-color:#2563eb;
-
+  transform:translateY(-6px);
+  border-color:#2563eb;
 }
 
 .activeMatrix{
-
-border:2px solid #2563eb;
-
-background:#eef4ff;
-
-box-shadow:0 0 20px rgba(37,99,235,.25);
-
-}
-
-.randomButton{
-grid-column:1 / -1;
-justify-self:center;
-
-width:180px;
-margin-top:8px;
-
-padding:8px;
-background:linear-gradient(90deg,#1d4ed8,#2563eb);
-color:white;
-font-size:13px;
-font-weight:600;
-border:none;
-border-radius:8px;
-cursor:pointer;
-transition:.3s;
-}
-
-.randomButton:hover{
-
-transform:scale(1.02);
-
-}
-
-.selectedMatrixCard{
-margin-top:20px;
-background:white;
-padding:20px;
-border-radius:15px;
-box-shadow:0 3px 12px rgba(0,0,0,.08);
-text-align:center;
-
-}
-
-.matrixInfoContainer{
-
-display:flex;
-
-justify-content:center;
-
-gap:30px;
-
-margin:35px 0;
-
-flex-wrap:wrap;
-
-}
-
-.infoCard{
-
-background:white;
-
-padding:18px 24px;
-
-width:100%;
-
-max-width:900px;
-
-border-radius:16px;
-
-box-shadow:0 8px 18px rgba(0,0,0,.08);
-
-}
-
-.infoCardHorizontal{
-
-display:flex;
-
-align-items:center;
-
-flex-wrap:wrap;
-
-gap:24px;
-
-}
-
-.infoCardHorizontal h3{
-
-margin:0;
-
-color:#17357d;
-
-white-space:nowrap;
-
-}
-
-.infoRow{
-
-display:flex;
-
-flex-wrap:wrap;
-
-gap:24px;
-
-font-size:14px;
-
-color:#333;
-
-}
-
-.infoRow strong{
-
-color:#0d2c72;
-
-margin-right:4px;
-
-}
-
-.noMatrixMsg{
-
-margin-top:10px;
-
-padding:16px;
-
-text-align:center;
-
-color:#666;
-
-font-size:15px;
-
-border:1px dashed #c7d7ff;
-
-border-radius:12px;
-
-background:#f8fbff;
-
-}
-
-.infoCard h3{
-
-color:#17357d;
-
-margin-bottom:15px;
-
-}
-
-.infoCard p{
-
-display:flex;
-
-justify-content:space-between;
-
-padding:6px 0;
-
-border-bottom:1px solid #eee;
-
-font-size:15px;
-
-}
-
-.infoCard strong{
-
-width:130px;
-
-display:inline-block;
-
-color:#0d2c72;
-
-}
-
-.pageHeading{
-
-text-align:center;
-
-margin-bottom:20px;
-
-}
-
-.pageHeading h2{
-
-font-size:28px;
-
-color:#0d2c72;
-
-margin-bottom:10px;
-
-}
-
-.pageHeading p{
-
-font-size:14px;
-
-color:#666;
-
-max-width:none;
-
-white-space:nowrap;
-
-line-height:1.6;
-
-}
-
-.matrixPreviewGrid{
-
-display:grid;
-
-grid-template-columns:repeat(16,32px);
-
-grid-auto-rows:32px;
-
-width:512px;
-
-gap:0;
-
-justify-content:start;
-
-margin:0 auto;
-
-line-height:0;
-
-}
-
-.previewPixel{
-
-width:32px;
-
-height:32px;
-
-box-sizing:border-box;
-
-}
-
-.inputImageContainer{
-
-width:100%;
-
-max-width:1450px;
-
-margin:auto;
-
-}
-
-
-.pageHeading{
-
-border-bottom:2px solid #dbeafe;
-
-padding-bottom:18px;
-
-}
-
-.matrixDetails{
-
-margin-top:18px;
-
-display:flex;
-
-justify-content:center;
-
-gap:35px;
-
-font-size:15px;
-
-color:#555;
-
+  border:2px solid #2563eb;
+  background:#eef4ff;
+  box-shadow:0 0 20px rgba(37,99,235,.25);
 }
 
 .activeMatrix::after{
-
-content:"✔ Selected";
-
-display:block;
-
-margin-top:10px;
-
-font-size:13px;
-
-color:#2563eb;
-
-font-weight:600;
-
-}
-
-.matrixStats{
-
-margin-top:25px;
-
-display:grid;
-
-grid-template-columns:repeat(2,1fr);
-
-gap:12px;
-
-width:100%;
-
-}
-
-.matrixStats div{
-
-display:flex;
-
-justify-content:space-between;
-
-padding:10px 14px;
-
-background:#f8fbff;
-
-border-radius:8px;
-
-border:1px solid #dbeafe;
-
-}
-
-.matrixStats b{
-
-color:#123b8d;
-
-}
-
-.matrixStats span{
-
-font-weight:600;
-
-}
-
-@media (max-width:900px){
-
-.selectedMatrixLayout{
-grid-template-columns:1fr;
-row-gap:30px;
-}
-
-.previewBox,
-.matrixBox{
-width:100%;
-max-width:380px;
-margin:0 auto;
-}
-
-}
-
-.matrixSelection{
-
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:14px;
-align-items:stretch;
-
-}
-
-@media (max-width:768px){
-
-    .matrixSelection{
-grid-template-columns:1fr;
-width:100%;
-justify-items:center;
-}
-
-.inputImageContainer{
-
-padding:10px;
-
-}
-
-
-
-.pageHeading h2{
-
-font-size:24px;
-
-}
-
-.pageHeading p{
-
-font-size:14px;
-
-}
-
-
-
-
-.matrixInfoContainer{
-
-flex-direction:column;
-
-align-items:center;
-
-}
-
-.infoCard{
-
-width:100%;
-
-max-width:350px;
-
-}
-
-.valueMatrix,
-.matrixPreviewGrid{
-grid-template-columns:repeat(16,18px) !important;
-grid-auto-rows:18px !important;
-}
-
-.pixelCell{
-width:18px !important;
-height:18px !important;
-}
-
-.previewCanvas{
-width:288px !important;
-height:288px !important;
-}
-
-
-
-
-
-}
-.miniPreview{
-
-width:100%;
-
-height:22px;
-
-margin:4px auto 0;
-
-border-radius:5px;
-
-border:1px solid #d9d9d9;
-
-}
-
-.miniPreview.smooth{
-
-background:linear-gradient(
-90deg,
-rgb(120,120,120),
-rgb(150,150,150)
-);
-
-}
-
-.miniPreview.edge{
-
-background:linear-gradient(
-90deg,
-rgb(40,40,40) 50%,
-rgb(220,220,220) 50%
-);
-
-}
-
-.miniPreview.gradient{
-
-background:linear-gradient(
-90deg,
-black,
-white
-);
-
-}
-
-.miniPreview.texture{
-
-background:
-repeating-linear-gradient(
-45deg,
-#555 0px,
-#555 6px,
-#ddd 6px,
-#ddd 12px
-);
-
+  content:"✔ Selected";
+  display:block;
+  margin-top:10px;
+  font-size:13px;
+  color:#2563eb;
+  font-weight:600;
 }
 
 .matrixCard h3{
-
-margin:0;
-font-size:11px;
-color:#17357d;
-
+  margin:0;
+  font-size:11px;
+  color:#17357d;
 }
 
-.matrixCard h4{
-
-margin:4px 0;
-
-font-size:13px;
-
-color:#17357d;
-
+.miniPreview{
+  width:100%;
+  height:22px;
+  margin:4px auto 0;
+  border-radius:5px;
+  border:1px solid #d9d9d9;
 }
 
-.matrixCard p{
-
-font-size:12px;
-
-color:#666;
-
-margin-top:4px;
-
+.miniPreview.smooth{
+  background:linear-gradient(90deg, rgb(120,120,120), rgb(150,150,150));
 }
 
-.matrixDisplaySection{
-
-display:flex;
-
-justify-content:center;
-
-gap:30px;
-
-align-items:flex-start;
-
-margin-top:20px;
-
-flex-wrap:wrap;
-
+.miniPreview.edge{
+  background:linear-gradient(90deg, rgb(40,40,40) 50%, rgb(220,220,220) 50%);
 }
 
-.previewSection,
-.valueSection{
-
-background:#fff;
-
-padding:18px;
-
-border-radius:14px;
-
-box-shadow:0 6px 15px rgba(0,0,0,.08);
-
+.miniPreview.gradient{
+  background:linear-gradient(90deg, black, white);
 }
 
-.previewSection h4,
-.valueSection h4{
-
-text-align:center;
-
-margin-bottom:15px;
-
-color:#17357d;
-
+.miniPreview.texture{
+  background:repeating-linear-gradient(45deg, #555 0px, #555 6px, #ddd 6px, #ddd 12px);
 }
 
+.randomButton{
+  grid-column:1 / -1;
+  justify-self:center;
+  width:220px;
+  max-width:100%;
+  margin-top:8px;
+  padding:11px;
+  background:linear-gradient(135deg,#7c3aed,#2563eb,#0ea5e9);
+  background-size:200% 200%;
+  color:white;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:.3px;
+  border:none;
+  border-radius:24px;
+  cursor:pointer;
+  box-shadow:0 4px 14px rgba(37,99,235,.4);
+  transition:.3s;
+  animation:gradientShift 3s ease infinite;
+}
 
+.randomButton:hover{
+  transform:translateY(-2px) scale(1.03);
+  box-shadow:0 8px 20px rgba(37,99,235,.55);
+}
 
+.randomButton.rolling{
+  animation:gradientShift .6s ease infinite, pulseGlow .3s ease infinite;
+}
+
+@keyframes gradientShift{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+@keyframes pulseGlow{
+  0%{box-shadow:0 0 0 rgba(37,99,235,.5);}
+  50%{box-shadow:0 0 14px rgba(37,99,235,.7);}
+  100%{box-shadow:0 0 0 rgba(37,99,235,.5);}
+}
+
+.noMatrixMsg{
+  margin-top:10px;
+  padding:16px;
+  text-align:center;
+  color:#666;
+  font-size:15px;
+  border:1px dashed #c7d7ff;
+  border-radius:12px;
+  background:#f8fbff;
+}
+
+/* ---------- Selected matrix detail view ---------- */
+
+.selectedMatrixCard{
+  width:100%;
+  margin-top:20px;
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 3px 12px rgba(0,0,0,.08);
+  text-align:center;
+  box-sizing:border-box;
+}
+
+/* Fluid two-column layout that wraps to a single column on narrow screens.
+   No fixed pixel widths here so it never forces horizontal scrolling. */
 .selectedMatrixLayout{
-
-display:grid;
-
-grid-template-columns:560px 560px;
-
-justify-content:center;
-
-column-gap:40px;
-
-margin-top:30px;
-
-align-items:start;
-
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+  justify-content:center;
+  gap:30px;
+  margin-top:30px;
+  align-items:start;
+  width:100%;
 }
 
 .previewBox,
 .matrixBox{
-
-display:flex;
-flex-direction:column;
-align-items:center;
-width:560px;
-height:auto;
-box-sizing:border-box;
-background:#ffffff;
-border:1px solid #e2e8f0;
-border-radius:16px;
-box-shadow:0 8px 20px rgba(0,0,0,.06);
-padding:16px;
-margin:0 auto;
-
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:100%;
+  max-width:512px;
+  box-sizing:border-box;
+  background:#ffffff;
+  border:1px solid #e2e8f0;
+  border-radius:16px;
+  box-shadow:0 8px 20px rgba(0,0,0,.06);
+  padding:16px;
+  margin:0 auto;
 }
 
 .previewBox h4,
 .matrixBox h4{
-
-font-size:16px;
-letter-spacing:.3px;
-color:#123b8d;
-margin-bottom:14px;
-white-space:nowrap;
-
+  font-size:16px;
+  letter-spacing:.3px;
+  color:#123b8d;
+  margin-bottom:14px;
+  text-align:center;
 }
 
-.matrixType{
-
-margin-top:6px;
-
-font-size:14px;
-
-color:#666;
-
-}
-
-.previewCanvas{
-
-width:512px;
-
-height:512px;
-
-display:block;
-
-margin:0 auto;
-
-image-rendering:pixelated;
-
+/* Pixel value grid — sizing is driven entirely by the inline styles in
+   InputImage.jsx (100% width, aspect-ratio 1, clamp() font-size), so the
+   grid shrinks smoothly on any screen size without needing breakpoint hacks.
+   Cells are separated by a small gap (the card's own background shows
+   through as thin grid lines) instead of a border on every cell — this
+   keeps every pixel of cell width available for the number itself, and
+   matches the Image Preview box for size since both share the exact
+   same container width divided into the same 16 columns. */
+.valueMatrix{
+  width:100%;
+  background:#c7d7ff;
+  gap:1px;
+  border-radius:6px;
+  overflow:hidden;
 }
 
 .pixelCell{
-width:32px !important;
-height:32px !important;
-box-sizing:border-box !important;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#edf3ff;
+  box-sizing:border-box;
+  font-variant-numeric:tabular-nums;
+  color:#0d2c72;
+  overflow:hidden;
 }
 
-.valueMatrix{
-
-display:grid;
-
-grid-template-columns:repeat(16,32px);
-
-grid-auto-rows:32px;
-
-width:512px;
-
-gap:0;
-
-justify-content:start;
-
-margin:0 auto;
-
+.previewCanvas{
+  display:block;
+  margin:0 auto;
+  image-rendering:pixelated;
 }
 
+/* ---------- Small phones: tighten spacing only, layout stays fluid ---------- */
+@media (max-width:768px){
+  .matrixSelection{
+    grid-template-columns:1fr;
+    justify-items:center;
+  }
 
-.valueMatrix span{
+  .inputImageContainer{
+    padding:6px 0;
+  }
 
-width:32px;
+  .pageHeading h2{
+    font-size:22px;
+  }
 
-height:32px;
+  .pageHeading p{
+    font-size:13px;
+  }
 
-display:flex;
+  .selectedMatrixLayout{
+    grid-template-columns:1fr;
+    gap:14px;
+  }
 
-justify-content:center;
+  .previewBox,
+  .matrixBox{
+    max-width:100%;
+    padding:8px 0;
+  }
 
-align-items:center;
+  .previewBox h4,
+  .matrixBox h4{
+    font-size:15px;
+    margin-bottom:8px;
+  }
 
-font-size:8px;
+  .selectedMatrixCard{
+    padding:10px 2px;
+  }
 
-background:#edf3ff;
+  /* Keep the full 16x16 grid on screen (no horizontal scrolling) —
+     cells shrink to fit the phone's width, with the font size tuned
+     via clamp() in InputImage.jsx so the 3-digit values stay readable. */
+  .valueMatrix{
+    border-radius:4px;
+  }
+}
 
-border:1px solid #c7d7ff;
-
-box-sizing:border-box;
-
+@media (max-width:400px){
+  .previewBox,
+  .matrixBox{
+    padding:6px 0;
+  }
 }

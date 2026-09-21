@@ -1,12 +1,21 @@
 .quantContainer{
 
 width:100%;
-max-width:1100px;
+max-width:1600px;
 margin:auto;
 display:flex;
 flex-direction:column;
 gap:28px;
 
+}
+
+/* stepWorkspace applies transform:scale(0.9) globally to fit most
+   steps within the viewport height. That shrink was wasting the width
+   we just freed up for the quantization matrices (visible as dead
+   whitespace on the sides). Render this step at true 1:1 scale. */
+.stepWorkspace:has(.quantContainer){
+  transform:none;
+  width:100%;
 }
 
 /* -------------------------------- */
@@ -101,13 +110,13 @@ color:white;
 
 display:grid;
 
-grid-template-columns:minmax(0,1fr) 60px minmax(0,1fr) 60px minmax(0,1fr);
+grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr) 24px minmax(0,1fr);
 
-align-items:center;
+align-items:stretch;
 
 justify-content:center;
 
-gap:18px;
+gap:6px;
 
 }
 
@@ -117,7 +126,7 @@ gap:18px;
 
 background:white;
 
-padding:20px;
+padding:14px 8px;
 
 border-radius:18px;
 
@@ -129,19 +138,21 @@ min-width:0;
 
 width:100%;
 
-max-width:360px;
-
 margin:0 auto;
 
-overflow:auto;
+overflow:visible;
+
+container-type:inline-size;
 
 }
 
 .matrixCard h3{
 
-margin-bottom:18px;
+margin-bottom:14px;
 
 color:#123b8d;
+
+font-size:clamp(13px,1.6vw,17px);
 
 }
 
@@ -149,7 +160,7 @@ color:#123b8d;
 
 .operator{
 
-font-size:48px;
+font-size:clamp(20px,2.4vw,30px);
 
 font-weight:bold;
 
@@ -161,6 +172,8 @@ align-items:center;
 
 color:#2563eb;
 
+padding:0;
+
 }
 
 /* -------------------------------- */
@@ -169,9 +182,11 @@ color:#2563eb;
 
 display:grid;
 
-grid-template-columns:repeat(8,26px);
+grid-template-columns:repeat(8,minmax(0,1fr)) !important;
 
 gap:3px;
+
+width:100% !important;
 
 justify-content:center;
 
@@ -181,9 +196,13 @@ margin:auto;
 
 .miniMatrix span{
 
-width:24px;
+width:100% !important;
 
-height:24px;
+height:auto !important;
+
+aspect-ratio:1;
+
+box-sizing:border-box;
 
 display:flex;
 
@@ -191,9 +210,15 @@ justify-content:center;
 
 align-items:center;
 
-font-size:8px;
+font-size:clamp(10px,2.9cqw,17px);
 
 font-family:Consolas,monospace;
+
+font-weight:900;
+
+text-shadow:0.4px 0 0 currentColor,-0.4px 0 0 currentColor;
+
+letter-spacing:-.3px;
 
 background:#edf4ff;
 
@@ -204,6 +229,14 @@ border-radius:6px;
 cursor:pointer;
 
 transition:.25s;
+
+overflow:hidden;
+
+text-overflow:ellipsis;
+
+white-space:nowrap;
+
+padding:1px;
 
 }
 
@@ -291,27 +324,77 @@ transition:.35s;
 
 margin-top:20px;
 
-padding:15px 28px;
+width:280px;
 
-background:#2563eb;
+max-width:100%;
+
+padding:16px;
+
+background:linear-gradient(135deg,#7c3aed,#2563eb,#0ea5e9);
+
+background-size:200% 200%;
+
+animation:quantGradientShift 3s ease infinite;
 
 color:white;
 
 border:none;
 
-border-radius:10px;
+border-radius:24px;
 
-font-size:15px;
+font-size:17px;
 
 font-weight:700;
 
+letter-spacing:.3px;
+
 cursor:pointer;
+
+box-shadow:0 4px 14px rgba(37,99,235,.4);
+
+transition:.25s;
+
+}
+
+.quantButton:hover:not(:disabled){
+
+transform:translateY(-3px) scale(1.03);
+
+box-shadow:0 8px 22px rgba(37,99,235,.55);
+
+}
+
+.quantButton:active:not(:disabled){
+
+transform:translateY(0) scale(.98);
+
+}
+
+@keyframes quantGradientShift{
+
+0%{background-position:0% 50%;}
+
+50%{background-position:100% 50%;}
+
+100%{background-position:0% 50%;}
 
 }
 
 .quantButton:disabled{
 
 opacity:.6;
+
+cursor:not-allowed;
+
+animation:none;
+
+transform:none;
+
+}
+
+.qualityCard input:disabled{
+
+opacity:.5;
 
 cursor:not-allowed;
 
@@ -577,7 +660,9 @@ grid-template-columns:1fr;
 
 .operator{
 
-transform:rotate(90deg);
+transform:none;
+
+padding:6px 0;
 
 }
 
@@ -896,8 +981,26 @@ opacity:1;
   .quantHeading h2{ font-size:22px; }
   .controlCard{ min-width:0; width:100%; padding:16px; }
   .topControls{ gap:14px; }
-  .miniMatrix{ grid-template-columns:repeat(8,26px); }
-  .miniMatrix span{ width:24px; height:24px; font-size:8px; }
+  .matrixCard{ padding:12px 6px; }
+  .matrixCard h3{ font-size:13px; margin-bottom:10px; }
+  .miniMatrix{ grid-template-columns:repeat(8,minmax(0,1fr)) !important; gap:2px; }
+  .miniMatrix span{
+    width:100% !important;
+    height:auto !important;
+    aspect-ratio:1 !important;
+    font-size:clamp(11px,3.8cqw,17px) !important;
+    letter-spacing:-.4px;
+    padding:0 !important;
+  }
+  .activeCell{
+    transform:scale(1.06);
+    z-index:2;
+    position:relative;
+  }
+  .generatedCell{
+    z-index:1;
+    position:relative;
+  }
   .mathSteps{ grid-template-columns:repeat(2,1fr); }
   .zeroStatsGrid,.compressionGrid{ grid-template-columns:1fr; }
   .compressionChart{ gap:30px; height:140px; }
@@ -905,4 +1008,76 @@ opacity:1;
   .quantInfo{ grid-template-columns:1fr; }
   .pipelineFlow{ flex-direction:column; }
   .pipelineOperator{ transform:rotate(90deg); }
+  .quantHeading h2{ font-size:22px; }
+  .quantHeading p{ font-size:14px; }
+  .topControls{ gap:14px; }
+  .controlCard{ padding:14px; }
+  .qualityCard{ padding:16px; }
+  .qualityCard input{ width:90%; }
+  .qfNote{ font-size:12px; padding:8px 10px; }
+  .quantButton{ width:100%; font-size:15px; padding:14px; }
+  .formulaSection{ padding:14px; }
+  .formulaSection h3{ font-size:16px; margin-bottom:14px; }
+  .formulaCard{ padding:14px; line-height:1.7; }
+  .formulaCard h2{ font-size:16px; }
+  .formulaCard p{ font-size:13px; }
+  .currentCalculation{ padding:14px; line-height:1.7; }
+  .currentCalculation h3{ font-size:16px; margin-bottom:12px; }
+  .mathSteps{ gap:8px; }
+  .mathStep{ padding:10px 6px; }
+  .mathStep span{ font-size:11px; }
+  .mathStep b{ font-size:14px; }
+  .zeroStatsSection,.compressionSection{ padding:14px; }
+  .zeroStatsSection h3,.compressionSection h3{ font-size:16px; margin-bottom:12px; }
+  .zeroStatCard,.compressionCard{ padding:14px; }
+  .statValue{ font-size:20px; }
+  .zeroBarCaption{ font-size:12px; }
+  .compressionChart{ gap:24px; height:130px; }
+  .chartBarGroup{ width:70px; }
+  .chartBar{ width:44px; }
+  .observationCard{ padding:14px; line-height:1.7; }
+  .observationCard h3{ font-size:16px; }
+  .observationCard ul{ padding-left:16px; font-size:14px; }
+}
+
+@media(max-width:480px){
+  .matrixCard{ padding:10px 4px; }
+  .miniMatrix{ gap:2px; }
+  .miniMatrix span{
+    font-size:clamp(10px,3.6cqw,15px) !important;
+    letter-spacing:-.5px;
+  }
+  .activeCell{
+    transform:scale(1.04);
+  }
+  .quantHeading h2{ font-size:19px; }
+  .quantHeading p{ font-size:13px; }
+  .controlCard{ padding:12px; min-width:0; }
+  .toggleButtons button,.blockButtons button{ padding:9px 14px; font-size:13px; }
+  .qualityCard{ padding:12px; }
+  .qualityCard h3{ font-size:15px; }
+  .qfMarks{ font-size:8px; }
+  .quantButton{ font-size:14px; padding:12px; }
+  .formulaSection{ padding:12px; }
+  .formulaSection h3{ font-size:15px; }
+  .formulaCard{ padding:12px; line-height:1.6; }
+  .formulaCard h2{ font-size:14px; }
+  .formulaCard p{ font-size:12px; }
+  .currentCalculation{ padding:12px; line-height:1.6; }
+  .currentCalculation h3{ font-size:15px; }
+  .mathSteps{ grid-template-columns:repeat(2,1fr); gap:6px; }
+  .mathStep{ padding:8px 4px; }
+  .mathStep span{ font-size:10px; }
+  .mathStep b{ font-size:13px; }
+  .zeroStatsSection,.compressionSection{ padding:12px; }
+  .zeroStatsSection h3,.compressionSection h3{ font-size:15px; }
+  .zeroStatCard,.compressionCard{ padding:12px; }
+  .statLabel{ font-size:11px; }
+  .statValue{ font-size:17px; }
+  .compressionChart{ gap:16px; height:110px; }
+  .chartBarGroup{ width:56px; }
+  .chartBar{ width:34px; font-size:12px; }
+  .observationCard{ padding:12px; line-height:1.6; }
+  .observationCard h3{ font-size:15px; }
+  .observationCard ul{ padding-left:14px; font-size:13px; }
 }

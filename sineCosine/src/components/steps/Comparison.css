@@ -1,10 +1,18 @@
 .cmpContainer{
   width:100%;
-  max-width:1150px;
+  max-width:1600px;
   margin:auto;
   display:flex;
   flex-direction:column;
   gap:28px;
+}
+
+/* stepWorkspace applies transform:scale(0.9) globally to fit most
+   steps within the viewport height. Render this step at true 1:1
+   scale, matching the fix applied to steps 4–7. */
+.stepWorkspace:has(.cmpContainer){
+  transform:none;
+  width:100%;
 }
 
 .cmpWarning{
@@ -71,19 +79,19 @@
   border-radius:18px;
   box-shadow:0 8px 20px rgba(0,0,0,.08);
   text-align:center;
-  width:250px;
+  width:min(30vw,340px);
 }
 
 .cmpImageBlock h3{
   color:#123b8d;
-  font-size:14px;
+  font-size:15px;
   margin-bottom:14px;
   min-height:34px;
 }
 
 .cmpImageBlock p{
   margin-top:12px;
-  font-size:11px;
+  font-size:12px;
   color:#64748b;
 }
 
@@ -121,6 +129,12 @@
   gap:8px;
   text-align:center;
   border-top:4px solid #2563eb;
+}
+
+.cmpMetricCard .statValue{
+  font-size:26px;
+  font-weight:900;
+  text-shadow:0.4px 0 0 currentColor,-0.4px 0 0 currentColor;
 }
 
 .cmpCoeffStats,
@@ -164,7 +178,7 @@
 .cmpDotNonZero{ background:#2563eb; }
 
 .cmpDiffGrid{
-  max-width:400px;
+  max-width:480px;
   margin:0 auto;
 }
 
@@ -197,6 +211,49 @@
 
 @media(max-width:768px){
   .cmpHeading h2{ font-size:22px; }
-  .cmpImageBlock{ width:100%; max-width:280px; }
+  .cmpHeading p{ font-size:14px; }
+  .cmpControls{ gap:14px; }
+  .cmpControls .controlCard{ min-width:0; width:100%; padding:16px; }
+  .cmpImageBlock{ width:100%; max-width:280px; padding:16px; }
+  .cmpImageBlock h3{ font-size:13px; }
+  .cmpImageBlock p{ font-size:11px; }
   .cmpMetricsGrid{ grid-template-columns:1fr; }
+  .cmpMetricCard{ padding:16px; }
+  .cmpMetricCard .statValue{ font-size:22px; }
+  .cmpCoeffStats,
+  .cmpDiffSection,
+  .cmpConclusion{ padding:16px; }
+  .cmpCoeffStats h3,
+  .cmpDiffSection h3,
+  .cmpConclusion h3{ font-size:16px; }
+  .cmpCoeffLegend{ gap:16px; font-size:12px; }
+  .cmpDiffGrid{ max-width:280px; }
+  .cmpDiffCaption{ font-size:12px; }
+  .cmpConclusion p{ line-height:1.7; font-size:14px; }
+  .observationCard{ padding:14px; line-height:1.7; }
+  .observationCard h3{ font-size:16px; }
+  .observationCard ul{ padding-left:16px; font-size:14px; }
+}
+
+@media(max-width:480px){
+  .cmpHeading h2{ font-size:19px; }
+  .cmpHeading p{ font-size:13px; }
+  .cmpControls .controlCard{ padding:12px; }
+  .toggleButtons button{ padding:9px 14px; font-size:13px; }
+  .cmpImageBlock{ padding:12px; }
+  .cmpImageBlock h3{ font-size:12px; min-height:0; }
+  .cmpImageBlock p{ font-size:10px; }
+  .cmpArrow{ font-size:22px; }
+  .cmpMetricCard{ padding:12px; }
+  .cmpMetricCard .statValue{ font-size:19px; }
+  .cmpCoeffStats,
+  .cmpDiffSection,
+  .cmpConclusion{ padding:12px; }
+  .cmpCoeffStats h3,
+  .cmpDiffSection h3,
+  .cmpConclusion h3{ font-size:15px; }
+  .cmpDiffGrid{ max-width:220px; }
+  .observationCard{ padding:12px; line-height:1.6; }
+  .observationCard h3{ font-size:15px; }
+  .observationCard ul{ padding-left:14px; font-size:13px; }
 }
