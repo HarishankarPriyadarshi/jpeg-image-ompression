@@ -14,7 +14,7 @@ body,
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
   background: #f3f4f6;
 }
 
@@ -27,6 +27,7 @@ body {
 .modal {
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   background: #f3f4f6;
   display: flex;
   flex-direction: column;
@@ -35,40 +36,104 @@ body {
 }
 
 .headerBar {
-  height: 55px;
-  background: #0d2c72;
+  height: 60px;
+  background: linear-gradient(100deg, #0d2c72 0%, #16388f 55%, #1743c9 100%);
   color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 24px;
   flex-shrink: 0;
+  box-shadow: 0 2px 14px rgba(13, 44, 114, 0.35);
+  position: relative;
+  z-index: 20;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.menuToggleBtn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.menuToggleBtn span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #ffffff;
+  border-radius: 2px;
+}
+
+.headerTitleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
 }
 
 .headerTitle {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerSubtitle {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .headerActions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.guidedTutorBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .closeHeaderBtn {
-  background: white;
-  color: #0d2c72;
-  border: none;
-  padding: 11px 24px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 700;
+  background: transparent;
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
   cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
 .closeHeaderBtn:hover {
-  background: #eef4ff;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #ffffff;
+  transform: translateY(-1px);
 }
 
 .stepNavigator {
@@ -119,8 +184,8 @@ body {
   width: 270px;
   min-width: 270px;
   background: #f8fafc;
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 14px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -128,10 +193,51 @@ body {
     0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+.stepsPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebarCloseBtn {
+  display: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid #e1e7ef;
+  background: #ffffff;
+  color: #475467;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sidebarBackdrop {
+  display: none;
+}
+
 .stepsHeading {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
   color: #0d2c72;
+  letter-spacing: -0.3px;
+}
+
+.stepsProgressTrack {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: #e5eaf3;
+  overflow: hidden;
+  margin: 12px 0 14px;
+  flex-shrink: 0;
+}
+
+.stepsProgressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2f6bff, #1743c9);
+  transition: width 0.3s ease;
 }
 
 .stepsList {
@@ -140,26 +246,36 @@ body {
   list-style: none;
   overflow-y: auto;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .stepsList li {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   border: 1px solid #e1e7ef;
   background: #ffffff;
   color: #25324a;
   font-weight: 600;
+  font-size: 13px;
+  padding: 9px 12px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.15s ease;
 }
 
 .stepsList li:hover {
   background: #eef4ff;
   border-color: #b8c7e6;
+  transform: translateX(2px);
 }
 
 .stepCircle {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
   border-radius: 50%;
   background: #e8edf5;
   color: #0d2c72;
@@ -167,6 +283,7 @@ body {
   justify-content: center;
   align-items: center;
   font-weight: 800;
+  font-size: 12px;
 }
 
 .currentStep {
@@ -174,6 +291,7 @@ body {
   color: #0d2c72 !important;
   border-color: #0d2c72 !important;
   font-weight: 800 !important;
+  box-shadow: 0 4px 12px rgba(23, 67, 201, 0.18);
 }
 
 .currentStep .stepCircle {
@@ -197,6 +315,8 @@ body {
   background: #ffffff;
   color: #475467;
   font-weight: 600;
+  cursor: not-allowed;
+  opacity: 0.75;
 }
 
 .lockedStep .stepCircle {
@@ -215,14 +335,20 @@ body {
 }
 
 .controlButtons button {
-  height: 36px;
+  height: 40px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #0d2c72;
   color: white;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
+  transition: background 0.18s ease, transform 0.15s ease;
+}
+
+.controlButtons button:hover:not(:disabled) {
+  background: #1743c9;
+  transform: translateY(-1px);
 }
 
 .controlButtons button:disabled {
@@ -433,22 +559,59 @@ body {
 }
 
 @media (max-width: 760px) {
-  .modal {
+  html, body, #root {
+    height: auto;
+    min-height: 100%;
+  }
+
+  .overlay {
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 40px);
+    box-sizing: border-box;
+  }
+
+  .modal {
+    height: auto !important;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: visible !important;
   }
 
   .headerBar {
     height: auto;
     min-height: 55px;
-    padding: 12px 16px;
+    padding: 10px 14px;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+  }
+
+  .menuToggleBtn {
+    display: flex;
   }
 
   .headerTitle {
-    font-size: 16px;
+    font-size: 14.5px;
+    max-width: 46vw;
+  }
+
+  .headerSubtitle {
+    display: none;
+  }
+
+  .guidedTutorBtn span {
+    display: none;
+  }
+
+  .guidedTutorBtn {
+    padding: 9px 12px !important;
   }
 
   .closeHeaderBtn {
-    padding: 9px 16px;
+    padding: 9px 14px;
+    font-size: 12px;
   }
 
   .stepNavigator {
@@ -462,21 +625,104 @@ body {
 
   .contentArea {
     flex-direction: column;
+    flex: none;
+    height: auto;
+    min-height: 0;
     overflow: visible;
+    position: relative;
+    padding: 8px;
+  }
+
+  .sidebarBackdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 15, 35, 0.5);
+    z-index: 29;
+    animation: sidebarFadeIn 0.15s ease;
+  }
+
+  @keyframes sidebarFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   .leftPanel {
-    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    height: 100dvh;
+    width: min(84vw, 320px);
     min-width: 0;
-    max-height: 280px;
+    max-height: none;
+    border-radius: 0 16px 16px 0;
+    transform: translateX(-105%);
+    transition: transform 0.22s ease;
+    z-index: 30;
+    box-shadow: 8px 0 28px rgba(8, 15, 35, 0.28);
+  }
+
+  .leftPanelOpen {
+    transform: translateX(0);
+  }
+
+  .sidebarCloseBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stepsList {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .controlButtons {
+    flex-shrink: 0;
   }
 
   .visualPanel {
-    min-height: 520px;
+    flex: none !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .stepWorkspace {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
   }
 
   .matrixGrid8 {
     grid-template-columns: repeat(4, 46px);
+  }
+}
+
+@media (max-width: 480px) {
+  .headerTitle {
+    max-width: 38vw;
+    font-size: 13.5px;
+  }
+
+  .guidedTutorBtn {
+    padding: 8px 10px !important;
+  }
+
+  .closeHeaderBtn {
+    padding: 8px 12px;
+  }
+
+  .contentArea {
+    padding: 6px;
+  }
+
+  .visualPanel {
+    border-radius: 10px;
   }
 }
 
@@ -769,8 +1015,8 @@ body {
   font-size: 12px;
   font-weight: 700;
   line-height: 1.3;
-  margin-top: -8px;
-  margin-bottom: 14px;
+  margin-top: 2px;
+  margin-bottom: 0;
 }
 
 .leftPanel {
@@ -1005,6 +1251,15 @@ body {
 .visualPanel {
   overflow-y: auto !important;
   overflow-x: hidden !important;
+}
+
+@media (max-width: 760px) {
+  .visualPanel {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    flex: none !important;
+  }
 }
 
 .stepWorkspace {
@@ -4425,10 +4680,23 @@ button.chromaCell:hover {
 
 .step1SimplePage {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   gap: 14px;
   padding-bottom: 18px;
+  box-sizing: border-box;
+}
+
+.step1SimplePage > * {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.stepWorkspace {
+  min-width: 0;
 }
 
 .step1SimpleConceptBox {
@@ -4487,39 +4755,165 @@ button.chromaCell:hover {
   text-align: center;
 }
 
+.step1SimplePatchGridScroll {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: visible;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+  box-sizing: border-box;
+}
+
 .step1SimplePatchGrid {
   display: grid;
-  gap: 5px;
-  justify-content: center;
-  width: fit-content;
+  gap: 0;
+  width: 100%;
+  min-width: 0;
   max-width: 100%;
   margin: 0 auto;
-  padding: 12px;
-  background: #0f172a;
-  border-radius: 14px;
-  overflow-x: auto;
+  border: 1px solid #0f172a;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+@media (min-width: 761px) {
+  .step1SimplePatchGridScroll {
+    overflow-x: auto;
+  }
+
+  .step1SimplePatchGrid {
+    min-width: 576px;
+    max-width: 640px;
+  }
+
+  .step1SimplePixel {
+    min-width: 36px;
+  }
 }
 
 .step1SimplePixel {
-  width: 30px;
-  height: 28px;
-  border: 1px solid rgba(15, 23, 42, 0.2);
-  border-radius: 6px;
-  font-size: 8px;
+  aspect-ratio: 1.15 / 1;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #0f172a;
+  margin: -0.5px;
+  border-radius: 0;
+  font-size: 11.5px;
+  letter-spacing: -0.4px;
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
   cursor: pointer;
-  transition: 0.18s ease;
+  transition: 0.15s ease;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0;
+  white-space: nowrap;
 }
 
 .step1SimplePixel:hover {
-  transform: scale(1.08);
-  border-color: #0d2c72;
+  z-index: 1;
+  box-shadow: 0 0 0 2px #0d2c72 inset;
+  filter: brightness(0.97);
 }
 
 .step1SimplePixelActive {
-  border: 3px solid #0d2c72 !important;
-  box-shadow: 0 0 0 4px rgba(13, 44, 114, 0.25);
-  transform: scale(1.1);
+  z-index: 2;
+  box-shadow: 0 0 0 3px #0d2c72 inset !important;
+}
+
+@media (max-width: 760px) {
+  .step1SimplePage {
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 32px;
+    gap: 10px;
+  }
+
+  .step1SimpleCard,
+  .step1SimpleInspector {
+    padding: 10px 6px !important;
+    border-radius: 12px !important;
+  }
+
+  .step1SimpleCard h3,
+  .step1SimpleInspector h3 {
+    font-size: 15px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .visualPanel {
+    padding: 6px !important;
+  }
+
+  .step1SimplePatchGridScroll {
+    overflow-x: hidden;
+    overflow-y: visible;
+    margin: 0;
+    padding: 0;
+  }
+
+  .step1SimplePatchGrid {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    border-width: 1.5px;
+    border-radius: 8px;
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
+
+  .step1SimplePixel {
+    margin: 0;
+    border-width: 0.5px;
+  }
+
+  .step1SimplePixel {
+    font-size: clamp(10px, 4.6vw, 13px);
+    font-weight: 800;
+  }
+
+  .matrixNote {
+    text-align: center;
+    padding: 0 6px;
+  }
+}
+
+@media (max-width: 560px) {
+  .pixelPrefix {
+    display: none;
+  }
+
+  .step1SimplePixel {
+    border-width: 0.5px;
+    font-size: clamp(8.5px, 4.4vw, 11px);
+    letter-spacing: -0.4px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .step1SimplePixelActive {
+    box-shadow: 0 0 0 2.5px #ffffff inset, 0 0 0 4.5px #facc15 inset !important;
+  }
+
+  .step1SimplePixel:hover {
+    box-shadow: 0 0 0 2px #ffffff inset;
+  }
+}
+
+@media (max-width: 400px) {
+  .step1SimplePixel {
+    font-size: clamp(7.5px, 4.2vw, 9.5px);
+    letter-spacing: -0.5px;
+  }
+}
+
+@media (max-width: 340px) {
+  .step1SimplePixel {
+    font-size: clamp(6.5px, 4vw, 8px);
+    letter-spacing: -0.6px;
+  }
 }
 
 .step1SimpleInspector {
@@ -4547,21 +4941,39 @@ button.chromaCell:hover {
 }
 
 .step1SimpleActionRow button {
-  border: none;
-  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: linear-gradient(180deg, #1743c9 0%, #0d2c72 100%);
   color: #ffffff;
-  padding: 10px 16px;
+  padding: 12px 24px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 900;
+  letter-spacing: 0.2px;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
-  transition: 0.2s ease;
+  box-shadow:
+    0 6px 18px rgba(23, 67, 201, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 .step1SimpleActionRow button:hover {
-  background: #0d2c72;
-  transform: translateY(-1px);
+  background: linear-gradient(180deg, #2f6bff 0%, #1743c9 100%);
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 22px rgba(23, 67, 201, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.step1SimpleActionRow button:active {
+  transform: translateY(0);
+  box-shadow:
+    0 3px 8px rgba(23, 67, 201, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.step1SimpleActionRow button:focus-visible {
+  outline: 3px solid rgba(47, 107, 255, 0.5);
+  outline-offset: 2px;
 }
 
 .step1SimpleFormulaIntro {
@@ -4676,17 +5088,37 @@ button.chromaCell:hover {
 
 .step1SimpleChannelRow {
   display: grid;
-  grid-template-columns: repeat(3, minmax(300px, 1fr));
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "r g"
+    "b b";
   gap: 12px;
   align-items: start;
+}
+
+.step1RedMatrix {
+  grid-area: r;
+}
+
+.step1GreenMatrix {
+  grid-area: g;
+}
+
+.step1BlueMatrix {
+  grid-area: b;
+  max-width: 620px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .step1SimpleChannelCard {
   background: #f8fafc;
   border: 1px solid #dbe4ee;
   border-radius: 12px;
-  padding: 10px;
-  overflow-x: auto;
+  padding: 14px;
+  overflow: hidden;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .step1SimpleChannelCard h4 {
@@ -4710,31 +5142,83 @@ button.chromaCell:hover {
 
 .step1SimpleChannelGrid {
   display: grid;
-  gap: 4px;
-  width: fit-content;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
+  border: 2px solid #0f172a;
+  border-radius: 6px;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .step1SimpleChannelGrid span {
-  width: 24px;
-  height: 22px;
-  border: 1px solid #cbd5e1;
+  aspect-ratio: 1.1 / 1;
+  min-width: 0;
+  border: 1px solid #b8c4d4;
+  margin: -0.5px;
   background: #ffffff;
   color: #0f172a;
-  border-radius: 5px;
-  font-size: 8px;
+  border-radius: 0;
+  font-size: clamp(9px, 2.4vw, 13.5px);
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.4px;
+  line-height: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .step1SimpleChannelCard {
+    padding: 8px 4px 10px;
+    border-radius: 12px;
+    overflow: visible;
+  }
+
+  .step1SimpleChannelCard h4 {
+    font-size: 15px;
+  }
+
+  .step1SimpleChannelGrid {
+    border-width: 1.5px;
+    border-radius: 8px;
+    overflow: visible;
+  }
+
+  .step1SimpleChannelGrid span {
+    font-size: clamp(9px, 2.6vw, 11.5px);
+    letter-spacing: -0.4px;
+    font-weight: 800;
+    margin: 0;
+    border-width: 0.5px;
+  }
+}
+
+@media (max-width: 400px) {
+  .step1SimpleChannelGrid span {
+    font-size: clamp(7.5px, 2.4vw, 9.8px);
+    letter-spacing: -0.5px;
+  }
+}
+
+@media (max-width: 340px) {
+  .step1SimpleChannelGrid span {
+    font-size: clamp(6.5px, 2.4vw, 8.3px);
+    letter-spacing: -0.6px;
+  }
 }
 
 .step1SimpleSelectedCell {
   background: #facc15 !important;
   border-color: #ca8a04 !important;
   color: #111827 !important;
-  transform: scale(1.12);
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+  z-index: 1;
+  box-shadow: 0 0 0 2px #ca8a04 inset;
 }
 
 .step1SimpleFade {
@@ -4767,29 +5251,31 @@ button.chromaCell:hover {
   .step1SimpleFormulaGrid {
     grid-template-columns: 1fr;
   }
+}
 
+@media (max-width: 900px) {
   .step1SimpleChannelRow {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "r"
+      "g"
+      "b";
   }
 
   .step1SimpleChannelCard {
-    max-width: 520px;
+    max-width: 560px;
     width: 100%;
     margin: 0 auto;
+  }
+
+  .step1BlueMatrix {
+    max-width: 560px;
   }
 }
 
 @media (max-width: 760px) {
-  .step1SimplePatchGrid {
-    grid-template-columns: repeat(8, 30px) !important;
-  }
-
   .step1SimpleTupleGrid {
     grid-template-columns: repeat(4, 84px) !important;
-  }
-
-  .step1SimpleChannelGrid {
-    grid-template-columns: repeat(8, 24px) !important;
   }
 
   .step1SimpleConceptBox {
@@ -4823,16 +5309,6 @@ button.chromaCell:hover {
   }
 }
 /* Step 1 compact pixel grid */
-.step1SimplePatchGrid {
-  gap: 4px !important;
-  padding: 10px !important;
-}
-
-.step1SimplePixel {
-  width: 27px !important;
-  height: 25px !important;
-  font-size: 7.5px !important;
-}/* Step 1 final polish */
 
 .step1SimpleMainGrid {
   grid-template-columns: minmax(460px, 1fr) minmax(300px, 360px) !important;
@@ -4843,24 +5319,6 @@ button.chromaCell:hover {
   width: 100% !important;
   max-width: 360px !important;
   margin-right: auto !important;
-}
-
-.step1SimplePatchGrid {
-  gap: 4px !important;
-  padding: 10px !important;
-  border-radius: 13px !important;
-}
-
-.step1SimplePixel {
-  width: 27px !important;
-  height: 25px !important;
-  font-size: 7.5px !important;
-  color: #06142f !important;
-}
-
-.step1SimplePixelActive {
-  border: 3px solid #0d2c72 !important;
-  box-shadow: 0 0 0 4px rgba(13, 44, 114, 0.28) !important;
 }
 
 .step1SimpleCard h3,
@@ -4911,24 +5369,6 @@ button.chromaCell:hover {
   min-width: 0 !important;
 }
 
-.step1SimplePatchGrid {
-  gap: 4px !important;
-  padding: 10px !important;
-  border-radius: 13px !important;
-}
-
-.step1SimplePixel {
-  width: 27px !important;
-  height: 25px !important;
-  font-size: 7.5px !important;
-  color: #06142f !important;
-}
-
-.step1SimplePixelActive {
-  border: 3px solid #0d2c72 !important;
-  box-shadow: 0 0 0 4px rgba(13, 44, 114, 0.28) !important;
-}
-
 .step1SimpleCard h3,
 .step1SimpleInspector h3 {
   font-size: 16px !important;
@@ -4972,17 +5412,15 @@ button.chromaCell:hover {
 
 .step2ConceptBox {
   width: 100%;
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-left: 5px solid #0d2c72;
-  border-radius: 12px;
-  padding: 12px 16px;
-  display: grid;
-  gap: 6px;
-  color: #334155;
+  box-sizing: border-box;
+  background: #fbfdff;
+  border: 1.5px solid #dbe4ee;
+  border-radius: 14px;
+  padding: 14px 18px;
+  color: #33415a;
   font-size: 13px;
   font-weight: 700;
-  line-height: 1.45;
+  line-height: 1.6;
 }
 
 .step2ConceptBox strong,
@@ -5051,25 +5489,32 @@ button.chromaCell:hover {
 
 .step2ControlBar button {
   border: none;
-  background: #0f172a;
+  background: linear-gradient(135deg, #1743c9 0%, #0d2c72 100%);
   color: #ffffff;
-  padding: 10px 16px;
+  padding: 12px 26px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 900;
+  letter-spacing: 0.2px;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
-  transition: 0.2s ease;
+  box-shadow: 0 8px 20px rgba(23, 67, 201, 0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
 
 .step2ControlBar button:hover:not(:disabled) {
-  background: #0d2c72;
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #2f6bff 0%, #1743c9 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(23, 67, 201, 0.4);
+}
+
+.step2ControlBar button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .step2ControlBar button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }
 
 .step2ProgressBox {
@@ -5110,44 +5555,63 @@ button.chromaCell:hover {
 
 .step2MainGrid {
   display: grid;
-  grid-template-columns: minmax(520px, 1fr) minmax(320px, 420px);
+  grid-template-columns: minmax(560px, 1fr) minmax(320px, 420px);
   gap: 14px;
   align-items: start;
 }
 
 .step2RgbGrid {
   display: grid;
-  gap: 4px;
-  justify-content: center;
-  width: fit-content;
-  max-width: 100%;
+  gap: 0;
+  width: 100%;
+  max-width: 640px;
   margin: 0 auto;
-  padding: 10px;
-  background: #0f172a;
-  border-radius: 14px;
-  overflow-x: auto;
+  border: 1.5px solid #0f172a;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+@media (min-width: 761px) {
+  .step2RgbGrid,
+  .step2OutputGrid {
+    max-width: 600px;
+  }
+
+  .step2RgbPixel,
+  .step2OutputGrid span {
+    min-width: 34px;
+  }
 }
 
 .step2RgbPixel {
-  width: 28px;
-  height: 25px;
-  border: 1px solid rgba(15, 23, 42, 0.2);
-  border-radius: 6px;
-  font-size: 7.4px;
+  aspect-ratio: 1.15 / 1;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #0f172a;
+  margin: -0.5px;
+  border-radius: 0;
+  font-size: clamp(9px, 1.6vw, 11.5px);
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: -0.3px;
   cursor: pointer;
-  transition: 0.18s ease;
+  transition: 0.15s ease;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0;
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.85);
 }
 
 .step2RgbPixel:hover {
-  transform: scale(1.08);
-  border-color: #0d2c72;
+  z-index: 1;
+  box-shadow: 0 0 0 2px #0d2c72 inset;
 }
 
 .step2SelectedRgbPixel {
-  border: 3px solid #0d2c72 !important;
-  box-shadow: 0 0 0 4px rgba(13, 44, 114, 0.25);
-  transform: scale(1.08);
+  z-index: 2;
+  box-shadow: 0 0 0 2px #0d2c72 inset !important;
 }
 
 .step2ConvertedRgbPixel {
@@ -5167,7 +5631,8 @@ button.chromaCell:hover {
 .step2SelectedCard {
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 11px;
+  padding: 18px !important;
 }
 
 .step2SelectedLabel,
@@ -5176,11 +5641,11 @@ button.chromaCell:hover {
 .step2YcbcrValue {
   background: #f8fafc;
   border: 1px solid #dbe4ee;
-  border-radius: 10px;
-  padding: 8px 10px;
+  border-radius: 11px;
+  padding: 10px 12px;
   text-align: center;
   color: #0f172a;
-  font-size: 13px;
+  font-size: 14.5px;
   font-weight: 900;
 }
 
@@ -5191,7 +5656,7 @@ button.chromaCell:hover {
 
 .step2DownArrow {
   color: #0d2c72;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 900;
   text-align: center;
   line-height: 1;
@@ -5200,16 +5665,16 @@ button.chromaCell:hover {
 .step2ComponentResultGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: 9px;
 }
 
 .step2ComponentResultGrid div {
-  border-radius: 10px;
-  padding: 8px;
+  border-radius: 11px;
+  padding: 10px;
   display: grid;
-  gap: 4px;
+  gap: 5px;
   text-align: center;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 900;
 }
 
@@ -5218,7 +5683,7 @@ button.chromaCell:hover {
 }
 
 .step2ComponentResultGrid strong {
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .step2YResult {
@@ -5240,20 +5705,20 @@ button.chromaCell:hover {
   background: #f8fbff;
   border: 1px solid #cfd9e4;
   border-radius: 12px;
-  padding: 10px;
+  padding: 12px;
   display: grid;
-  gap: 6px;
+  gap: 7px;
 }
 
 .step2CalculationBox div {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 7px 9px;
+  border-radius: 9px;
+  padding: 8px 10px;
   color: #0f172a;
-  font-size: 11.5px;
+  font-size: 12.5px;
   font-weight: 800;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
 .step2CalculationBox b {
@@ -5300,20 +5765,28 @@ button.chromaCell:hover {
 }
 
 .step2MatrixTabs button {
-  border: 1px solid #cbd5e1;
+  border: 1.5px solid #cbd5e1;
   background: #ffffff;
   color: #0f172a;
-  padding: 8px 14px;
+  padding: 8px 16px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 900;
   cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.step2MatrixTabs button:hover {
+  border-color: #2f6bff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(47, 107, 255, 0.18);
 }
 
 .step2MatrixTabs .step2ActiveTab {
-  background: #0d2c72;
+  background: linear-gradient(135deg, #1743c9 0%, #0d2c72 100%);
   color: #ffffff;
   border-color: #0d2c72;
+  box-shadow: 0 6px 14px rgba(13, 44, 114, 0.3);
 }
 
 .step2ActiveMatrixTitle {
@@ -5338,28 +5811,33 @@ button.chromaCell:hover {
 
 .step2OutputGrid {
   display: grid;
-  gap: 4px;
-  width: fit-content;
-  max-width: 100%;
+  gap: 0;
+  width: 100%;
+  max-width: 640px;
   margin: 0 auto;
-  padding: 10px;
-  background: #f8fafc;
-  border: 1px solid #d9e2ec;
-  border-radius: 14px;
-  overflow-x: auto;
+  border: 1.5px solid #0f172a;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .step2OutputGrid span {
-  width: 28px;
-  height: 24px;
-  border-radius: 5px;
-  border: 1px solid #cbd5e1;
+  aspect-ratio: 1.1 / 1;
+  min-width: 0;
+  border: 1px solid #b8c4d4;
+  margin: -0.5px;
+  border-radius: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 7.6px;
+  font-size: clamp(9px, 1.6vw, 11.5px);
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.3px;
+  line-height: 1;
   color: #0f172a;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 
 .step2YCell {
@@ -5387,8 +5865,8 @@ button.chromaCell:hover {
   background: #facc15 !important;
   border-color: #ca8a04 !important;
   color: #111827 !important;
-  transform: scale(1.12);
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+  z-index: 1;
+  box-shadow: 0 0 0 2px #ca8a04 inset;
 }
 
 @keyframes step2Reveal {
@@ -5420,11 +5898,6 @@ button.chromaCell:hover {
 }
 
 @media (max-width: 760px) {
-  .step2RgbGrid,
-  .step2OutputGrid {
-    grid-template-columns: repeat(8, 28px) !important;
-  }
-
   .step2OutputHeader {
     justify-content: center;
     text-align: center;
@@ -5438,6 +5911,98 @@ button.chromaCell:hover {
     border-radius: 12px;
     flex-direction: column;
     text-align: center;
+  }
+
+  .step2SimplePage {
+    padding-left: 0;
+    padding-right: 0;
+    gap: 10px;
+  }
+
+  .step2FormulaBox,
+  .step2Card,
+  .step2SelectedCard,
+  .step2OutputCard {
+    padding: 10px 6px !important;
+    border-radius: 12px !important;
+  }
+
+  .step2Card h3,
+  .step2SelectedCard h3,
+  .step2OutputCard h3,
+  .step2FormulaBox h3 {
+    font-size: 15px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .step2RgbGrid,
+  .step2OutputGrid {
+    max-width: 100%;
+    width: 100%;
+    border-width: 1.5px;
+    border-radius: 8px;
+    overflow: hidden;
+    gap: 1.5px;
+    background: #0f172a;
+  }
+
+  .step2RgbPixel,
+  .step2OutputGrid span {
+    margin: 0;
+    border-width: 0;
+  }
+
+  .step2RgbPixel {
+    font-size: clamp(9px, 4.6vw, 12px) !important;
+    letter-spacing: -0.3px;
+    padding: 0 !important;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .step2OutputGrid span {
+    font-size: clamp(9.5px, 2.9vw, 12px) !important;
+    letter-spacing: -0.3px;
+  }
+
+  .step2ControlBar button {
+    width: 100%;
+    max-width: 420px;
+  }
+}
+
+@media (max-width: 560px) {
+  .step2PixelPrefix {
+    display: none;
+  }
+
+  .step2RgbPixel {
+    font-size: clamp(9.5px, 4.6vw, 12.5px) !important;
+    letter-spacing: -0.3px;
+  }
+
+  .step2OutputGrid span {
+    font-size: clamp(9px, 2.8vw, 11px) !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .step2RgbPixel {
+    font-size: clamp(8.5px, 4.4vw, 11px) !important;
+  }
+
+  .step2OutputGrid span {
+    font-size: clamp(8.5px, 2.8vw, 10px) !important;
+  }
+}
+
+@media (max-width: 340px) {
+  .step2RgbPixel {
+    font-size: clamp(7.5px, 4.2vw, 9.5px) !important;
+  }
+
+  .step2OutputGrid span {
+    font-size: clamp(7.5px, 2.8vw, 9px) !important;
   }
 }
 /* ================================
@@ -5454,17 +6019,15 @@ button.chromaCell:hover {
 
 .step3ConceptBox {
   width: 100%;
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-left: 5px solid #0d2c72;
-  border-radius: 12px;
-  padding: 12px 16px;
-  display: grid;
-  gap: 6px;
-  color: #334155;
+  box-sizing: border-box;
+  background: #fbfdff;
+  border: 1.5px solid #dbe4ee;
+  border-radius: 14px;
+  padding: 14px 18px;
+  color: #33415a;
   font-size: 13px;
   font-weight: 700;
-  line-height: 1.45;
+  line-height: 1.6;
 }
 
 .step3ConceptBox strong,
@@ -5517,25 +6080,32 @@ button.chromaCell:hover {
 
 .step3ControlBar button {
   border: none;
-  background: #0f172a;
+  background: linear-gradient(135deg, #1d4ed8, #0d2c72);
   color: #ffffff;
-  padding: 10px 16px;
+  padding: 12px 24px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 900;
+  letter-spacing: 0.2px;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
-  transition: 0.2s ease;
+  box-shadow: 0 8px 20px rgba(13, 44, 114, 0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
 
 .step3ControlBar button:hover:not(:disabled) {
-  background: #0d2c72;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(13, 44, 114, 0.4);
+  filter: brightness(1.06);
+}
+
+.step3ControlBar button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .step3ControlBar button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .step3ProgressBox {
@@ -5582,27 +6152,51 @@ button.chromaCell:hover {
 }
 
 .step3Tabs button {
-  border: 1px solid #cbd5e1;
+  border: 1.5px solid #cbd5e1;
   background: #ffffff;
-  color: #0f172a;
-  padding: 9px 16px;
+  color: #33415a;
+  padding: 10px 20px;
   border-radius: 999px;
   font-size: 13px;
   font-weight: 900;
   cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+}
+
+.step3Tabs button:hover:not(.step3ActiveTab) {
+  border-color: #93a8c9;
+  transform: translateY(-1px);
 }
 
 .step3Tabs .step3ActiveTab {
-  background: #0d2c72;
+  background: linear-gradient(135deg, #2563eb, #0d2c72);
   color: #ffffff;
   border-color: #0d2c72;
+  box-shadow: 0 8px 18px rgba(13, 44, 114, 0.3);
+  transform: translateY(-1px);
 }
 
 .step3MainGrid {
   display: grid;
-  grid-template-columns: minmax(430px, 1fr) minmax(300px, 360px) minmax(300px, 420px);
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "input output"
+    "calc calc";
   gap: 14px;
   align-items: start;
+}
+
+.step3MainGrid > *:nth-child(1) {
+  grid-area: input;
+}
+
+.step3MainGrid > *:nth-child(2) {
+  grid-area: calc;
+}
+
+.step3MainGrid > *:nth-child(3) {
+  grid-area: output;
 }
 
 .step3Card,
@@ -5625,32 +6219,54 @@ button.chromaCell:hover {
 
 .step3SourceGrid {
   display: grid;
-  gap: 4px;
-  width: fit-content;
-  max-width: 100%;
+  gap: 0;
+  width: 100%;
+  max-width: 500px;
   margin: 0 auto;
-  padding: 10px;
-  background: #0f172a;
-  border-radius: 14px;
-  overflow-x: auto;
+  border: 1.5px solid #0f172a;
+  border-radius: 6px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .step3SourceCell {
-  width: 27px;
-  height: 24px;
-  border: 1px solid rgba(15, 23, 42, 0.18);
-  border-radius: 5px;
-  background: #f8fafc;
+  aspect-ratio: 1.05 / 1;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #0f172a;
+  margin: -0.5px;
+  border-radius: 0;
+  background: #ffffff;
   color: #0f172a;
-  font-size: 7.5px;
+  font-size: clamp(7px, 2.1vw, 11px);
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
   cursor: pointer;
-  transition: 0.18s ease;
+  transition: 0.15s ease;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .step3SourceCell:hover {
-  transform: scale(1.08);
-  border-color: #0d2c72;
+  z-index: 1;
+  box-shadow: 0 0 0 2px #0d2c72 inset;
+}
+
+.step3CbCell {
+  background: #eff6ff;
+  color: #0f172a;
+}
+
+.step3CrCell {
+  background: #fff1f2;
+  color: #0f172a;
 }
 
 .step3SelectedGroupSourceCell {
@@ -5660,34 +6276,40 @@ button.chromaCell:hover {
 }
 
 .step3SelectedSourcePixel {
+  z-index: 2;
   background: #facc15 !important;
-  border: 3px solid #ca8a04 !important;
-  transform: scale(1.08);
+  box-shadow: 0 0 0 2px #ca8a04 inset !important;
 }
 
 .step3OutputGrid {
   display: grid;
-  gap: 6px;
-  width: fit-content;
-  max-width: 100%;
+  gap: 0;
+  width: 100%;
+  max-width: 400px;
   margin: 0 auto;
-  padding: 12px;
-  background: #f8fafc;
-  border: 1px solid #d9e2ec;
-  border-radius: 14px;
-  overflow-x: auto;
+  border: 1.5px solid #b8c4d4;
+  border-radius: 6px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .step3OutputCell {
-  width: 34px;
-  height: 30px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
+  aspect-ratio: 1.1 / 1;
+  min-width: 0;
+  border: 1px solid #b8c4d4;
+  margin: -0.5px;
+  border-radius: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 9px;
+  font-size: clamp(8px, 2.6vw, 13px);
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .step3HiddenOutputCell {
@@ -5696,7 +6318,6 @@ button.chromaCell:hover {
 }
 
 .step3VisibleOutputCell {
-  background: #eff6ff;
   color: #0f172a;
   animation: step3Reveal 0.2s ease;
 }
@@ -5705,8 +6326,8 @@ button.chromaCell:hover {
   background: #facc15 !important;
   border-color: #ca8a04 !important;
   color: #111827 !important;
-  transform: scale(1.08);
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+  z-index: 1;
+  box-shadow: 0 0 0 2px #ca8a04 inset;
 }
 
 @keyframes step3Reveal {
@@ -5727,55 +6348,49 @@ button.chromaCell:hover {
   gap: 10px;
 }
 
-.step3SelectedMeta {
-  display: grid;
-  gap: 8px;
-}
-
-.step3SelectedMeta div {
+.step3PositionLine {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
   background: #f8fafc;
   border: 1px solid #dbe4ee;
   border-radius: 10px;
-  padding: 8px 10px;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
+  padding: 9px 12px;
   color: #334155;
   font-size: 12.5px;
   font-weight: 800;
-}
-
-.step3SelectedMeta strong {
-  color: #0d2c72;
-  font-weight: 900;
-}
-
-.step3GroupValues {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-
-.step3GroupValues div {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  border-radius: 10px;
-  padding: 8px;
-  display: grid;
-  gap: 4px;
   text-align: center;
 }
 
-.step3GroupValues span {
-  color: #64748b;
-  font-size: 11px;
-  font-weight: 800;
+.step3PositionArrow {
+  color: #94a3b8;
+  font-weight: 900;
 }
 
-.step3GroupValues strong {
-  color: #0f172a;
+.step3MiniGroupGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3px;
+  width: 128px;
+  margin: 0 auto;
+  border: 1.5px solid #0f172a;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 3px;
+  background: #0f172a;
+}
+
+.step3MiniGroupGrid div {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
   font-size: 15px;
   font-weight: 900;
+  color: #0f172a;
 }
 
 .step3FormulaBox {
@@ -5789,28 +6404,19 @@ button.chromaCell:hover {
 }
 
 .step3CalculationResult {
-  background: #f8fbff;
-  border: 1px solid #cfd9e4;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
   border-radius: 12px;
-  padding: 10px;
-  display: grid;
-  gap: 7px;
-}
-
-.step3CalculationResult div {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 7px 9px;
+  padding: 12px;
   color: #0f172a;
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1.35;
+  font-size: 14px;
+  font-weight: 900;
   text-align: center;
 }
 
 .step3CalculationResult b {
   color: #0d2c72;
+  font-size: 17px;
 }
 
 .step3PendingBox {
@@ -5835,9 +6441,13 @@ button.chromaCell:hover {
   line-height: 1.35;
 }
 
-@media (max-width: 1450px) {
+@media (max-width: 900px) {
   .step3MainGrid {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "input"
+      "output"
+      "calc";
   }
 
   .step3CalculationCard {
@@ -5852,16 +6462,121 @@ button.chromaCell:hover {
 }
 
 @media (max-width: 760px) {
-  .step3SourceGrid {
-    grid-template-columns: repeat(8, 27px) !important;
+  .step3SimplePage {
+    padding-left: 2px;
+    padding-right: 2px;
+    gap: 10px;
   }
 
+  .step3Card,
+  .step3CalculationCard {
+    padding: 10px 6px;
+    border-radius: 12px;
+  }
+
+  .step3Card h3,
+  .step3CalculationCard h3 {
+    font-size: 14.5px;
+  }
+
+  .step3SourceGrid,
   .step3OutputGrid {
-    grid-template-columns: repeat(4, 34px) !important;
+    max-width: 100%;
+    width: 100%;
+    border-width: 1.5px;
+    overflow: hidden;
+    gap: 1.5px;
+    background: #0f172a;
+  }
+
+  .step3SourceCell,
+  .step3OutputCell {
+    margin: 0;
+    border-width: 0;
+  }
+
+  .step3SourceCell {
+    font-size: clamp(8px, 3vw, 10.5px) !important;
+    letter-spacing: -0.4px;
+    padding: 0 1px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .step3OutputCell {
+    font-size: clamp(9.5px, 3.8vw, 13px) !important;
+    letter-spacing: -0.3px;
   }
 
   .step3ConceptBox {
     font-size: 12px;
+  }
+
+  .step3PositionLine {
+    font-size: 11.5px;
+    padding: 8px 10px;
+  }
+
+  .step3MiniGroupGrid {
+    width: 108px;
+  }
+
+  .step3MiniGroupGrid div {
+    font-size: 13px;
+  }
+
+  .step3FormulaBox {
+    font-size: 11.5px;
+    padding: 9px;
+  }
+
+  .step3PendingBox {
+    font-size: 11.5px;
+    padding: 11px 10px;
+  }
+}
+
+@media (max-width: 560px) {
+  .step3SourceCell {
+    font-size: clamp(7.5px, 2.9vw, 10px) !important;
+    letter-spacing: -0.4px;
+  }
+
+  .step3OutputCell {
+    font-size: clamp(9px, 3.7vw, 12.5px) !important;
+  }
+
+  .step3MiniGroupGrid {
+    width: 96px;
+  }
+
+  .step3MiniGroupGrid div {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .step3SourceCell {
+    font-size: clamp(7px, 2.7vw, 9.3px) !important;
+    letter-spacing: -0.4px;
+  }
+
+  .step3OutputCell {
+    font-size: clamp(8.5px, 3.5vw, 11.5px) !important;
+  }
+
+  .step3FormulaBox {
+    font-size: 10.5px;
+  }
+}
+
+@media (max-width: 340px) {
+  .step3SourceCell {
+    font-size: clamp(6.3px, 2.5vw, 8.3px) !important;
+    letter-spacing: -0.4px;
+  }
+
+  .step3OutputCell {
+    font-size: clamp(8px, 3.3vw, 10.5px) !important;
   }
 }
 /* ================================
@@ -5874,27 +6589,6 @@ button.chromaCell:hover {
   flex-direction: column;
   gap: 14px;
   padding-bottom: 18px;
-}
-
-.step4ConceptBox {
-  width: 100%;
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-left: 5px solid #0d2c72;
-  border-radius: 12px;
-  padding: 12px 16px;
-  display: grid;
-  gap: 6px;
-  color: #334155;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.45;
-}
-
-.step4ConceptBox strong,
-.step4ConceptBox b {
-  color: #0d2c72;
-  font-weight: 900;
 }
 
 .step4BlockSelectorGrid {
@@ -5954,53 +6648,42 @@ button.chromaCell:hover {
 
 .step4ControlBar button {
   border: none;
-  background: #0f172a;
+  background: linear-gradient(135deg, #1d4ed8, #0d2c72);
   color: #ffffff;
-  padding: 10px 16px;
+  padding: 12px 24px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 900;
+  letter-spacing: 0.2px;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
-  transition: 0.2s ease;
+  box-shadow: 0 8px 20px rgba(13, 44, 114, 0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
 
 .step4ControlBar button:hover:not(:disabled) {
-  background: #0d2c72;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(13, 44, 114, 0.4);
+  filter: brightness(1.06);
+}
+
+.step4ControlBar button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .step4ControlBar button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
-.step4FlowBox {
-  width: fit-content;
-  max-width: 100%;
-  margin: 0 auto;
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-radius: 999px;
-  padding: 9px 16px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  flex-wrap: wrap;
-  justify-content: center;
-  color: #334155;
-  font-size: 12.5px;
-  font-weight: 800;
-}
-
-.step4FlowBox b {
-  color: #0d2c72;
-  font-weight: 900;
+.step4LockedSourceCell {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .step4MainGrid {
   display: grid;
-  grid-template-columns: minmax(430px, 1fr) minmax(260px, 330px) minmax(310px, 420px);
+  grid-template-columns: minmax(560px, 1fr) minmax(260px, 330px) minmax(360px, 480px);
   gap: 14px;
   align-items: start;
 }
@@ -6025,33 +6708,40 @@ button.chromaCell:hover {
 
 .step4SourceGrid {
   display: grid;
-  grid-template-columns: repeat(16, 27px);
-  gap: 4px;
-  width: fit-content;
-  max-width: 100%;
+  grid-template-columns: repeat(16, 1fr);
+  gap: 0;
+  width: 100%;
+  max-width: 640px;
   margin: 0 auto;
-  padding: 10px;
-  background: #0f172a;
-  border-radius: 14px;
-  overflow-x: auto;
+  border: 1.5px solid #0f172a;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .step4SourceCell {
-  width: 27px;
-  height: 24px;
-  border: 1px solid rgba(15, 23, 42, 0.18);
-  border-radius: 5px;
-  background: #f8fafc;
+  aspect-ratio: 1.05 / 1;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #0f172a;
+  margin: -0.5px;
+  border-radius: 0;
+  background: #ffffff;
   color: #0f172a;
-  font-size: 7.5px;
+  font-size: clamp(9px, 1.6vw, 12px);
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
   cursor: pointer;
-  transition: 0.18s ease;
+  transition: 0.15s ease;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0;
 }
 
 .step4SourceCell:hover {
-  transform: scale(1.08);
-  border-color: #0d2c72;
+  z-index: 1;
+  box-shadow: 0 0 0 2px #0d2c72 inset;
 }
 
 .step4SelectedSourceBlockCell {
@@ -6096,28 +6786,32 @@ button.chromaCell:hover {
 
 .step4BlockGrid {
   display: grid;
-  grid-template-columns: repeat(8, 36px);
-  gap: 6px;
-  width: fit-content;
-  max-width: 100%;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 0;
+  width: 100%;
+  max-width: 480px;
   margin: 0 auto;
-  padding: 12px;
-  background: #f8fafc;
-  border: 1px solid #d9e2ec;
-  border-radius: 14px;
-  overflow-x: auto;
+  border: 1.5px solid #0f172a;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .step4BlockCell {
-  width: 36px;
-  height: 30px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
+  aspect-ratio: 1.1 / 1;
+  min-width: 0;
+  border: 1px solid #b8c4d4;
+  margin: -0.5px;
+  border-radius: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 9px;
+  font-size: clamp(11px, 2.4vw, 15px);
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 
 .step4HiddenBlockCell {
@@ -6170,16 +6864,32 @@ button.chromaCell:hover {
 }
 
 @media (max-width: 760px) {
-  .step4SourceGrid {
-    grid-template-columns: repeat(8, 27px) !important;
+  .step4SimplePage {
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+
+  .step4Card,
+  .step4SelectedInfoCard {
+    padding: 8px 6px;
+  }
+
+  .step4SourceGrid,
+  .step4BlockGrid {
+    max-width: 100%;
+  }
+
+  .step4SourceCell {
+    font-size: clamp(8px, 3.4vw, 11px) !important;
+    letter-spacing: -0.3px;
+  }
+
+  .step4BlockCell {
+    font-size: clamp(10px, 4vw, 14px) !important;
   }
 
   .step4BlockSelectorGrid {
     grid-template-columns: 1fr;
-  }
-
-  .step4FlowBox {
-    border-radius: 14px;
   }
 }
 /* ================================
@@ -6192,27 +6902,6 @@ button.chromaCell:hover {
   flex-direction: column;
   gap: 14px;
   padding-bottom: 18px;
-}
-
-.step5ConceptBox {
-  width: 100%;
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-left: 5px solid #0d2c72;
-  border-radius: 12px;
-  padding: 12px 16px;
-  display: grid;
-  gap: 6px;
-  color: #334155;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.45;
-}
-
-.step5ConceptBox strong,
-.step5ConceptBox b {
-  color: #0d2c72;
-  font-weight: 900;
 }
 
 .step5SummaryGrid {
@@ -6259,25 +6948,32 @@ button.chromaCell:hover {
 
 .step5ControlBar button {
   border: none;
-  background: #0f172a;
+  background: linear-gradient(135deg, #1d4ed8, #0d2c72);
   color: #ffffff;
-  padding: 10px 16px;
+  padding: 12px 24px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 900;
+  letter-spacing: 0.2px;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
-  transition: 0.2s ease;
+  box-shadow: 0 8px 20px rgba(13, 44, 114, 0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
 
 .step5ControlBar button:hover:not(:disabled) {
-  background: #0d2c72;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(13, 44, 114, 0.4);
+  filter: brightness(1.06);
+}
+
+.step5ControlBar button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .step5ControlBar button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .step5ProgressBox {
@@ -6316,32 +7012,9 @@ button.chromaCell:hover {
   transition: width 0.25s ease;
 }
 
-.step5FlowBox {
-  width: fit-content;
-  max-width: 100%;
-  margin: 0 auto;
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-radius: 999px;
-  padding: 9px 16px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  flex-wrap: wrap;
-  justify-content: center;
-  color: #334155;
-  font-size: 12.5px;
-  font-weight: 800;
-}
-
-.step5FlowBox b {
-  color: #0d2c72;
-  font-weight: 900;
-}
-
 .step5MainGrid {
   display: grid;
-  grid-template-columns: minmax(330px, 420px) minmax(300px, 360px) minmax(330px, 420px);
+  grid-template-columns: minmax(420px, 480px) minmax(300px, 360px) minmax(420px, 480px);
   gap: 14px;
   align-items: start;
   justify-content: center;
@@ -6367,48 +7040,53 @@ button.chromaCell:hover {
 
 .step5MatrixGrid {
   display: grid;
-  grid-template-columns: repeat(8, 38px);
-  gap: 6px;
-  width: fit-content;
-  max-width: 100%;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 0;
+  width: 100%;
+  max-width: 480px;
   margin: 0 auto;
-  padding: 12px;
-  background: #f8fafc;
-  border: 1px solid #d9e2ec;
-  border-radius: 14px;
-  overflow-x: auto;
+  border: 1.5px solid #0f172a;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .step5InputCell,
 .step5OutputCell {
-  width: 38px;
-  height: 31px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
+  aspect-ratio: 1.1 / 1;
+  min-width: 0;
+  border: 1px solid #b8c4d4;
+  margin: -0.5px;
+  border-radius: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 9px;
+  font-size: clamp(11px, 2.4vw, 15px);
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 
 .step5InputCell {
   background: #ffffff;
   color: #0f172a;
   cursor: pointer;
-  transition: 0.18s ease;
+  transition: 0.15s ease;
 }
 
 .step5InputCell:hover {
-  transform: scale(1.08);
-  border-color: #0d2c72;
+  z-index: 1;
+  box-shadow: 0 0 0 2px #0d2c72 inset;
 }
 
 .step5SelectedInputCell {
   background: #facc15 !important;
-  border: 3px solid #ca8a04 !important;
+  border-color: #ca8a04 !important;
   color: #111827 !important;
-  transform: scale(1.08);
+  z-index: 2;
+  box-shadow: 0 0 0 2px #ca8a04 inset !important;
 }
 
 .step5ProcessedInputCell {
@@ -6430,8 +7108,8 @@ button.chromaCell:hover {
   background: #facc15 !important;
   border-color: #ca8a04 !important;
   color: #111827 !important;
-  transform: scale(1.08);
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+  z-index: 1;
+  box-shadow: 0 0 0 2px #ca8a04 inset;
 }
 
 @keyframes step5Reveal {
@@ -6461,23 +7139,28 @@ button.chromaCell:hover {
   justify-content: space-between;
   gap: 10px;
   color: #334155;
-  font-size: 12.5px;
+  font-size: 14.5px;
   font-weight: 800;
 }
 
 .step5InfoRow strong {
   color: #0d2c72;
   font-weight: 900;
+  font-size: 15px;
 }
 
 .step5FormulaBox {
-  background: #0f172a;
+  background: linear-gradient(135deg, #0d2c72 0%, #16308a 45%, #1743c9 100%);
   color: #ffffff;
   border-radius: 12px;
-  padding: 10px;
-  font-size: 12.5px;
+  padding: 12px 14px;
+  font-size: 15.5px;
   font-weight: 900;
+  letter-spacing: 0.2px;
   text-align: center;
+  box-shadow: 0 10px 22px rgba(13, 44, 114, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  border: 1px solid #1e3a8a;
+  position: relative;
 }
 
 .step5CalculationResult {
@@ -6495,7 +7178,7 @@ button.chromaCell:hover {
   border-radius: 8px;
   padding: 7px 9px;
   color: #0f172a;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 800;
   line-height: 1.35;
   text-align: center;
@@ -6503,6 +7186,7 @@ button.chromaCell:hover {
 
 .step5CalculationResult b {
   color: #0d2c72;
+  font-size: 15px;
 }
 
 .step5PendingBox {
@@ -6545,23 +7229,23 @@ button.chromaCell:hover {
 }
 
 @media (max-width: 760px) {
+  .step5SimplePage {
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+
+  .step5Card,
+  .step5CalculationCard {
+    padding: 8px 6px;
+  }
+
   .step5MatrixGrid {
-    grid-template-columns: repeat(8, 34px);
+    max-width: 100%;
   }
 
   .step5InputCell,
   .step5OutputCell {
-    width: 34px;
-    height: 28px;
-    font-size: 8px;
-  }
-
-  .step5FlowBox {
-    border-radius: 14px;
-  }
-
-  .step5ConceptBox {
-    font-size: 12px;
+    font-size: clamp(10px, 4vw, 14px) !important;
   }
 }
 /* ================================
@@ -6574,27 +7258,6 @@ button.chromaCell:hover {
   flex-direction: column;
   gap: 14px;
   padding-bottom: 18px;
-}
-
-.step6ConceptBox {
-  width: 100%;
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-left: 5px solid #0d2c72;
-  border-radius: 12px;
-  padding: 12px 16px;
-  display: grid;
-  gap: 6px;
-  color: #334155;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.45;
-}
-
-.step6ConceptBox strong,
-.step6ConceptBox b {
-  color: #0d2c72;
-  font-weight: 900;
 }
 
 .step6SummaryGrid {
@@ -6642,6 +7305,16 @@ button.chromaCell:hover {
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }
 
+.step6FormulaBox {
+  position: relative;
+  border: 1.5px solid #c3d3f0;
+  border-radius: 18px;
+  background: linear-gradient(120deg, #eef4ff 0%, #ffffff 55%, #f6f9ff 100%);
+  box-shadow: 0 16px 34px rgba(13, 44, 114, 0.14), 0 2px 6px rgba(13, 44, 114, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  padding: 16px 20px;
+}
+
 .step6FormulaBox h3,
 .step6Card h3,
 .step6CalculationCard h3 {
@@ -6652,15 +7325,103 @@ button.chromaCell:hover {
   text-align: center;
 }
 
-.step6FormulaText {
-  background: #0f172a;
-  color: #ffffff;
-  border-radius: 12px;
-  padding: 12px;
-  text-align: center;
+.step6FormulaBox h3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.step6FormulaHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step6FormulaHeader h3 {
+  margin: 0;
+  flex: 1 1 auto;
+  justify-content: flex-start;
+  text-align: left;
+  font-size: 17px;
+  letter-spacing: 0.1px;
+}
+
+.step6ShowFormulaBtn {
+  flex-shrink: 0;
+  border: 1.5px solid #1743c9;
+  background: #ffffff;
+  color: #0d2c72;
   font-size: 12.5px;
   font-weight: 900;
-  line-height: 1.45;
+  letter-spacing: 0.3px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease,
+    border-color 0.18s ease;
+  box-shadow: 0 4px 10px rgba(13, 44, 114, 0.14);
+}
+
+.step6ShowFormulaBtn::after {
+  content: "▾";
+  font-size: 10px;
+  transition: transform 0.18s ease;
+}
+
+.step6ShowFormulaBtnOpen::after {
+  transform: rotate(180deg);
+}
+
+.step6ShowFormulaBtn:hover {
+  background: linear-gradient(135deg, #0d2c72 0%, #1743c9 100%);
+  border-color: #1743c9;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(13, 44, 114, 0.34);
+}
+
+.step6ShowFormulaBtn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(13, 44, 114, 0.24);
+}
+
+.step6FormulaBox h3::before {
+  content: "ƒ(x,y)";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0d2c72, #1743c9);
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  box-shadow: 0 6px 14px rgba(13, 44, 114, 0.3), 0 0 0 3px rgba(23, 67, 201, 0.1);
+}
+
+.step6FormulaText {
+  background: linear-gradient(135deg, #0d2c72 0%, #16308a 45%, #1743c9 100%);
+  color: #ffffff;
+  border-radius: 14px;
+  margin-top: 14px;
+  padding: 16px 14px;
+  text-align: center;
+  font-size: 14.5px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid #1e3a8a;
+  box-shadow: 0 12px 26px rgba(13, 44, 114, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  position: relative;
 }
 
 .step6FormulaBox p {
@@ -6680,25 +7441,32 @@ button.chromaCell:hover {
 
 .step6ControlBar button {
   border: none;
-  background: #0f172a;
+  background: linear-gradient(135deg, #1d4ed8, #0d2c72);
   color: #ffffff;
-  padding: 10px 16px;
+  padding: 12px 24px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 900;
+  letter-spacing: 0.2px;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
-  transition: 0.2s ease;
+  box-shadow: 0 8px 20px rgba(13, 44, 114, 0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
 
 .step6ControlBar button:hover:not(:disabled) {
-  background: #0d2c72;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(13, 44, 114, 0.4);
+  filter: brightness(1.06);
+}
+
+.step6ControlBar button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .step6ControlBar button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .step6ProgressBox {
@@ -6737,32 +7505,9 @@ button.chromaCell:hover {
   transition: width 0.25s ease;
 }
 
-.step6FlowBox {
-  width: fit-content;
-  max-width: 100%;
-  margin: 0 auto;
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-radius: 999px;
-  padding: 9px 16px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  flex-wrap: wrap;
-  justify-content: center;
-  color: #334155;
-  font-size: 12.5px;
-  font-weight: 800;
-}
-
-.step6FlowBox b {
-  color: #0d2c72;
-  font-weight: 900;
-}
-
 .step6MainGrid {
   display: grid;
-  grid-template-columns: minmax(330px, 430px) minmax(300px, 360px) minmax(330px, 430px);
+  grid-template-columns: minmax(420px, 480px) minmax(300px, 360px) minmax(420px, 480px);
   gap: 14px;
   align-items: start;
   justify-content: center;
@@ -6770,29 +7515,33 @@ button.chromaCell:hover {
 
 .step6MatrixGrid {
   display: grid;
-  grid-template-columns: repeat(8, 44px);
-  gap: 6px;
-  width: fit-content;
-  max-width: 100%;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 0;
+  width: 100%;
+  max-width: 480px;
   margin: 0 auto;
-  padding: 12px;
-  background: #f8fafc;
-  border: 1px solid #d9e2ec;
-  border-radius: 14px;
-  overflow-x: auto;
+  border: 1.5px solid #0f172a;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .step6InputCell,
 .step6OutputCell {
-  width: 44px;
-  height: 32px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
+  aspect-ratio: 1.2 / 1;
+  min-width: 0;
+  border: 1px solid #b8c4d4;
+  margin: -0.5px;
+  border-radius: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 8.2px;
+  font-size: clamp(10px, 2.2vw, 14px);
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 
 .step6InputCell {
@@ -6802,12 +7551,12 @@ button.chromaCell:hover {
 
 .step6OutputCell {
   cursor: pointer;
-  transition: 0.18s ease;
+  transition: 0.15s ease;
 }
 
 .step6OutputCell:hover {
-  transform: scale(1.08);
-  border-color: #0d2c72;
+  z-index: 1;
+  box-shadow: 0 0 0 2px #0d2c72 inset;
 }
 
 .step6HiddenOutputCell {
@@ -6823,10 +7572,10 @@ button.chromaCell:hover {
 
 .step6SelectedOutputCell {
   background: #facc15 !important;
-  border: 3px solid #ca8a04 !important;
+  border-color: #ca8a04 !important;
   color: #111827 !important;
-  transform: scale(1.08);
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+  z-index: 1;
+  box-shadow: 0 0 0 2px #ca8a04 inset;
 }
 
 @keyframes step6Reveal {
@@ -6856,24 +7605,28 @@ button.chromaCell:hover {
   justify-content: space-between;
   gap: 10px;
   color: #334155;
-  font-size: 12.5px;
+  font-size: 14.5px;
   font-weight: 800;
 }
 
 .step6InfoRow strong {
   color: #0d2c72;
   font-weight: 900;
+  font-size: 15px;
 }
 
 .step6MiniFormula {
-  background: #0f172a;
+  background: linear-gradient(135deg, #0d2c72 0%, #16308a 45%, #1743c9 100%);
   color: #ffffff;
   border-radius: 12px;
-  padding: 10px;
-  font-size: 12.5px;
+  padding: 12px 14px;
+  font-size: 14.5px;
   font-weight: 900;
+  letter-spacing: 0.2px;
   text-align: center;
-  line-height: 1.35;
+  line-height: 1.4;
+  box-shadow: 0 10px 22px rgba(13, 44, 114, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  border: 1px solid #1e3a8a;
 }
 
 .step6CalculationResult {
@@ -6891,7 +7644,7 @@ button.chromaCell:hover {
   border-radius: 8px;
   padding: 7px 9px;
   color: #0f172a;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 800;
   line-height: 1.35;
   text-align: center;
@@ -6899,6 +7652,7 @@ button.chromaCell:hover {
 
 .step6CalculationResult b {
   color: #0d2c72;
+  font-size: 15px;
 }
 
 .step6PendingBox {
@@ -6941,27 +7695,52 @@ button.chromaCell:hover {
 }
 
 @media (max-width: 760px) {
+  .step6SimplePage {
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+
+  .step6Card,
+  .step6CalculationCard,
+  .step6FormulaBox {
+    padding: 8px 6px;
+  }
+
+  .step6FormulaBox {
+    padding: 12px 12px;
+  }
+
+  .step6FormulaHeader {
+    gap: 8px;
+  }
+
+  .step6ShowFormulaBtn {
+    padding: 8px 14px;
+    font-size: 11.5px;
+  }
+
   .step6MatrixGrid {
-    grid-template-columns: repeat(8, 38px);
+    max-width: 100%;
   }
 
   .step6InputCell,
   .step6OutputCell {
-    width: 38px;
-    height: 30px;
-    font-size: 7.4px;
-  }
-
-  .step6FlowBox {
-    border-radius: 14px;
-  }
-
-  .step6ConceptBox {
-    font-size: 12px;
+    font-size: clamp(9px, 3.6vw, 13px) !important;
   }
 
   .step6FormulaText {
-    font-size: 11.5px;
+    font-size: 13px;
+    padding: 12px 10px;
+  }
+
+  .step6InfoRow,
+  .step6CalculationResult div {
+    font-size: 13px;
+  }
+
+  .step6MiniFormula {
+    font-size: 13px;
+    padding: 10px 12px;
   }
 }
 /* ================================
@@ -6974,27 +7753,6 @@ button.chromaCell:hover {
   flex-direction: column;
   gap: 14px;
   padding-bottom: 18px;
-}
-
-.step7ConceptBox {
-  width: 100%;
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-left: 5px solid #0d2c72;
-  border-radius: 12px;
-  padding: 12px 16px;
-  display: grid;
-  gap: 6px;
-  color: #334155;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.45;
-}
-
-.step7ConceptBox strong,
-.step7ConceptBox b {
-  color: #0d2c72;
-  font-weight: 900;
 }
 
 .step7SummaryGrid {
@@ -7042,6 +7800,16 @@ button.chromaCell:hover {
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }
 
+.step7FormulaBox {
+  position: relative;
+  border: 1.5px solid #c3d3f0;
+  border-radius: 18px;
+  background: linear-gradient(120deg, #eef4ff 0%, #ffffff 55%, #f6f9ff 100%);
+  box-shadow: 0 16px 34px rgba(13, 44, 114, 0.14), 0 2px 6px rgba(13, 44, 114, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  padding: 16px 20px;
+}
+
 .step7FormulaBox h3,
 .step7Card h3,
 .step7CalculationCard h3 {
@@ -7052,15 +7820,103 @@ button.chromaCell:hover {
   text-align: center;
 }
 
-.step7FormulaText {
-  background: #0f172a;
-  color: #ffffff;
-  border-radius: 12px;
-  padding: 12px;
-  text-align: center;
+.step7FormulaBox h3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.step7FormulaHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step7FormulaHeader h3 {
+  margin: 0;
+  flex: 1 1 auto;
+  justify-content: flex-start;
+  text-align: left;
+  font-size: 17px;
+  letter-spacing: 0.1px;
+}
+
+.step7ShowFormulaBtn {
+  flex-shrink: 0;
+  border: 1.5px solid #1743c9;
+  background: #ffffff;
+  color: #0d2c72;
   font-size: 12.5px;
   font-weight: 900;
-  line-height: 1.45;
+  letter-spacing: 0.3px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease,
+    border-color 0.18s ease;
+  box-shadow: 0 4px 10px rgba(13, 44, 114, 0.14);
+}
+
+.step7ShowFormulaBtn::after {
+  content: "▾";
+  font-size: 10px;
+  transition: transform 0.18s ease;
+}
+
+.step7ShowFormulaBtnOpen::after {
+  transform: rotate(180deg);
+}
+
+.step7ShowFormulaBtn:hover {
+  background: linear-gradient(135deg, #0d2c72 0%, #1743c9 100%);
+  border-color: #1743c9;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(13, 44, 114, 0.34);
+}
+
+.step7ShowFormulaBtn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(13, 44, 114, 0.24);
+}
+
+.step7FormulaBox h3::before {
+  content: "Q(u,v)";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0d2c72, #1743c9);
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  box-shadow: 0 6px 14px rgba(13, 44, 114, 0.3), 0 0 0 3px rgba(23, 67, 201, 0.1);
+}
+
+.step7FormulaText {
+  background: linear-gradient(135deg, #0d2c72 0%, #16308a 45%, #1743c9 100%);
+  color: #ffffff;
+  border-radius: 14px;
+  margin-top: 14px;
+  padding: 16px 14px;
+  text-align: center;
+  font-size: 14.5px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid #1e3a8a;
+  box-shadow: 0 12px 26px rgba(13, 44, 114, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  position: relative;
 }
 
 .step7FormulaBox p {
@@ -7080,25 +7936,32 @@ button.chromaCell:hover {
 
 .step7ControlBar button {
   border: none;
-  background: #0f172a;
+  background: linear-gradient(135deg, #1d4ed8, #0d2c72);
   color: #ffffff;
-  padding: 10px 16px;
+  padding: 12px 24px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 900;
+  letter-spacing: 0.2px;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
-  transition: 0.2s ease;
+  box-shadow: 0 8px 20px rgba(13, 44, 114, 0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
 
 .step7ControlBar button:hover:not(:disabled) {
-  background: #0d2c72;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(13, 44, 114, 0.4);
+  filter: brightness(1.06);
+}
+
+.step7ControlBar button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .step7ControlBar button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .step7ProgressBox {
@@ -7137,29 +8000,6 @@ button.chromaCell:hover {
   transition: width 0.25s ease;
 }
 
-.step7FlowBox {
-  width: fit-content;
-  max-width: 100%;
-  margin: 0 auto;
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-radius: 999px;
-  padding: 9px 16px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  flex-wrap: wrap;
-  justify-content: center;
-  color: #334155;
-  font-size: 12.5px;
-  font-weight: 800;
-}
-
-.step7FlowBox b {
-  color: #0d2c72;
-  font-weight: 900;
-}
-
 .step7MainGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(270px, 1fr));
@@ -7169,35 +8009,39 @@ button.chromaCell:hover {
 
 .step7MatrixGrid {
   display: grid;
-  grid-template-columns: repeat(8, 38px);
-  gap: 6px;
-  width: fit-content;
-  max-width: 100%;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 0;
+  width: 100%;
+  max-width: 420px;
   margin: 0 auto;
-  padding: 12px;
-  background: #f8fafc;
-  border: 1px solid #d9e2ec;
-  border-radius: 14px;
-  overflow-x: auto;
+  border: 1.5px solid #0f172a;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .step7Cell {
-  width: 38px;
-  height: 31px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
+  aspect-ratio: 1.15 / 1;
+  min-width: 0;
+  border: 1px solid #b8c4d4;
+  margin: -0.5px;
+  border-radius: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 7.7px;
+  font-size: clamp(9px, 2vw, 12.5px);
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
   cursor: pointer;
-  transition: 0.18s ease;
+  transition: 0.15s ease;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .step7Cell:hover {
-  transform: scale(1.08);
-  border-color: #0d2c72;
+  z-index: 1;
+  box-shadow: 0 0 0 2px #0d2c72 inset;
 }
 
 .step7inputCell {
@@ -7226,10 +8070,10 @@ button.chromaCell:hover {
 
 .step7SelectedCell {
   background: #facc15 !important;
-  border: 3px solid #ca8a04 !important;
+  border-color: #ca8a04 !important;
   color: #111827 !important;
-  transform: scale(1.08);
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+  z-index: 2;
+  box-shadow: 0 0 0 2px #ca8a04 inset !important;
 }
 
 @keyframes step7Reveal {
@@ -7350,26 +8194,45 @@ button.chromaCell:hover {
 }
 
 @media (max-width: 760px) {
+  .step7SimplePage {
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+
+  .step7Card,
+  .step7CalculationCard,
+  .step7FormulaBox {
+    padding: 8px 6px;
+  }
+
+  .step7FormulaBox {
+    padding: 12px 12px;
+  }
+
+  .step7FormulaHeader {
+    gap: 8px;
+  }
+
+  .step7ShowFormulaBtn {
+    padding: 8px 14px;
+    font-size: 11.5px;
+  }
+
+  .step7FormulaText {
+    font-size: 13px;
+    padding: 12px 10px;
+  }
+
   .step7MatrixGrid {
-    grid-template-columns: repeat(8, 34px);
+    max-width: 100%;
   }
 
   .step7Cell {
-    width: 34px;
-    height: 28px;
-    font-size: 7px;
-  }
-
-  .step7FlowBox {
-    border-radius: 14px;
-  }
-
-  .step7ConceptBox {
-    font-size: 12px;
+    font-size: clamp(9px, 3.6vw, 12px) !important;
   }
 }
 /* ================================
-   Step 8 DC Difference Coding
+   Step 8 Zig-Zag Scanning
    ================================ */
 
 .step8SimplePage {
@@ -7378,27 +8241,6 @@ button.chromaCell:hover {
   flex-direction: column;
   gap: 14px;
   padding-bottom: 18px;
-}
-
-.step8ConceptBox {
-  width: 100%;
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-left: 5px solid #0d2c72;
-  border-radius: 12px;
-  padding: 12px 16px;
-  display: grid;
-  gap: 6px;
-  color: #334155;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.45;
-}
-
-.step8ConceptBox strong,
-.step8ConceptBox b {
-  color: #0d2c72;
-  font-weight: 900;
 }
 
 .step8SummaryGrid {
@@ -7445,53 +8287,71 @@ button.chromaCell:hover {
 
 .step8ControlBar button {
   border: none;
-  background: #0f172a;
+  background: linear-gradient(135deg, #1d4ed8, #0d2c72);
   color: #ffffff;
-  padding: 10px 16px;
+  padding: 12px 24px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 900;
+  letter-spacing: 0.2px;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
-  transition: 0.2s ease;
+  box-shadow: 0 8px 20px rgba(13, 44, 114, 0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
 
 .step8ControlBar button:hover:not(:disabled) {
-  background: #0d2c72;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(13, 44, 114, 0.4);
+  filter: brightness(1.06);
+}
+
+.step8ControlBar button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .step8ControlBar button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
-.step8FlowBox {
-  width: fit-content;
-  max-width: 100%;
+.step8ProgressBox {
+  width: 100%;
+  max-width: 560px;
   margin: 0 auto;
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-radius: 999px;
-  padding: 9px 16px;
+  display: grid;
+  gap: 6px;
+}
+
+.step8ProgressTop {
   display: flex;
-  align-items: center;
-  gap: 9px;
-  flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-between;
   color: #334155;
   font-size: 12.5px;
   font-weight: 800;
 }
 
-.step8FlowBox b {
+.step8ProgressTop strong {
   color: #0d2c72;
-  font-weight: 900;
+}
+
+.step8ProgressTrack {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.step8ProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #0d2c72, #2563eb);
+  transition: width 0.2s ease;
 }
 
 .step8MainGrid {
   display: grid;
-  grid-template-columns: minmax(330px, 430px) minmax(310px, 390px) minmax(310px, 390px);
+  grid-template-columns: minmax(400px, 480px) minmax(300px, 360px) minmax(320px, 400px);
   gap: 14px;
   align-items: start;
   justify-content: center;
@@ -7519,43 +8379,60 @@ button.chromaCell:hover {
 
 .step8MatrixGrid {
   display: grid;
-  grid-template-columns: repeat(8, 38px);
+  grid-template-columns: repeat(8, 1fr);
   gap: 6px;
-  width: fit-content;
-  max-width: 100%;
+  width: 100%;
+  max-width: 460px;
   margin: 0 auto;
   padding: 12px;
   background: #f8fafc;
   border: 1px solid #d9e2ec;
   border-radius: 14px;
-  overflow-x: auto;
+  box-sizing: border-box;
 }
 
 .step8MatrixCell {
-  width: 38px;
-  height: 31px;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  min-width: 0;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   background: #ffffff;
   color: #0f172a;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 8px;
+  font-size: clamp(9px, 2.4vw, 12.5px);
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  gap: 1px;
+  box-sizing: border-box;
+  transition: 0.2s ease;
 }
 
-.step8DcMatrixCell {
+.step8MatrixCell small {
+  font-size: clamp(6px, 1.6vw, 8.5px);
+  color: #94a3b8;
+  font-weight: 800;
+}
+
+.step8DcCell {
   background: #fff7ed;
   border-color: #fb923c;
 }
 
-.step8ActiveDcCell {
+.step8ScannedCell {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.step8CurrentCell {
   background: #facc15 !important;
-  border: 3px solid #ca8a04 !important;
+  border-color: #ca8a04 !important;
   color: #111827 !important;
-  transform: scale(1.08);
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+  z-index: 1;
+  box-shadow: 0 0 0 2px #ca8a04 inset;
 }
 
 .step8CalculationCard {
@@ -7564,19 +8441,24 @@ button.chromaCell:hover {
   gap: 9px;
 }
 
-.step8InfoRow,
-.step8InputRow {
+.step8InfoRow {
   background: #f8fafc;
   border: 1px solid #dbe4ee;
+  border-left: 3px solid #2563eb;
   border-radius: 10px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  align-items: center;
   color: #334155;
   font-size: 12.5px;
   font-weight: 800;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.step8InfoRow:hover {
+  transform: translateX(2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
 }
 
 .step8InfoRow strong {
@@ -7584,25 +8466,16 @@ button.chromaCell:hover {
   font-weight: 900;
 }
 
-.step8ActiveInfoRow {
-  background: #fff7ed;
-  border-color: #fb923c;
-}
-
-.step8InputRow label {
-  color: #334155;
-  font-weight: 900;
-}
-
-.step8InputRow input {
-  width: 90px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  padding: 6px 8px;
-  color: #0f172a;
-  font-size: 13px;
+.step8MiniFormula {
+  background: linear-gradient(135deg, #1d4ed8, #0d2c72);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 11px;
+  font-size: 12px;
   font-weight: 900;
   text-align: center;
+  line-height: 1.35;
+  box-shadow: 0 6px 16px rgba(13, 44, 114, 0.28);
 }
 
 .step8PreviousNote {
@@ -7614,45 +8487,57 @@ button.chromaCell:hover {
   text-align: center;
 }
 
-.step8MiniFormula {
-  background: #0f172a;
-  color: #ffffff;
-  border-radius: 12px;
-  padding: 10px;
-  font-size: 12.5px;
-  font-weight: 900;
-  text-align: center;
-  line-height: 1.35;
-}
-
-.step8FormulaResult {
-  background: #f8fafc;
-  border: 1px dashed #cbd5e1;
-  border-radius: 12px;
-  padding: 12px;
-  color: #94a3b8;
-  font-size: 14px;
-  font-weight: 900;
-  text-align: center;
-}
-
-.step8ShowFormulaResult {
-  background: #eff6ff;
-  border-color: #bfdbfe;
-  color: #0f172a;
-}
-
-.step8FormulaResult b {
-  color: #0d2c72;
-}
-
-.step8EncodedPacket {
+.step8SequenceGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+  margin-bottom: 12px;
+}
+
+.step8SeqCell {
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.step8SeqDcCell {
+  border-color: #fb923c;
+}
+
+.step8SeqHidden {
+  background: #eef2f7;
+  color: #94a3b8;
+}
+
+.step8SeqRevealed {
+  background: #eff6ff;
+  color: #0f172a;
+  animation: step8Reveal 0.2s ease;
+}
+
+@keyframes step8Reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.step8SplitRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
 }
 
-.step8EncodedPacket div {
+.step8SplitRow div {
   background: #f8fbff;
   border: 1px solid #d9e2ec;
   border-radius: 10px;
@@ -7662,79 +8547,23 @@ button.chromaCell:hover {
   text-align: center;
 }
 
-.step8EncodedPacket span {
+.step8SplitRow span {
   color: #64748b;
   font-size: 11px;
   font-weight: 800;
 }
 
-.step8EncodedPacket strong {
+.step8SplitRow strong {
   color: #0d2c72;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 900;
 }
 
-.step8PendingBox {
-  background: #f8fafc;
-  border: 1px dashed #cbd5e1;
-  border-radius: 12px;
-  padding: 12px;
-  color: #64748b;
-  font-size: 13px;
-  font-weight: 800;
-  text-align: center;
-  line-height: 1.35;
-}
-
-.step8OutputFlow {
-  display: grid;
-  gap: 10px;
-}
-
-.step8OutputFlow div {
-  background: #f8fafc;
-  border: 1px solid #dbe4ee;
-  border-radius: 12px;
-  padding: 10px;
-  display: grid;
-  grid-template-columns: 28px 1fr auto;
-  align-items: center;
-  gap: 10px;
-}
-
-.step8OutputFlow div.active {
-  background: #eff6ff;
-  border-color: #bfdbfe;
-}
-
-.step8OutputFlow span {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: #e5eaf1;
-  color: #0d2c72;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 900;
-}
-
-.step8OutputFlow div.active span {
-  background: #0d2c72;
-  color: #ffffff;
-}
-
-.step8OutputFlow strong {
-  color: #0f172a;
-  font-size: 12.5px;
-  font-weight: 900;
-}
-
-.step8OutputFlow small {
-  color: #0d2c72;
-  font-size: 12px;
-  font-weight: 900;
+.step8SplitRow small {
+  color: #475569;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 .step8SmallNote {
@@ -7747,7 +8576,17 @@ button.chromaCell:hover {
   line-height: 1.35;
 }
 
-@media (max-width: 1450px) {
+@media (max-width: 1500px) {
+  .step8MainGrid {
+    grid-template-columns: repeat(2, minmax(300px, 1fr));
+  }
+
+  .step8SummaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
   .step8MainGrid {
     grid-template-columns: 1fr;
   }
@@ -7759,45 +8598,35 @@ button.chromaCell:hover {
     width: 100%;
     margin: 0 auto;
   }
-
-  .step8SummaryGrid {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 760px) {
-  .step8MatrixGrid {
-    grid-template-columns: repeat(8, 34px);
+  .step8SimplePage {
+    padding-left: 2px;
+    padding-right: 2px;
   }
 
-  .step8MatrixCell {
-    width: 34px;
-    height: 28px;
-    font-size: 7.2px;
+  .step8Card,
+  .step8CalculationCard,
+  .step8OutputCard {
+    padding: 8px 6px;
   }
 
-  .step8FlowBox {
-    border-radius: 14px;
+  .step8MatrixWrap {
+    max-width: 100%;
   }
 
-  .step8ConceptBox {
-    font-size: 12px;
+  .step8SequenceGrid {
+    grid-template-columns: repeat(6, 1fr);
   }
 
-  .step8EncodedPacket {
+  .step8SplitRow {
     grid-template-columns: 1fr;
   }
-
-  .step8OutputFlow div {
-    grid-template-columns: 28px 1fr;
-  }
-
-  .step8OutputFlow small {
-    grid-column: 2;
-  }
 }
+
 /* ================================
-   Step 9 Zig-Zag Scanning
+   Step 9 Run-Length Encoding
    ================================ */
 
 .step9SimplePage {
@@ -7810,21 +8639,25 @@ button.chromaCell:hover {
 
 .step9ConceptBox {
   width: 100%;
+  box-sizing: border-box;
   background: #f8fbff;
   border: 1px solid #d9e2ec;
   border-left: 5px solid #0d2c72;
   border-radius: 12px;
-  padding: 12px 16px;
+  padding: 14px 18px;
   display: grid;
-  gap: 6px;
+  gap: 8px;
   color: #334155;
   font-size: 13px;
   font-weight: 700;
-  line-height: 1.45;
+  line-height: 1.55;
 }
 
-.step9ConceptBox strong,
-.step9ConceptBox b {
+.step9ConceptBox p {
+  margin: 0;
+}
+
+.step9ConceptBox strong {
   color: #0d2c72;
   font-weight: 900;
 }
@@ -7873,25 +8706,47 @@ button.chromaCell:hover {
 
 .step9ControlBar button {
   border: none;
-  background: #0f172a;
+  background: linear-gradient(135deg, #1d4ed8, #0d2c72);
   color: #ffffff;
-  padding: 10px 16px;
+  padding: 12px 26px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 900;
+  letter-spacing: 0.2px;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
-  transition: 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(13, 44, 114, 0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.step9ControlBar button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.28) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.5s ease;
+}
+
+.step9ControlBar button:hover:not(:disabled)::before {
+  transform: translateX(120%);
 }
 
 .step9ControlBar button:hover:not(:disabled) {
-  background: #0d2c72;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(13, 44, 114, 0.4);
+  filter: brightness(1.06);
+}
+
+.step9ControlBar button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .step9ControlBar button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .step9ProgressBox {
@@ -7930,7 +8785,7 @@ button.chromaCell:hover {
 
 .step9MainGrid {
   display: grid;
-  grid-template-columns: minmax(340px, 430px) minmax(300px, 360px) minmax(320px, 400px);
+  grid-template-columns: minmax(340px, 430px) minmax(300px, 360px) minmax(320px, 420px);
   gap: 14px;
   align-items: start;
   justify-content: center;
@@ -7956,59 +8811,97 @@ button.chromaCell:hover {
   text-align: center;
 }
 
-.step9MatrixGrid {
+.step9AcGrid {
   display: grid;
-  grid-template-columns: repeat(8, 42px);
-  gap: 6px;
-  width: fit-content;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 5px;
   max-width: 100%;
   margin: 0 auto;
-  padding: 12px;
-  background: #f8fafc;
-  border: 1px solid #d9e2ec;
-  border-radius: 14px;
-  overflow-x: auto;
 }
 
-.step9MatrixCell {
-  width: 42px;
-  height: 38px;
+.step9AcCell {
+  height: 30px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   background: #ffffff;
   color: #0f172a;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   font-size: 10px;
   font-weight: 900;
-  gap: 1px;
-  transition: 0.2s ease;
+  cursor: pointer;
+  transition: 0.15s ease;
 }
 
-.step9MatrixCell small {
-  font-size: 7px;
+.step9ZeroAcCell {
+  background: #f1f5f9;
   color: #94a3b8;
-  font-weight: 800;
 }
 
-.step9DcCell {
-  background: #fff7ed;
-  border-color: #fb923c;
-}
-
-.step9ScannedCell {
+.step9NonZeroAcCell {
   background: #eff6ff;
-  border-color: #93c5fd;
+  color: #0d2c72;
 }
 
-.step9CurrentCell {
+.step9ActiveAcCell {
   background: #facc15 !important;
-  border: 3px solid #ca8a04 !important;
+  border-color: #ca8a04 !important;
   color: #111827 !important;
+  z-index: 1;
+  box-shadow: 0 0 0 2px #ca8a04 inset;
+}
+
+.step9SequenceStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+
+.step9SeqCell {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 10.5px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.step9SeqCell small {
+  font-size: 7.5px;
+  font-weight: 800;
+  color: #94a3b8;
+}
+
+.step9ZeroSeqCell {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+
+.step9NonZeroSeqCell {
+  background: #eff6ff;
+  color: #0d2c72;
+  border-color: #bfdbfe;
+}
+
+.step9ActiveSeqCell {
+  background: #facc15 !important;
+  border-color: #ca8a04 !important;
+  color: #111827 !important;
+  z-index: 1;
+  box-shadow: 0 0 0 2px #ca8a04 inset;
   transform: scale(1.08);
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
+}
+
+.step9ActiveSeqCell small {
+  color: #78350f;
 }
 
 .step9CalculationCard {
@@ -8021,29 +8914,39 @@ button.chromaCell:hover {
   background: #f8fafc;
   border: 1px solid #dbe4ee;
   border-radius: 10px;
-  padding: 8px 10px;
+  padding: 10px 12px;
   display: flex;
   justify-content: space-between;
   gap: 10px;
   color: #334155;
-  font-size: 12.5px;
+  font-size: 14.5px;
   font-weight: 800;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.step9InfoRow:hover {
+  background: #eef4ff;
+  border-color: #c7d4ea;
 }
 
 .step9InfoRow strong {
   color: #0d2c72;
   font-weight: 900;
+  font-size: 15px;
 }
 
 .step9MiniFormula {
-  background: #0f172a;
+  background: linear-gradient(135deg, #0d2c72 0%, #16308a 45%, #1743c9 100%);
   color: #ffffff;
   border-radius: 12px;
-  padding: 10px;
-  font-size: 12px;
+  padding: 12px 14px;
+  font-size: 14.5px;
   font-weight: 900;
+  letter-spacing: 0.2px;
   text-align: center;
-  line-height: 1.35;
+  line-height: 1.4;
+  border: 1px solid #1e3a8a;
+  box-shadow: 0 10px 22px rgba(13, 44, 114, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .step9PreviousNote {
@@ -8055,83 +8958,113 @@ button.chromaCell:hover {
   text-align: center;
 }
 
-.step9SequenceGrid {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 5px;
+.step9CompressedRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
   margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed #dbe4ee;
 }
 
-.step9SeqCell {
-  height: 28px;
-  border-radius: 6px;
-  border: 1px solid #cbd5e1;
-  display: flex;
+.step9CompressChip {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
   font-weight: 900;
+  border: 1px solid transparent;
+  transition: 0.15s ease;
 }
 
-.step9SeqDcCell {
+.step9ValueChip {
+  background: #eff6ff;
+  color: #0d2c72;
+  border-color: #bfdbfe;
+}
+
+.step9ZrlChip {
+  background: #fff7ed;
+  color: #9a3412;
   border-color: #fb923c;
 }
 
-.step9SeqHidden {
-  background: #eef2f7;
-  color: #94a3b8;
+.step9EobChip {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-color: #fca5a5;
 }
 
-.step9SeqRevealed {
-  background: #eff6ff;
-  color: #0f172a;
+.step9ChipHidden {
+  background: #f1f5f9 !important;
+  color: #cbd5e1 !important;
+  border-color: #e2e8f0 !important;
+}
+
+.step9ChipActive {
+  background: #facc15 !important;
+  color: #111827 !important;
+  border-color: #ca8a04 !important;
+  transform: scale(1.08);
+  box-shadow: 0 3px 8px rgba(202, 138, 4, 0.3);
+}
+
+.step9SymbolList {
+  display: grid;
+  gap: 8px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.step9SymbolCard {
+  background: #f8fbff;
+  border: 1px solid #d9e2ec;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #334155;
+}
+
+.step9SymbolHidden {
+  color: #94a3b8;
+  background: #f1f5f9;
+}
+
+.step9SymbolRevealed {
   animation: step9Reveal 0.2s ease;
 }
 
 @keyframes step9Reveal {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
 
-.step9SplitRow {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-
-.step9SplitRow div {
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-radius: 10px;
-  padding: 8px;
-  display: grid;
-  gap: 4px;
+.step9EobCard {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #b91c1c;
   text-align: center;
 }
 
-.step9SplitRow span {
-  color: #64748b;
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.step9SplitRow strong {
-  color: #0d2c72;
-  font-size: 15px;
-  font-weight: 900;
-}
-
-.step9SplitRow small {
-  color: #475569;
-  font-size: 10.5px;
-  font-weight: 700;
-  line-height: 1.3;
+.step9ZrlCard {
+  background: #fff7ed;
+  border-color: #fb923c;
+  color: #9a3412;
+  text-align: center;
 }
 
 .step9SmallNote {
@@ -8142,6 +9075,51 @@ button.chromaCell:hover {
   font-weight: 750;
   text-align: center;
   line-height: 1.35;
+}
+
+.step9CompareRow {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: #ecfdf3;
+  border: 1px solid #9ed7b8;
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+.step9CompareRow > div:not(.step9CompareArrow):not(.step9CompareResult) {
+  text-align: center;
+}
+
+.step9CompareRow span {
+  display: block;
+  color: #475569;
+  font-size: 10.5px;
+  font-weight: 800;
+}
+
+.step9CompareRow strong {
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.step9CompareArrow {
+  color: #15803d;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.step9CompareResult {
+  background: #16a34a;
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 900;
 }
 
 @media (max-width: 1500px) {
@@ -8169,31 +9147,39 @@ button.chromaCell:hover {
 }
 
 @media (max-width: 760px) {
-  .step9MatrixGrid {
-    grid-template-columns: repeat(8, 34px);
+  .step9SimplePage {
+    padding-left: 2px;
+    padding-right: 2px;
   }
 
-  .step9MatrixCell {
-    width: 34px;
-    height: 30px;
-    font-size: 8px;
+  .step9Card,
+  .step9CalculationCard,
+  .step9OutputCard {
+    padding: 8px 6px;
+  }
+
+  .step9AcGrid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .step9SeqCell {
+    width: 28px;
+    height: 28px;
+    font-size: 9px;
   }
 
   .step9ConceptBox {
     font-size: 12px;
+    padding: 12px 14px;
   }
 
-  .step9SequenceGrid {
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  .step9SplitRow {
-    grid-template-columns: 1fr;
+  .step9SymbolList {
+    max-height: 280px;
   }
 }
 
 /* ================================
-   Step 10 Run-Length Encoding
+   Step 10 Huffman Encoding
    ================================ */
 
 .step10SimplePage {
@@ -8269,72 +9255,58 @@ button.chromaCell:hover {
 
 .step10ControlBar button {
   border: none;
-  background: #0f172a;
+  background: linear-gradient(135deg, #1d4ed8, #0d2c72);
   color: #ffffff;
-  padding: 10px 16px;
+  padding: 12px 26px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 900;
+  letter-spacing: 0.2px;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
-  transition: 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(13, 44, 114, 0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.step10ControlBar button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.28) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.5s ease;
+}
+
+.step10ControlBar button:hover:not(:disabled)::before {
+  transform: translateX(120%);
 }
 
 .step10ControlBar button:hover:not(:disabled) {
-  background: #0d2c72;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(13, 44, 114, 0.4);
+  filter: brightness(1.06);
+}
+
+.step10ControlBar button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .step10ControlBar button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-}
-
-.step10ProgressBox {
-  width: 100%;
-  max-width: 560px;
-  margin: 0 auto;
-  display: grid;
-  gap: 6px;
-}
-
-.step10ProgressTop {
-  display: flex;
-  justify-content: space-between;
-  color: #334155;
-  font-size: 12.5px;
-  font-weight: 800;
-}
-
-.step10ProgressTop strong {
-  color: #0d2c72;
-}
-
-.step10ProgressTrack {
-  width: 100%;
-  height: 8px;
-  background: #e2e8f0;
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.step10ProgressFill {
-  height: 100%;
-  background: linear-gradient(90deg, #0d2c72, #2563eb);
-  transition: width 0.2s ease;
+  box-shadow: none;
 }
 
 .step10MainGrid {
   display: grid;
-  grid-template-columns: minmax(340px, 430px) minmax(300px, 360px) minmax(320px, 420px);
+  grid-template-columns: minmax(280px, 340px) minmax(360px, 1fr);
   gap: 14px;
   align-items: start;
   justify-content: center;
 }
 
-.step10Card,
-.step10CalculationCard,
-.step10OutputCard {
+.step10Card {
   background: #ffffff;
   border: 1px solid #d9e2ec;
   border-radius: 14px;
@@ -8342,9 +9314,7 @@ button.chromaCell:hover {
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }
 
-.step10Card h3,
-.step10CalculationCard h3,
-.step10OutputCard h3 {
+.step10Card h3 {
   margin: 0 0 10px;
   color: #0d2c72;
   font-size: 16px;
@@ -8352,115 +9322,88 @@ button.chromaCell:hover {
   text-align: center;
 }
 
-.step10AcGrid {
-  display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  gap: 5px;
-  max-width: 100%;
-  margin: 0 auto;
-}
-
-.step10AcCell {
-  height: 30px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  background: #ffffff;
-  color: #0f172a;
-  font-size: 10px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: 0.15s ease;
-}
-
-.step10ZeroAcCell {
-  background: #f1f5f9;
-  color: #94a3b8;
-}
-
-.step10NonZeroAcCell {
-  background: #eff6ff;
-  color: #0d2c72;
-}
-
-.step10ActiveAcCell {
-  background: #facc15 !important;
-  border: 3px solid #ca8a04 !important;
-  color: #111827 !important;
-  transform: scale(1.1);
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25);
-}
-
-.step10CalculationCard {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-}
-
 .step10InfoRow {
   background: #f8fafc;
   border: 1px solid #dbe4ee;
   border-radius: 10px;
-  padding: 8px 10px;
+  padding: 10px 12px;
   display: flex;
   justify-content: space-between;
   gap: 10px;
   color: #334155;
-  font-size: 12.5px;
+  font-size: 14.5px;
   font-weight: 800;
+  margin-bottom: 8px;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.step10InfoRow:hover {
+  background: #eef4ff;
+  border-color: #c7d4ea;
 }
 
 .step10InfoRow strong {
   color: #0d2c72;
   font-weight: 900;
+  font-size: 15px;
 }
 
 .step10MiniFormula {
-  background: #0f172a;
+  background: linear-gradient(135deg, #0d2c72 0%, #16308a 45%, #1743c9 100%);
   color: #ffffff;
   border-radius: 12px;
-  padding: 10px;
-  font-size: 12px;
+  padding: 12px 14px;
+  font-size: 14px;
   font-weight: 900;
+  letter-spacing: 0.2px;
   text-align: center;
   line-height: 1.4;
+  margin-top: 4px;
+  border: 1px solid #1e3a8a;
+  box-shadow: 0 10px 22px rgba(13, 44, 114, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
-.step10PreviousNote {
-  margin: 0;
-  color: #64748b;
-  font-size: 11.5px;
-  font-weight: 750;
-  line-height: 1.35;
-  text-align: center;
+.step10MiniFormula b {
+  color: #facc15;
+  font-size: 15px;
 }
 
-.step10SymbolList {
+.step10AcTable {
   display: grid;
-  gap: 8px;
-  max-height: 360px;
+  gap: 6px;
+  max-height: 340px;
   overflow-y: auto;
   padding-right: 4px;
 }
 
-.step10SymbolCard {
+.step10AcRow {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(120px, 1fr);
+  gap: 10px;
   background: #f8fbff;
   border: 1px solid #d9e2ec;
   border-radius: 10px;
-  padding: 8px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  font-size: 11.5px;
-  font-weight: 800;
-  color: #334155;
+  padding: 10px 12px;
+  align-items: center;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
 }
 
-.step10SymbolHidden {
-  color: #94a3b8;
+.step10AcRevealed {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.step10AcRevealed:hover {
+  transform: translateX(2px);
+  border-color: #93c5fd;
+}
+
+.step10AcHidden {
   background: #f1f5f9;
+  color: #94a3b8;
 }
 
-.step10SymbolRevealed {
+.step10AcRevealed {
   animation: step10Reveal 0.2s ease;
 }
 
@@ -8475,18 +9418,55 @@ button.chromaCell:hover {
   }
 }
 
-.step10EobCard {
-  background: #fef2f2;
-  border-color: #fca5a5;
-  color: #b91c1c;
+.step10AcLabel {
+  color: #334155;
+  font-size: 13.5px;
+  font-weight: 800;
+}
+
+.step10AcCode {
+  color: #0d2c72;
+  font-size: 13.5px;
+  font-weight: 900;
+  text-align: right;
+  word-break: break-all;
+}
+
+.step10WideCard {
+  min-width: 0;
+}
+
+.step10BitstreamCard {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.step10BitstreamCard h3 {
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 16px;
+  font-weight: 900;
   text-align: center;
 }
 
-.step10ZrlCard {
-  background: #fff7ed;
-  border-color: #fb923c;
-  color: #9a3412;
-  text-align: center;
+.step10BitstreamBox {
+  background: linear-gradient(180deg, #101a34 0%, #0a1122 100%);
+  color: #4ade80;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 16px;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  word-break: break-all;
+  line-height: 1.6;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .step10SmallNote {
@@ -8499,9 +9479,15 @@ button.chromaCell:hover {
   line-height: 1.35;
 }
 
-@media (max-width: 1500px) {
+@media (max-width: 1300px) {
   .step10MainGrid {
-    grid-template-columns: repeat(2, minmax(300px, 1fr));
+    grid-template-columns: 1fr;
+  }
+
+  .step10Card {
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
   }
 
   .step10SummaryGrid {
@@ -8509,36 +9495,27 @@ button.chromaCell:hover {
   }
 }
 
-@media (max-width: 900px) {
-  .step10MainGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .step10Card,
-  .step10CalculationCard,
-  .step10OutputCard {
-    max-width: 540px;
-    width: 100%;
-    margin: 0 auto;
-  }
-}
-
 @media (max-width: 760px) {
-  .step10AcGrid {
-    grid-template-columns: repeat(6, 1fr);
-  }
-
   .step10ConceptBox {
     font-size: 12px;
   }
 
-  .step10SymbolList {
-    max-height: 280px;
+  .step10AcRow {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .step10AcCode {
+    text-align: center;
+  }
+
+  .step10BitstreamBox {
+    font-size: 11px;
   }
 }
 
 /* ================================
-   Step 11 Huffman Encoding
+   Step 11 Final Compressed Output
    ================================ */
 
 .step11SimplePage {
@@ -8549,60 +9526,34 @@ button.chromaCell:hover {
   padding-bottom: 18px;
 }
 
-.step11ConceptBox {
+.step11InfoStrip {
   width: 100%;
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-left: 5px solid #0d2c72;
-  border-radius: 12px;
-  padding: 12px 16px;
-  display: grid;
-  gap: 6px;
-  color: #334155;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.45;
-}
-
-.step11ConceptBox strong,
-.step11ConceptBox b {
-  color: #0d2c72;
-  font-weight: 900;
-}
-
-.step11SummaryGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(220px, 1fr));
-  gap: 12px;
-}
-
-.step11SummaryGrid div {
-  background: #ffffff;
-  border: 1px solid #d9e2ec;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #fbfcfe 0%, #eef3ff 100%);
+  border: 1.5px solid #d7e2f5;
   border-radius: 14px;
-  padding: 12px;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-  display: grid;
-  gap: 5px;
-  text-align: center;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.step11SummaryGrid span {
-  color: #64748b;
-  font-size: 12px;
-  font-weight: 900;
+.step11InfoStrip > span:first-child {
+  color: #33415a;
+  font-size: 13.5px;
+  font-weight: 800;
 }
 
-.step11SummaryGrid strong {
+.step11InfoStrip > span:first-child strong {
   color: #0d2c72;
-  font-size: 16px;
   font-weight: 900;
 }
 
-.step11SummaryGrid small {
-  color: #475569;
-  font-size: 11.5px;
-  font-weight: 750;
+.step11InfoStripNote {
+  color: #64748b;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 .step11ControlBar {
@@ -8614,36 +9565,40 @@ button.chromaCell:hover {
 
 .step11ControlBar button {
   border: none;
-  background: #0f172a;
+  background: linear-gradient(135deg, #1743c9 0%, #0d2c72 100%);
   color: #ffffff;
-  padding: 10px 16px;
+  padding: 12px 26px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 900;
+  letter-spacing: 0.2px;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
-  transition: 0.2s ease;
+  box-shadow: 0 8px 20px rgba(23, 67, 201, 0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  width: 100%;
+  max-width: 340px;
 }
 
 .step11ControlBar button:hover:not(:disabled) {
-  background: #0d2c72;
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #2f6bff 0%, #1743c9 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(23, 67, 201, 0.4);
 }
 
-.step11ControlBar button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.step11ControlBar button:active {
+  transform: translateY(0);
 }
 
 .step11MainGrid {
   display: grid;
-  grid-template-columns: minmax(280px, 340px) minmax(360px, 1fr);
+  grid-template-columns: minmax(340px, 1fr) minmax(300px, 380px);
   gap: 14px;
   align-items: start;
   justify-content: center;
 }
 
-.step11Card {
+.step11Card,
+.step11StatsCard {
   background: #ffffff;
   border: 1px solid #d9e2ec;
   border-radius: 14px;
@@ -8651,115 +9606,8 @@ button.chromaCell:hover {
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }
 
-.step11Card h3 {
-  margin: 0 0 10px;
-  color: #0d2c72;
-  font-size: 16px;
-  font-weight: 900;
-  text-align: center;
-}
-
-.step11InfoRow {
-  background: #f8fafc;
-  border: 1px solid #dbe4ee;
-  border-radius: 10px;
-  padding: 8px 10px;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  color: #334155;
-  font-size: 12.5px;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.step11InfoRow strong {
-  color: #0d2c72;
-  font-weight: 900;
-}
-
-.step11MiniFormula {
-  background: #0f172a;
-  color: #ffffff;
-  border-radius: 12px;
-  padding: 10px;
-  font-size: 12px;
-  font-weight: 900;
-  text-align: center;
-  line-height: 1.4;
-  margin-top: 4px;
-}
-
-.step11MiniFormula b {
-  color: #facc15;
-}
-
-.step11AcTable {
-  display: grid;
-  gap: 6px;
-  max-height: 340px;
-  overflow-y: auto;
-  padding-right: 4px;
-}
-
-.step11AcRow {
-  display: grid;
-  grid-template-columns: minmax(120px, 1fr) minmax(120px, 1fr);
-  gap: 10px;
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-radius: 10px;
-  padding: 8px 10px;
-  align-items: center;
-}
-
-.step11AcHidden {
-  background: #f1f5f9;
-  color: #94a3b8;
-}
-
-.step11AcRevealed {
-  animation: step11Reveal 0.2s ease;
-}
-
-@keyframes step11Reveal {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.step11AcLabel {
-  color: #334155;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.step11AcCode {
-  color: #0d2c72;
-  font-size: 12px;
-  font-weight: 900;
-  text-align: right;
-  word-break: break-all;
-}
-
-.step11WideCard {
-  min-width: 0;
-}
-
-.step11BitstreamCard {
-  background: #ffffff;
-  border: 1px solid #d9e2ec;
-  border-radius: 14px;
-  padding: 14px;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-}
-
-.step11BitstreamCard h3 {
+.step11Card h3,
+.step11StatsCard h3 {
   margin: 0 0 10px;
   color: #0d2c72;
   font-size: 16px;
@@ -8777,8 +9625,87 @@ button.chromaCell:hover {
   font-weight: 700;
   word-break: break-all;
   line-height: 1.6;
-  max-height: 200px;
+  max-height: 220px;
   overflow-y: auto;
+  min-height: 80px;
+}
+
+.step11BitstreamReveal {
+  animation: step11BitFade 0.3s ease;
+}
+
+@keyframes step11BitFade {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.step11DcBits {
+  color: #facc15;
+}
+
+.step11AcBits {
+  color: #4ade80;
+}
+
+.step11BitLegend {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.step11BitLegend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
+.step11BitLegend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  font-style: normal;
+}
+
+.step11DcSwatch {
+  background: #facc15;
+}
+
+.step11AcSwatch {
+  background: #4ade80;
+}
+
+.step11StatRow {
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.step11StatRow strong {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step11RatioRow {
+  background: #ecfdf3;
+  border-color: #9ed7b8;
+}
+
+.step11RatioRow strong {
+  color: #15803d;
 }
 
 .step11SmallNote {
@@ -8795,281 +9722,53 @@ button.chromaCell:hover {
   .step11MainGrid {
     grid-template-columns: 1fr;
   }
-
-  .step11Card {
-    max-width: 640px;
-    width: 100%;
-    margin: 0 auto;
-  }
-
-  .step11SummaryGrid {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 760px) {
-  .step11ConceptBox {
-    font-size: 12px;
+  .step11InfoStrip {
+    padding: 12px 14px;
   }
 
-  .step11AcRow {
-    grid-template-columns: 1fr;
-    text-align: center;
+  .step11InfoStrip > span:first-child {
+    font-size: 13px;
   }
 
-  .step11AcCode {
-    text-align: center;
+  .step11InfoStripNote {
+    font-size: 11.5px;
+  }
+
+  .step11Card,
+  .step11StatsCard,
+  .step11ReconstructCard {
+    padding: 10px !important;
   }
 
   .step11BitstreamBox {
     font-size: 11px;
   }
-}
 
-/* ================================
-   Step 12 Final Compressed Output
-   ================================ */
-
-.step12SimplePage {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding-bottom: 18px;
-}
-
-.step12ConceptBox {
-  width: 100%;
-  background: #f8fbff;
-  border: 1px solid #d9e2ec;
-  border-left: 5px solid #0d2c72;
-  border-radius: 12px;
-  padding: 12px 16px;
-  display: grid;
-  gap: 6px;
-  color: #334155;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.45;
-}
-
-.step12ConceptBox strong,
-.step12ConceptBox b {
-  color: #0d2c72;
-  font-weight: 900;
-}
-
-.step12PipelineBox {
-  background: #ffffff;
-  border: 1px solid #d9e2ec;
-  border-radius: 14px;
-  padding: 14px;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-}
-
-.step12PipelineBox h3 {
-  margin: 0 0 10px;
-  color: #0d2c72;
-  font-size: 16px;
-  font-weight: 900;
-  text-align: center;
-}
-
-.step12PipelineFlow {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-}
-
-.step12PipelineStage {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  border-radius: 999px;
-  padding: 6px 12px;
-  color: #0d2c72;
-  font-size: 11.5px;
-  font-weight: 900;
-}
-
-.step12PipelineArrow {
-  color: #94a3b8;
-  font-weight: 900;
-  margin-left: 4px;
-}
-
-.step12SummaryGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(220px, 1fr));
-  gap: 12px;
-}
-
-.step12SummaryGrid div {
-  background: #ffffff;
-  border: 1px solid #d9e2ec;
-  border-radius: 14px;
-  padding: 12px;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-  display: grid;
-  gap: 5px;
-  text-align: center;
-}
-
-.step12SummaryGrid span {
-  color: #64748b;
-  font-size: 12px;
-  font-weight: 900;
-}
-
-.step12SummaryGrid strong {
-  color: #0d2c72;
-  font-size: 16px;
-  font-weight: 900;
-}
-
-.step12SummaryGrid small {
-  color: #475569;
-  font-size: 11.5px;
-  font-weight: 750;
-}
-
-.step12ControlBar {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.step12ControlBar button {
-  border: none;
-  background: #0f172a;
-  color: #ffffff;
-  padding: 10px 16px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 900;
-  cursor: pointer;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
-  transition: 0.2s ease;
-}
-
-.step12ControlBar button:hover:not(:disabled) {
-  background: #0d2c72;
-  transform: translateY(-1px);
-}
-
-.step12MainGrid {
-  display: grid;
-  grid-template-columns: minmax(340px, 1fr) minmax(300px, 380px);
-  gap: 14px;
-  align-items: start;
-  justify-content: center;
-}
-
-.step12Card,
-.step12StatsCard {
-  background: #ffffff;
-  border: 1px solid #d9e2ec;
-  border-radius: 14px;
-  padding: 14px;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-}
-
-.step12Card h3,
-.step12StatsCard h3 {
-  margin: 0 0 10px;
-  color: #0d2c72;
-  font-size: 16px;
-  font-weight: 900;
-  text-align: center;
-}
-
-.step12BitstreamBox {
-  background: #0f172a;
-  color: #4ade80;
-  border-radius: 12px;
-  padding: 14px;
-  font-family: "Courier New", monospace;
-  font-size: 12.5px;
-  font-weight: 700;
-  word-break: break-all;
-  line-height: 1.6;
-  max-height: 220px;
-  overflow-y: auto;
-  min-height: 80px;
-}
-
-.step12StatRow {
-  background: #f8fafc;
-  border: 1px solid #dbe4ee;
-  border-radius: 10px;
-  padding: 8px 10px;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  color: #334155;
-  font-size: 12.5px;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.step12StatRow strong {
-  color: #0d2c72;
-  font-weight: 900;
-}
-
-.step12RatioRow {
-  background: #ecfdf3;
-  border-color: #9ed7b8;
-}
-
-.step12RatioRow strong {
-  color: #15803d;
-}
-
-.step12SmallNote {
-  margin: 10px auto 0;
-  max-width: 900px;
-  color: #475569;
-  font-size: 12.5px;
-  font-weight: 750;
-  text-align: center;
-  line-height: 1.35;
-}
-
-@media (max-width: 1300px) {
-  .step12MainGrid {
-    grid-template-columns: 1fr;
+  .step11ReconstructHeader h3 {
+    font-size: 14px;
   }
 
-  .step12SummaryGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 760px) {
-  .step12ConceptBox {
-    font-size: 12px;
-  }
-
-  .step12PipelineStage {
-    font-size: 10px;
-    padding: 5px 9px;
-  }
-
-  .step12BitstreamBox {
+  .step11PixelInspector span {
     font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .step11BitLegend span {
+    font-size: 10.5px;
+  }
+
+  .step11StatRow {
+    font-size: 11.5px;
   }
 }
 
 /* ================================
    New Feature Additions:
    Real Photo Button, Quality Slider,
-   Zig-Zag Path Animation, Step 12 Reconstruction
+   Zig-Zag Path Animation, Step 11 Reconstruction
    ================================ */
 
 .realPhotoPresetBtn {
@@ -9088,18 +9787,23 @@ button.chromaCell:hover {
   width: 100%;
   max-width: 640px;
   margin: 0 auto;
-  background: #f8fbff;
+  background: #ffffff;
   border: 1px solid #d9e2ec;
-  border-radius: 14px;
-  padding: 12px 16px;
+  border-radius: 16px;
+  padding: 16px 20px;
   display: grid;
-  gap: 8px;
+  gap: 10px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }
 
 .step7QualityBox label {
   color: #0d2c72;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 900;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .step7QualityHint {
@@ -9110,28 +9814,64 @@ button.chromaCell:hover {
 
 .step7QualityBox input[type="range"] {
   width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(to right, #1d4ed8, #0d2c72);
   accent-color: #0d2c72;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.step7QualityBox input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 4px solid #0d2c72;
+  box-shadow: 0 3px 8px rgba(13, 44, 114, 0.35);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.step7QualityBox input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.step7QualityBox input[type="range"]::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 4px solid #0d2c72;
+  box-shadow: 0 3px 8px rgba(13, 44, 114, 0.35);
   cursor: pointer;
 }
 
 .step7QualityNote {
   margin: 0;
   color: #475569;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.45;
+  background: #f8fbff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 10px;
 }
 
-/* ---- Step 9 Zig-Zag Path Animation ---- */
+/* ---- Step 8 Zig-Zag Path Animation ---- */
 
-.step9MatrixWrap {
+.step8MatrixWrap {
   position: relative;
-  width: fit-content;
-  max-width: 100%;
+  width: 100%;
+  max-width: 430px;
   margin: 0 auto;
 }
 
-.step9PathOverlay {
+.step8PathOverlay {
   position: absolute;
   top: 12px;
   left: 12px;
@@ -9141,7 +9881,7 @@ button.chromaCell:hover {
   z-index: 2;
 }
 
-.step9PathLine {
+.step8PathLine {
   fill: none;
   stroke: #2563eb;
   stroke-width: 3;
@@ -9150,12 +9890,12 @@ button.chromaCell:hover {
   opacity: 0.85;
 }
 
-.step9PathAnimating {
+.step8PathAnimating {
   stroke-dasharray: 10 6;
-  animation: step9DashMove 0.6s linear infinite;
+  animation: step8DashMove 0.6s linear infinite;
 }
 
-@keyframes step9DashMove {
+@keyframes step8DashMove {
   from {
     stroke-dashoffset: 16;
   }
@@ -9164,15 +9904,15 @@ button.chromaCell:hover {
   }
 }
 
-.step9PathDot {
+.step8PathDot {
   fill: #facc15;
   stroke: #ca8a04;
   stroke-width: 2;
 }
 
-/* ---- Step 12 Before/After Reconstruction ---- */
+/* ---- Step 11 Before/After Reconstruction ---- */
 
-.step12ReconstructCard {
+.step11ReconstructCard {
   background: #ffffff;
   border: 1px solid #d9e2ec;
   border-radius: 14px;
@@ -9180,7 +9920,7 @@ button.chromaCell:hover {
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }
 
-.step12ReconstructCard h3 {
+.step11ReconstructCard h3 {
   margin: 0 0 10px;
   color: #0d2c72;
   font-size: 16px;
@@ -9188,7 +9928,39 @@ button.chromaCell:hover {
   text-align: center;
 }
 
-.step12ReconstructRow {
+.step11ReconstructHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.step11ReconstructHeader h3 {
+  margin: 0;
+}
+
+.step11HeatmapToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8fbff;
+  border: 1px solid #dbe4ee;
+  border-radius: 999px;
+  padding: 5px 12px;
+  color: #33415a;
+  font-size: 11.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.step11HeatmapToggle input {
+  accent-color: #1743c9;
+  cursor: pointer;
+}
+
+.step11ReconstructRow {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9197,47 +9969,153 @@ button.chromaCell:hover {
   margin-top: 12px;
 }
 
-.step12GrayBlockWrap {
+.step11GrayBlockWrap {
   display: grid;
-  gap: 8px;
+  gap: 10px;
   text-align: center;
+  justify-items: center;
+  background: #ffffff;
+  border: 1.5px solid #d9e2ec;
+  border-radius: 16px;
+  padding: 14px 16px 16px;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.07);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
-.step12GrayBlockTitle {
+.step11GrayBlockWrap:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.1);
+}
+
+.step11ReconstructRow > .step11GrayBlockWrap:first-child {
+  border-color: #bfdbfe;
+  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 65%);
+}
+
+.step11ReconstructRow > .step11GrayBlockWrap:last-child {
+  border-color: #bbf7d0;
+  background: linear-gradient(180deg, #ecfdf5 0%, #ffffff 65%);
+}
+
+.step11GrayBlockTitle {
+  display: inline-block;
   color: #334155;
+  background: #eef2f7;
+  padding: 5px 14px;
+  border-radius: 999px;
   font-size: 12px;
   font-weight: 900;
+  letter-spacing: 0.2px;
 }
 
-.step12GrayBlockGrid {
+.step11ReconstructRow > .step11GrayBlockWrap:first-child .step11GrayBlockTitle {
+  background: #dbeafe;
+  color: #1743c9;
+}
+
+.step11ReconstructRow > .step11GrayBlockWrap:last-child .step11GrayBlockTitle {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.step11GrayBlockGrid {
   display: grid;
-  grid-template-columns: repeat(8, 32px);
-  gap: 2px;
-  border: 1px solid #cbd5e1;
+  grid-template-columns: repeat(8, 44px);
+  gap: 0;
+  border: 1px solid #94a3b8;
   border-radius: 8px;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
 }
 
-.step12GrayCell {
-  width: 32px;
-  height: 32px;
+.step11GrayCell {
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 800;
   color: #ffffff;
   text-shadow: 0 0 3px rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  margin: -0.5px;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
-.step12ReconstructArrow {
-  color: #64748b;
+.step11GrayCell:hover {
+  z-index: 1;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 2px #2f6bff inset;
+}
+
+.step11GrayCellActive {
+  z-index: 2;
+  box-shadow: 0 0 0 3px #facc15 inset !important;
+  transform: scale(1.08);
+}
+
+.step11ReconstructArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0d2c72 0%, #1743c9 100%);
   font-size: 12px;
   font-weight: 800;
+  letter-spacing: 0.2px;
   text-align: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  box-shadow: 0 8px 16px rgba(13, 44, 114, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  white-space: nowrap;
 }
 
-.step12ErrorBox {
+.step11PixelInspector {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.step11PixelInspector span {
+  background: #f8fbff;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 7px 12px;
+  color: #33415a;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.step11PixelInspector strong {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step11PixelInspector .step11DiffZero {
+  background: #ecfdf3;
+  border-color: #9ed7b8;
+}
+
+.step11PixelInspector .step11DiffZero strong {
+  color: #15803d;
+}
+
+.step11PixelInspector .step11DiffNonZero {
+  background: #fff1f2;
+  border-color: #fecdd3;
+}
+
+.step11PixelInspector .step11DiffNonZero strong {
+  color: #dc2626;
+}
+
+.step11ErrorBox {
   margin-top: 14px;
   background: #0f172a;
   color: #ffffff;
@@ -9249,13 +10127,13 @@ button.chromaCell:hover {
   line-height: 1.4;
 }
 
-.step12ErrorBox b {
+.step11ErrorBox b {
   color: #facc15;
 }
 
-/* ---- Step 12 Real Image Compression Panel ---- */
+/* ---- Step 11 Real Image Compression Panel ---- */
 
-.step12RealImageCard {
+.step11RealImageCard {
   background: #ffffff;
   border: 1px solid #d9e2ec;
   border-radius: 14px;
@@ -9263,7 +10141,7 @@ button.chromaCell:hover {
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }
 
-.step12RealImageCard h3 {
+.step11RealImageCard h3 {
   margin: 0 0 10px;
   color: #0d2c72;
   font-size: 16px;
@@ -9271,7 +10149,7 @@ button.chromaCell:hover {
   text-align: center;
 }
 
-.step12QualityPicker {
+.step11QualityPicker {
   display: flex;
   justify-content: center;
   gap: 10px;
@@ -9279,7 +10157,7 @@ button.chromaCell:hover {
   margin: 10px 0;
 }
 
-.step12QualityBtn {
+.step11QualityBtn {
   border: 1px solid #cbd5e1;
   background: #f8fafc;
   color: #334155;
@@ -9291,17 +10169,17 @@ button.chromaCell:hover {
   transition: 0.2s ease;
 }
 
-.step12QualityBtn:hover {
+.step11QualityBtn:hover {
   background: #eff6ff;
 }
 
-.step12QualityBtnActive {
+.step11QualityBtnActive {
   background: #0d2c72;
   color: #ffffff;
   border-color: #0d2c72;
 }
 
-.step12RealImageRow {
+.step11RealImageRow {
   display: flex;
   justify-content: center;
   gap: 16px;
@@ -9309,14 +10187,14 @@ button.chromaCell:hover {
   margin-top: 10px;
 }
 
-.step12RealImageBox {
+.step11RealImageBox {
   display: grid;
   gap: 6px;
   text-align: center;
   max-width: 320px;
 }
 
-.step12RealImageBox img {
+.step11RealImageBox img {
   width: 100%;
   max-width: 320px;
   border-radius: 10px;
@@ -9324,20 +10202,20 @@ button.chromaCell:hover {
   display: block;
 }
 
-.step12RealImageBox span {
+.step11RealImageBox span {
   color: #334155;
   font-size: 12px;
   font-weight: 800;
 }
 
-.step12RealStatsRow {
+.step11RealStatsRow {
   display: grid;
   grid-template-columns: repeat(3, minmax(150px, 1fr));
   gap: 10px;
   margin-top: 14px;
 }
 
-.step12RealStatsRow div {
+.step11RealStatsRow div {
   background: #f8fafc;
   border: 1px solid #dbe4ee;
   border-radius: 10px;
@@ -9347,43 +10225,48 @@ button.chromaCell:hover {
   gap: 4px;
 }
 
-.step12RealStatsRow span {
+.step11RealStatsRow span {
   color: #64748b;
   font-size: 11px;
   font-weight: 800;
 }
 
-.step12RealStatsRow strong {
+.step11RealStatsRow strong {
   color: #0d2c72;
   font-size: 13px;
   font-weight: 900;
 }
 
-.step12RatioHighlight {
+.step11RatioHighlight {
   background: #ecfdf3 !important;
   border-color: #9ed7b8 !important;
 }
 
-.step12RatioHighlight strong {
+.step11RatioHighlight strong {
   color: #15803d !important;
 }
 
 @media (max-width: 900px) {
-  .step12RealStatsRow {
+  .step11RealStatsRow {
     grid-template-columns: 1fr;
   }
 
-  .step12ReconstructRow {
+  .step11ReconstructRow {
     flex-direction: column;
   }
 
-  .step12GrayBlockGrid {
-    grid-template-columns: repeat(8, 26px);
+  .step11ReconstructArrow {
+    transform: rotate(90deg);
   }
 
-  .step12GrayCell {
-    width: 26px;
-    height: 26px;
+  .step11GrayBlockGrid {
+    grid-template-columns: repeat(8, 34px);
+  }
+
+  .step11GrayCell {
+    width: 34px;
+    height: 34px;
+    font-size: 9.5px;
   }
 }
 
@@ -9392,86 +10275,381 @@ button.chromaCell:hover {
     font-size: 12px;
   }
 
-  .step12RealImageBox img {
+  .step11RealImageBox img {
     max-width: 100%;
   }
 }
 
-.matrixRequiredOverlay {
-  position: absolute;
+.guidedTutorBtn {
+  background: linear-gradient(135deg, #ffd54a, #f7b500);
+  color: #4a2f00;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(247, 181, 0, 0.45);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.guidedTutorBtn:hover {
+  background: linear-gradient(135deg, #ffe082, #ffc400);
+  box-shadow: 0 6px 16px rgba(247, 181, 0, 0.6);
+  transform: translateY(-1px);
+}
+.guidedTutorPopup {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 26px;
+  max-width: 460px;
+  width: 100%;
+  text-align: left;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+  border-top: 4px solid #0d2c72;
+  animation: matrixPopupPop 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.guidedTutorPopup h3 {
+  margin: 0 0 12px;
+  color: #0d2c72;
+  font-size: 18px;
+}
+.guidedTutorPopup p {
+  color: #374151;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 12px;
+}
+.guidedTutorHint {
+  color: #64748b !important;
+  font-size: 13px !important;
+}
+.guidedTutorPopup button {
+  padding: 9px 26px;
+  background: #0d2c72;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+.guidedTutorPopup button:hover {
+  background: #123a91;
+}
+
+.headerSpeakerBtn {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  font-size: 15px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+.headerSpeakerBtn:hover {
+  background: rgba(255, 255, 255, 0.24);
+  transform: translateY(-1px);
+}
+.headerSpeakerBtnMuted {
+  background: rgba(15, 23, 42, 0.25);
+  border-color: rgba(255, 255, 255, 0.2);
+  opacity: 0.75;
+}
+
+/* ---- Guided Tutor: step-by-step highlighted walkthrough ---- */
+.guidedTutorMask {
+  position: fixed;
+  background: rgba(8, 14, 32, 0.62);
+  z-index: 10050;
+  transition: top 0.22s ease, left 0.22s ease, width 0.22s ease, height 0.22s ease;
+}
+.guidedTutorMaskFull {
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  width: 100%;
+  height: 100%;
+}
+.guidedTutorHighlightRing {
+  position: fixed;
+  z-index: 10051;
+  border: 2px solid #ffd54a;
+  border-radius: 12px;
+  box-shadow: 0 0 0 4px rgba(255, 213, 74, 0.25), 0 0 24px rgba(255, 213, 74, 0.45);
+  pointer-events: none;
+  transition: top 0.22s ease, left 0.22s ease, width 0.22s ease, height 0.22s ease;
+}
+
+.guidedTutorTooltip {
+  position: fixed;
+  z-index: 10052;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+  border-top: 4px solid #0d2c72;
+  animation: matrixPopupPop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: top 0.22s ease, left 0.22s ease;
+}
+.guidedTutorTooltipCenter {
+  position: fixed;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 380px);
+}
+
+.guidedTutorTooltipHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.guidedTutorStepBadge {
+  display: inline-block;
+  background: #eef2ff;
+  color: #0d2c72;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.guidedTutorSpeakerBtn {
+  background: #f1f5f9;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+.guidedTutorSpeakerBtn:hover {
+  background: #e2e8f0;
+}
+.guidedTutorSpeakerMuted {
+  background: #fee2e2;
+}
+.guidedTutorActionBadge {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.guidedTutorActionMsg {
+  margin: 0 0 16px;
+  color: #1f2937;
+  font-size: 13.5px;
+  line-height: 1.55;
+  font-weight: 600;
+}
+
+.guidedTutorTooltip h3 {
+  margin: 0 0 8px;
+  color: #0d2c72;
+  font-size: 16.5px;
+}
+.guidedTutorTooltip p {
+  margin: 0 0 16px;
+  color: #374151;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.guidedTutorTooltipNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.guidedTutorNavRight {
+  display: flex;
+  gap: 8px;
+}
+.guidedTutorExitBtn {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  color: #64748b;
+  padding: 8px 16px;
+  border-radius: 7px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+.guidedTutorExitBtn:hover {
+  background: #f1f5f9;
+}
+.guidedTutorBackBtn {
+  background: #eef2ff;
+  border: none;
+  color: #0d2c72;
+  padding: 8px 16px;
+  border-radius: 7px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+.guidedTutorBackBtn:hover {
+  background: #e0e7ff;
+}
+.guidedTutorNextBtn {
+  background: linear-gradient(135deg, #1d4ed8, #0d2c72);
+  border: none;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 7px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(13, 44, 114, 0.3);
+}
+.guidedTutorNextBtn:hover {
+  transform: translateY(-1px);
+}
+
+@media (max-width: 560px) {
+  .guidedTutorTooltip {
+    width: min(92vw, 320px) !important;
+    padding: 16px 16px;
+  }
+}
+
+.matrixRequiredOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 20, 40, 0.6);
+  backdrop-filter: blur(3px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 50;
+  z-index: 9999;
+  padding: 16px;
+  animation: matrixPopupFadeIn 0.18s ease-out;
 }
 .matrixRequiredPopup {
-  background: #fff;
-  border-radius: 10px;
-  padding: 24px;
-  max-width: 340px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 28px 26px;
+  max-width: 380px;
+  width: 100%;
   text-align: center;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+  border-top: 4px solid #0d2c72;
+  animation: matrixPopupPop 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .matrixRequiredPopup h3 {
-  margin-top: 0;
+  margin: 0 0 10px;
+  color: #0d2c72;
+  font-size: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.matrixRequiredPopup h3::before {
+  content: "⚠";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fef3c7;
+  color: #b45309;
+  font-size: 15px;
+}
+.matrixRequiredPopup p {
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 18px;
 }
 .matrixRequiredPopup button {
-  margin-top: 12px;
-  padding: 8px 20px;
+  margin-top: 0;
+  padding: 10px 30px;
+  background: #0d2c72;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.matrixRequiredPopup button:hover {
+  background: #123a91;
+  transform: translateY(-1px);
+}
+.matrixRequiredPopup button:active {
+  transform: translateY(0);
+}
+@keyframes matrixPopupFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes matrixPopupPop {
+  from { opacity: 0; transform: scale(0.9) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-.step9SequenceString {
+.step8SequenceString {
   font-family: "Courier New", monospace;
-  font-size: 13px;
-  line-height: 1.7;
+  font-size: 14.5px;
+  font-weight: 700;
+  line-height: 1.85;
   background: #0d2c72;
   color: #e2e8f0;
-  padding: 14px;
-  border-radius: 8px;
+  padding: 18px 16px;
+  border-radius: 10px;
   word-break: break-word;
   white-space: normal;
+  letter-spacing: 0.2px;
+}
+
+@media (max-width: 480px) {
+  .step8SequenceString {
+    font-size: 13.5px;
+    padding: 14px 12px;
+    line-height: 1.75;
+  }
 }
 
 /* Layout fix: input/output side-by-side on top, calculation panel(s) full-width below */
-.step3MainGrid,
 .step4MainGrid,
 .step5MainGrid,
 .step6MainGrid,
-.step8MainGrid,
 .step9MainGrid,
 .step10MainGrid {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 14px !important;
 }
-.step3MainGrid > *:nth-child(1),
 .step4MainGrid > *:nth-child(1),
 .step5MainGrid > *:nth-child(1),
 .step6MainGrid > *:nth-child(1),
-.step8MainGrid > *:nth-child(1),
 .step9MainGrid > *:nth-child(1),
 .step10MainGrid > *:nth-child(1) {
   order: 1;
   flex: 1 1 45%;
   min-width: 340px;
 }
-.step3MainGrid > *:nth-child(3),
 .step4MainGrid > *:nth-child(3),
 .step5MainGrid > *:nth-child(3),
 .step6MainGrid > *:nth-child(3),
-.step8MainGrid > *:nth-child(3),
 .step9MainGrid > *:nth-child(3),
 .step10MainGrid > *:nth-child(3) {
   order: 2;
   flex: 1 1 45%;
   min-width: 340px;
 }
-.step3MainGrid > *:nth-child(2),
 .step4MainGrid > *:nth-child(2),
 .step5MainGrid > *:nth-child(2),
 .step6MainGrid > *:nth-child(2),
-.step8MainGrid > *:nth-child(2),
 .step9MainGrid > *:nth-child(2),
 .step10MainGrid > *:nth-child(2) {
   order: 3;
@@ -9491,6 +10669,424 @@ button.chromaCell:hover {
 
 /* Ensure grid cells don't get clipped/cut off - allow horizontal scroll where needed instead of hiding overflow */
 .step3MainGrid *, .step4MainGrid *, .step5MainGrid *, .step6MainGrid *,
-.step7MainGrid *, .step8MainGrid *, .step9MainGrid *, .step10MainGrid * {
+.step7MainGrid *, .step9MainGrid *, .step10MainGrid * {
   overflow-wrap: break-word;
 }
+
+/* =========================================================
+   Step 1 — Matrix Selector Panel (redesign)
+   ========================================================= */
+.matrixSelectorPanel {
+  width: 100%;
+  box-sizing: border-box;
+  background: linear-gradient(155deg, #f6f9ff 0%, #eaf1ff 55%, #e4edff 100%);
+  border: 2px solid #2f6bff;
+  border-radius: 18px;
+  padding: 20px 22px;
+  box-shadow:
+    0 0 0 3px rgba(47, 107, 255, 0.12),
+    0 14px 34px rgba(20, 60, 160, 0.16);
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.matrixSelectorPanel::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(47, 107, 255, 0.16), transparent 70%);
+  pointer-events: none;
+}
+
+.matrixSelectorHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.matrixSelectorTitle {
+  font-size: 17px;
+  font-weight: 900;
+  color: #0d2c72;
+  letter-spacing: 0.2px;
+  position: relative;
+  z-index: 1;
+}
+
+.matrixSelectorSubtitle {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #3557a6;
+  background: #ffffff;
+  border: 1px solid #cfe0ff;
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.matrixSelectorGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.matrixSelectorCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  background: #ffffff;
+  border: 2px solid #d7e2f5;
+  border-radius: 16px;
+  padding: 16px 16px 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.matrixSelectorCard:hover {
+  transform: translateY(-4px);
+  border-color: #2f6bff;
+  box-shadow: 0 10px 24px rgba(47, 107, 255, 0.24);
+}
+
+.matrixSelectorCard:active {
+  transform: translateY(-1px);
+}
+
+.matrixSelectorCard:focus-visible {
+  outline: 3px solid #2f6bff;
+  outline-offset: 2px;
+}
+
+.matrixSelectorCardActive {
+  border-color: #1743c9;
+  background: linear-gradient(180deg, #ffffff 0%, #eef3ff 100%);
+  box-shadow:
+    0 0 0 3px rgba(23, 67, 201, 0.22),
+    0 10px 24px rgba(23, 67, 201, 0.3);
+  animation: matrixCardGlow 1.8s ease-in-out infinite;
+}
+
+@keyframes matrixCardGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 3px rgba(23, 67, 201, 0.18),
+      0 8px 18px rgba(23, 67, 201, 0.22);
+  }
+  50% {
+    box-shadow:
+      0 0 0 5px rgba(23, 67, 201, 0.3),
+      0 10px 26px rgba(23, 67, 201, 0.38);
+  }
+}
+
+.matrixCardLabel {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.matrixCardDesc {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.matrixCardCheck {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 999px;
+  background: #1743c9;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(23, 67, 201, 0.4);
+}
+
+.matrixCardPreview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  margin-bottom: 4px;
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.12);
+}
+
+.matrixCardPreview span {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 720px) {
+  .matrixSelectorGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Step 1 — empty state shown before any matrix is picked */
+.step1EmptyStateWrap {
+  width: 100%;
+  flex: 1;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.step1EmptyState {
+  width: 100%;
+  max-width: 640px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  padding: 48px 36px 44px;
+  border: 1.5px solid #dbe4ee;
+  border-radius: 22px;
+  background: linear-gradient(160deg, #fbfcfe 0%, #f3f6fd 62%, #edf1fb 100%);
+  box-shadow: 0 18px 40px rgba(13, 44, 114, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.step1EmptyState::before {
+  content: "";
+  position: absolute;
+  top: -90px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, rgba(13, 44, 114, 0.1) 0%, rgba(13, 44, 114, 0) 70%);
+  pointer-events: none;
+}
+
+.step1EmptyState::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(13, 44, 114, 0.05) 1.2px, transparent 1.2px);
+  background-size: 18px 18px;
+  mask-image: radial-gradient(ellipse at center, #000 0%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 0%, transparent 72%);
+  pointer-events: none;
+}
+
+.step1EmptyIcon {
+  flex-shrink: 0;
+  width: 84px;
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #0d2c72 0%, #1743c9 100%);
+  box-shadow: 0 14px 28px rgba(13, 44, 114, 0.3);
+  color: #ffffff;
+  position: relative;
+  z-index: 1;
+}
+
+.step1EmptyIcon svg {
+  width: 38px;
+  height: 38px;
+}
+
+.step1EmptyTextCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.step1EmptyState h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: #0d2c72;
+}
+
+.step1EmptyState p {
+  margin: 0;
+  max-width: 440px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #5b6b85;
+}
+
+.step1EmptyChannelPreview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 10px 18px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+.step1EmptyChannelDot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.04);
+}
+
+.step1EmptyDotR { background: #ef4444; }
+.step1EmptyDotG { background: #22c55e; }
+.step1EmptyDotB { background: #3b82f6; }
+
+.step1EmptyChannelText {
+  font-size: 12px;
+  font-weight: 800;
+  color: #33415a;
+  letter-spacing: 0.1px;
+}
+
+.step1EmptyHints {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+.step1EmptyHints span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ffffff;
+  border: 1px solid #dbe4ee;
+  color: #33415a;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 7px 15px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+
+@media (max-width: 760px) {
+  .step1EmptyStateWrap {
+    min-height: 300px;
+  }
+
+  .step1EmptyState {
+    padding: 36px 18px 32px;
+    gap: 13px;
+  }
+
+  .step1EmptyIcon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+  }
+
+  .step1EmptyIcon svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .step1EmptyState h3 {
+    font-size: 16.5px;
+  }
+
+  .step1EmptyState p {
+    font-size: 12.5px;
+  }
+
+  .step1EmptyChannelPreview {
+    padding: 8px 14px;
+  }
+
+  .step1EmptyChannelText {
+    font-size: 10.8px;
+  }
+
+  .step1EmptyHints span {
+    font-size: 11px;
+    padding: 5px 11px;
+  }
+}
+
+/* Step 1 — compact explanation box */
+.step1MiniExplainBox {
+  width: 100%;
+  box-sizing: border-box;
+  background: #fbfdff;
+  border: 1.5px solid #dbe4ee;
+  border-radius: 14px;
+  padding: 14px 18px;
+}
+
+.step1MiniExplainBox h3 {
+  margin: 0 0 6px;
+  font-size: 13.5px;
+  font-weight: 900;
+  color: #0d2c72;
+}
+
+.step1MiniExplainBox p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #33415a;
+}
+
+
+/* Step 1 — reduce nested-border feel, keep only the matrix selector highlighted */
+.step1SimplePage .step1SimpleCard,
+.step1SimplePage .step1SimpleInspector {
+  border: none;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.07);
+}
+
+.step1SimplePage .selectedPixelLabel,
+.step1SimplePage .step1SimplePosition,
+.step1SimplePage .colorPreviewWrap {
+  border: none;
+  background: #f1f5fb;
+}
+
+.step1SimplePage .componentItem {
+  border: none;
+}
+
+.step1SimplePage .redItem { background: #fff1f2; }
+.step1SimplePage .greenItem { background: #ecfdf5; }
+.step1SimplePage .blueItem { background: #eff6ff; }
+

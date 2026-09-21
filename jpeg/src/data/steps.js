@@ -72,26 +72,16 @@ const steps = [
     "Quantization is the main lossy step in JPEG compression. Each DCT coefficient is divided by the corresponding value from the quantization table and then rounded. Low-frequency coefficients are preserved more carefully, while high-frequency coefficients are reduced more strongly. This creates many small values and zeros, which makes later entropy encoding more efficient."
 },
   {
-  id: 8,
-  title: "DC Difference Coding",
-  input: "DC coefficient from the quantized 8×8 block",
-  process:
-    "Subtract the previous block DC coefficient from the current block DC coefficient.",
-  output: "Differential DC value",
-  description:
-    "After quantization, JPEG treats the DC coefficient separately. The DC coefficient is the top-left value at position (0,0) of the quantized 8×8 block and represents the average intensity of the block. Since nearby blocks usually have similar average values, JPEG stores the difference between the current block DC and the previous block DC instead of storing the full DC value."
-},
-  {
-    id: 9,
+    id: 8,
     title: "Zig-Zag Scanning",
-    input: "Quantized 8×8 coefficient matrix after DC preparation",
+    input: "Quantized 8×8 coefficient matrix from Step 7",
     process: "Arrange the 64 quantized coefficients in zig-zag order.",
     output: "1D zig-zag sequence of coefficients",
     description:
       "Zig-zag scanning converts the 8×8 quantized coefficient matrix into a one-dimensional sequence. It starts from low-frequency coefficients near the top-left and moves toward high-frequency coefficients near the bottom-right. This ordering places many zero values near the end of the sequence, which makes Run-Length Encoding more effective."
   },
   {
-    id: 10,
+    id: 9,
     title: "Run-Length Encoding",
     input: "AC coefficients from the zig-zag sequence",
     process: "Encode consecutive zero values using run-length coding.",
@@ -100,7 +90,7 @@ const steps = [
       "After zig-zag scanning, many high-frequency AC coefficients become zero and appear together near the end of the sequence. Run-Length Encoding represents repeated zeros in compact form instead of storing every zero separately."
   },
   {
-    id: 11,
+    id: 10,
     title: "Huffman Encoding",
     input: "DC difference and run-length encoded AC data",
     process:
@@ -110,7 +100,7 @@ const steps = [
       "Huffman encoding compresses the DC difference and run-length encoded AC data further. It assigns shorter binary codes to frequently occurring symbols and longer binary codes to less frequent symbols, producing the final compressed bitstream."
   },
   {
-    id: 12,
+    id: 11,
     title: "Final Compressed JPEG Output",
     input: "Huffman encoded bitstream",
     process: "Store or transmit the compressed JPEG data.",

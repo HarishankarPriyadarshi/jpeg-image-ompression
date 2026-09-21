@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import steps from "../data/steps";
+import GuidedTutor from "./GuidedTutor";
+import { getGuidedTutorSteps } from "../data/guidedTutorSteps";
 import Step1RGBInput from "./steps/Step1RGBInput";
 import Step2YCbCrConversion from "./steps/Step2YCbCrConversion";
 import Step3ChromaSubsampling from "./steps/Step3ChromaSubsampling.jsx";
@@ -7,10 +9,10 @@ import Step4DivideBlocks from "./steps/Step4DivideBlocks.jsx";
 import Step5LevelShifting from "./steps/Step5LevelShifting.jsx";
 import Step6DCTTransform from "./steps/Step6DCTTransform.jsx";
 import Step7Quantization from "./steps/Step7Quantization.jsx";
-import Step9ZigZagScanning from "./steps/Step9ZigZagScanning.jsx";
-import Step10RunLengthEncoding from "./steps/Step10RunLengthEncoding.jsx";
-import Step11HuffmanEncoding from "./steps/Step11HuffmanEncoding.jsx";
-import Step12FinalOutput from "./steps/Step12FinalOutput.jsx";
+import Step8ZigZagScanning from "./steps/Step8ZigZagScanning.jsx";
+import Step9RunLengthEncoding from "./steps/Step9RunLengthEncoding.jsx";
+import Step10HuffmanEncoding from "./steps/Step10HuffmanEncoding.jsx";
+import Step11FinalOutput from "./steps/Step11FinalOutput.jsx";
 const luminanceQuantizationMatrix = [
   16, 11, 10, 16, 24, 40, 51, 61,
   12, 12, 14, 19, 26, 58, 60, 55,
@@ -64,29 +66,123 @@ function createSample16x16RgbMatrix(baseR, baseG, baseB, rowStep, colStep) {
   );
 }
 const rgbMatrixPresets = {
-  sample: {
-    label: "Sample 16×16 Patch",
-    matrix: createSample16x16RgbMatrix(245, 218, 180, 4, 3),
-  },
-
   bright: {
-    label: "Bright 16×16 Patch",
+    label: "Bright 16×16 Matrix",
     matrix: createSample16x16RgbMatrix(255, 245, 235, 3, 2),
   },
 
   dark: {
-    label: "Dark 16×16 Patch",
+    label: "Dark 16×16 Matrix",
     matrix: createSample16x16RgbMatrix(150, 130, 115, 3, 2),
   },
 };
+const CENTER = (MATRIX_SIZE - 1) / 2;
+const MID = Math.floor(CENTER); // 7
+
+const BRIGHT = [255, 90, 90];
+const DARK = [35, 40, 65];
+
+function twoTone(isOn) {
+  return isOn ? BRIGHT : DARK;
+}
+
+const randomPatternPresets = [
+  {
+    name: "Plus Sign",
+    build: () =>
+      Array.from({ length: MATRIX_SIZE }, (_, row) =>
+        Array.from({ length: MATRIX_SIZE }, (_, col) =>
+          twoTone(row === MID || col === MID)
+        )
+      ),
+  },
+  {
+    name: "X Sign",
+    build: () =>
+      Array.from({ length: MATRIX_SIZE }, (_, row) =>
+        Array.from({ length: MATRIX_SIZE }, (_, col) =>
+          twoTone(row === col || row + col === MATRIX_SIZE - 1)
+        )
+      ),
+  },
+  {
+    name: "Checkerboard",
+    build: () =>
+      Array.from({ length: MATRIX_SIZE }, (_, row) =>
+        Array.from({ length: MATRIX_SIZE }, (_, col) =>
+          twoTone((row + col) % 2 === 0)
+        )
+      ),
+  },
+  {
+    name: "Horizontal Stripes",
+    build: () =>
+      Array.from({ length: MATRIX_SIZE }, (_, row) =>
+        Array.from({ length: MATRIX_SIZE }, () =>
+          twoTone(Math.floor(row / 2) % 2 === 0)
+        )
+      ),
+  },
+  {
+    name: "Vertical Stripes",
+    build: () =>
+      Array.from({ length: MATRIX_SIZE }, () =>
+        Array.from({ length: MATRIX_SIZE }, (_, col) =>
+          twoTone(Math.floor(col / 2) % 2 === 0)
+        )
+      ),
+  },
+  {
+    name: "Border Frame",
+    build: () =>
+      Array.from({ length: MATRIX_SIZE }, (_, row) =>
+        Array.from({ length: MATRIX_SIZE }, (_, col) =>
+          twoTone(
+            row === 0 || row === MATRIX_SIZE - 1 || col === 0 || col === MATRIX_SIZE - 1
+          )
+        )
+      ),
+  },
+  {
+    name: "Diagonal Line",
+    build: () =>
+      Array.from({ length: MATRIX_SIZE }, (_, row) =>
+        Array.from({ length: MATRIX_SIZE }, (_, col) => twoTone(row === col))
+      ),
+  },
+  {
+    name: "Anti-Diagonal Line",
+    build: () =>
+      Array.from({ length: MATRIX_SIZE }, (_, row) =>
+        Array.from({ length: MATRIX_SIZE }, (_, col) =>
+          twoTone(row + col === MATRIX_SIZE - 1)
+        )
+      ),
+  },
+  {
+    name: "Dot Grid",
+    build: () =>
+      Array.from({ length: MATRIX_SIZE }, (_, row) =>
+        Array.from({ length: MATRIX_SIZE }, (_, col) =>
+          twoTone(row % 3 === 0 && col % 3 === 0)
+        )
+      ),
+  },
+  {
+    name: "Center Square",
+    build: () =>
+      Array.from({ length: MATRIX_SIZE }, (_, row) =>
+        Array.from({ length: MATRIX_SIZE }, (_, col) =>
+          twoTone(row >= 6 && row <= 9 && col >= 6 && col <= 9)
+        )
+      ),
+  },
+];
+
 function createRandomRgbMatrix() {
-  return Array.from({ length: MATRIX_SIZE }, () =>
-    Array.from({ length: MATRIX_SIZE }, () => [
-      Math.floor(Math.random() * 256),
-      Math.floor(Math.random() * 256),
-      Math.floor(Math.random() * 256),
-    ])
-  );
+  const preset =
+    randomPatternPresets[Math.floor(Math.random() * randomPatternPresets.length)];
+  return { matrix: preset.build(), name: preset.name };
 }
 function getReadableTextColor(pixel) {
   return "#111827";
@@ -256,12 +352,17 @@ function RevealedChannelMatrix({
 function ConceptModal({ onClose }) {
 const [started, setStarted] = useState(true);
 const [activeStep, setActiveStep] = useState(1);
+const [sidebarOpen, setSidebarOpen] = useState(false);
 const [visible, setVisible] = useState(true);
 const [maxUnlockedStep, setMaxUnlockedStep] = useState(1);
 
 const [selectedMatrixType, setSelectedMatrixType] = useState(null);
+const [randomPatternName, setRandomPatternName] = useState(null);
 const [activeRgbMatrix, setActiveRgbMatrix] = useState(null);
 const [showMatrixRequiredPopup, setShowMatrixRequiredPopup] = useState(false);
+const [showGuidedTutor, setShowGuidedTutor] = useState(false);
+const [tutorMuted, setTutorMuted] = useState(false);
+const [hasStartedFlow, setHasStartedFlow] = useState(false);
 const [showConversionRequiredPopup, setShowConversionRequiredPopup] = useState(false);
 const [showSubsamplingRequiredPopup, setShowSubsamplingRequiredPopup] = useState(false);
 const [showBlockRequiredPopup, setShowBlockRequiredPopup] = useState(false);
@@ -312,7 +413,7 @@ const [huffmanData, setHuffmanData] = useState(null);
 const [step3RevealedGroupIndexes, setStep3RevealedGroupIndexes] = useState([]);
 const currentStep = activeStep > 0 ? steps[activeStep - 1] : null;
 
-const safeRgbMatrix = activeRgbMatrix || rgbMatrixPresets.sample.matrix;
+const safeRgbMatrix = activeRgbMatrix || rgbMatrixPresets.bright.matrix;
 
 const selectedPixel = safeRgbMatrix.flat()[selectedPixelIndex] || [0, 0, 0];
 
@@ -347,12 +448,15 @@ const selectedYCbCr = convertRgbToYCbCr(selectedPixel);
 function handleMatrixPresetChange(type) {
   setSelectedMatrixType(type);
   setActiveRgbMatrix(rgbMatrixPresets[type].matrix);
+  setRandomPatternName(null);
   resetStep2Conversion();
 }
 
 function handleRandomMatrix() {
+  const { matrix, name } = createRandomRgbMatrix();
   setSelectedMatrixType("random");
-  setActiveRgbMatrix(createRandomRgbMatrix());
+  setActiveRgbMatrix(matrix);
+  setRandomPatternName(name);
   resetStep2Conversion();
 }
   const isFirstStep = activeStep === 1;
@@ -517,22 +621,22 @@ function nextStep() {
     return;
   }
 
-  if (activeStep === 9 && step9ScannedIndexes.length < 64) {
+  if (activeStep === 8 && step9ScannedIndexes.length < 64) {
     setShowZigZagRequiredPopup(true);
     return;
   }
 
-  if (activeStep === 10 && !step10Complete) {
+  if (activeStep === 9 && !step10Complete) {
     setShowRleRequiredPopup(true);
     return;
   }
 
-  if (activeStep === 11 && !step11Complete) {
+  if (activeStep === 10 && !step11Complete) {
     setShowHuffmanRequiredPopup(true);
     return;
   }
 
-  const next = activeStep + 1 === 8 ? activeStep + 2 : activeStep + 1;
+  const next = activeStep + 1;
 
   setActiveStep(next);
   setMaxUnlockedStep((prevMax) => Math.max(prevMax, next));
@@ -540,7 +644,7 @@ function nextStep() {
 
   function prevStep() {
     if (!started || isFirstStep) return;
-    setActiveStep((prev) => (prev - 1 === 8 ? prev - 2 : prev - 1));
+    setActiveStep((prev) => prev - 1);
   }
 
 function goToStep(stepId) {
@@ -551,6 +655,7 @@ function goToStep(stepId) {
   }
 
   setActiveStep(stepId);
+  setSidebarOpen(false);
 }
 
   function handleClose() {
@@ -578,7 +683,7 @@ function goToStep(stepId) {
           <div className="matrixRequiredOverlay">
             <div className="matrixRequiredPopup">
               <h3>Select an Input Matrix</h3>
-              <p>Please select an RGB matrix (Sample / Bright / Dark / Random) before proceeding to the next step.</p>
+              <p>Please select an RGB matrix (Bright / Dark / Random) before proceeding to the next step.</p>
               <button type="button" onClick={() => setShowMatrixRequiredPopup(false)}>
                 OK
               </button>
@@ -685,9 +790,42 @@ function goToStep(stepId) {
           </div>
         )}
         <div className="headerBar">
-          <div className="headerTitle">JPEG Compression Visualizer</div>
+          <div className="headerLeft">
+            <button
+              type="button"
+              className="menuToggleBtn"
+              aria-label="Toggle steps menu"
+              onClick={() => setSidebarOpen((prev) => !prev)}
+            >
+              <span />
+              <span />
+              <span />
+            </button>
+            <div className="headerTitleGroup">
+              <div className="headerTitle">JPEG Compression Visualizer</div>
+              <div className="headerSubtitle">
+                Step {activeStep} of {steps.length} · {currentStep?.title}
+              </div>
+            </div>
+          </div>
 
           <div className="headerActions">
+            <button
+              className={`headerSpeakerBtn ${tutorMuted ? "headerSpeakerBtnMuted" : ""}`}
+              type="button"
+              onClick={() => setTutorMuted((prev) => !prev)}
+              title={tutorMuted ? "Unmute tutor narration" : "Mute tutor narration"}
+              aria-label={tutorMuted ? "Unmute tutor narration" : "Mute tutor narration"}
+            >
+              {tutorMuted ? "🔇" : "🔊"}
+            </button>
+            <button
+              className="guidedTutorBtn"
+              type="button"
+              onClick={() => setShowGuidedTutor(true)}
+            >
+              🎓 <span>Guided Tutor</span>
+            </button>
             <button
               className="closeHeaderBtn"
               type="button"
@@ -698,16 +836,69 @@ function goToStep(stepId) {
           </div>
         </div>
 
+        <GuidedTutor
+          open={showGuidedTutor}
+          onClose={() => setShowGuidedTutor(false)}
+          muted={tutorMuted}
+          onToggleMute={() => setTutorMuted((prev) => !prev)}
+          actionContext={{
+            activeRgbMatrix,
+            isStep2Complete:
+              convertedPixelIndexes.length >= safeRgbMatrix.flat().length,
+            isStep3Complete:
+              step3RevealedGroupIndexes.length >=
+              Math.floor(cbMatrix.length / 2) *
+                Math.floor((cbMatrix[0]?.length || cbMatrix.length) / 2),
+            isStep4BlockSelected: step4SelectedBlockIndex !== null,
+            isStep4Complete: step4RevealedIndexes.length > 0,
+            isStep5Complete: step5RevealedIndexes.length >= 64,
+            isStep6Complete: step6RevealedIndexes.length >= 64,
+            isStep7Complete: step7RevealedIndexes.length >= 64,
+            isStep9Complete: step9ScannedIndexes.length >= 64,
+            isStep10Complete: step10Complete,
+            isStep11Complete: step11Complete,
+            isStep12Complete: step12IsGenerated,
+          }}
+          onRequireSidebar={setSidebarOpen}
+          steps={getGuidedTutorSteps({ activeStep, activeRgbMatrix, currentStep })}
+        />
+
         <div className="contentArea">
-          <div className="leftPanel">
-            <h2 className="stepsHeading">Steps</h2>
+          {sidebarOpen && (
+            <div
+              className="sidebarBackdrop"
+              onClick={() => setSidebarOpen(false)}
+            />
+          )}
+
+          <div className={`leftPanel${sidebarOpen ? " leftPanelOpen" : ""}`}>
+            <div className="stepsPanelHeader">
+              <h2 className="stepsHeading">Steps</h2>
+              <button
+                type="button"
+                className="sidebarCloseBtn"
+                aria-label="Close steps menu"
+                onClick={() => setSidebarOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
 
             <p className="stepsSubtitle">
               11-step JPEG encoding workflow
             </p>
 
+            <div className="stepsProgressTrack">
+              <div
+                className="stepsProgressFill"
+                style={{
+                  width: `${Math.round((activeStep / steps.length) * 100)}%`,
+                }}
+              />
+            </div>
+
             <ul className="stepsList">
-  {steps.filter((step) => step.id !== 8).map((step, index) => {
+  {steps.map((step, index) => {
     const isLocked = !started || step.id > maxUnlockedStep;
 
     return (
@@ -746,10 +937,13 @@ function goToStep(stepId) {
 
               <button
                 type="button"
-                onClick={nextStep}
+                onClick={() => {
+                  setHasStartedFlow(true);
+                  nextStep();
+                }}
                 disabled={!started || isLastStep}
               >
-                Next
+                {hasStartedFlow ? "Next" : "Start"}
               </button>
 
             </div>
@@ -765,6 +959,7 @@ function goToStep(stepId) {
     selectedMatrixType={selectedMatrixType}
     handleMatrixPresetChange={handleMatrixPresetChange}
     handleRandomMatrix={handleRandomMatrix}
+    randomPatternName={randomPatternName}
     activeRgbMatrix={activeRgbMatrix}
     selectedPixelIndex={selectedPixelIndex}
     setSelectedPixelIndex={setSelectedPixelIndex}
@@ -848,8 +1043,8 @@ function goToStep(stepId) {
     quality={step7Quality}
     setQuality={setStep7Quality}
   />
-) : activeStep === 9 ? (
-  <Step9ZigZagScanning
+) : activeStep === 8 ? (
+  <Step8ZigZagScanning
     quantizationData={quantizationData}
     dcCodingData={dcCodingData}
     onZigZagChange={setZigZagData}
@@ -860,8 +1055,8 @@ function goToStep(stepId) {
     isAutoScanning={step9IsAutoScanning}
     setIsAutoScanning={setStep9IsAutoScanning}
   />
-) : activeStep === 10 ? (
-  <Step10RunLengthEncoding
+) : activeStep === 9 ? (
+  <Step9RunLengthEncoding
     zigZagData={zigZagData}
     dcCodingData={dcCodingData}
     onRleChange={setRleData}
@@ -873,8 +1068,8 @@ function goToStep(stepId) {
     setIsAutoEncoding={setStep10IsAutoEncoding}
     setComplete={setStep10Complete}
   />
-) : activeStep === 11 ? (
-  <Step11HuffmanEncoding
+) : activeStep === 10 ? (
+  <Step10HuffmanEncoding
     dcCodingData={dcCodingData}
     rleData={rleData}
     onHuffmanChange={setHuffmanData}
@@ -886,8 +1081,8 @@ function goToStep(stepId) {
     setIsAutoEncoding={setStep11IsAutoEncoding}
     setComplete={setStep11Complete}
   />
-) : activeStep === 12 ? (
-  <Step12FinalOutput
+) : activeStep === 11 ? (
+  <Step11FinalOutput
     huffmanData={huffmanData}
     rleData={rleData}
     dcCodingData={dcCodingData}
@@ -919,13 +1114,12 @@ function goToStep(stepId) {
                 </div>
               )}
 
+              {activeStep !== 1 && activeStep !== 11 && (
               <div className="explanationBox">
   <h3>Explanation</h3>
 
   <p>
-    {activeStep === 1
-      ? "JPEG encoding starts with a 24-bit RGB image. In this simulation, the input image is represented as a fixed 16×16 RGB sample patch containing 256 pixels. Each pixel is stored as [R, G, B], where Red, Green and Blue are 8-bit component values in the range 0 to 255. This RGB patch is separated into R, G and B component matrices before RGB to YCbCr conversion."
-      : activeStep === 2
+    {activeStep === 2
       ? "In this step, the same 16×16 RGB sample patch from Step 1 is converted into 16×16 Y, Cb and Cr matrices. Y stores luminance or brightness information, while Cb and Cr store chrominance or color-difference information. This separation is useful in JPEG because the human eye is more sensitive to luminance than chrominance, so Cb and Cr color information can be reduced in the next step."
       : activeStep === 3
       ? "In this step, chroma subsampling is applied to the Y, Cb and Cr matrices from Step 2. The Y matrix remains unchanged at 16×16 because it stores brightness information. The Cb and Cr matrices are downsampled from 16×16 to 8×8 by replacing every 2×2 group with one average value. This reduces color data while keeping the visually important brightness data."
@@ -934,6 +1128,7 @@ function goToStep(stepId) {
       : currentStep?.description}
   </p>
 </div>
+              )}
             </div>
           </div>
         </div>

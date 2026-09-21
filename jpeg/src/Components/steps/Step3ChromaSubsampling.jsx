@@ -104,18 +104,20 @@ function SourceMatrixGrid({
     <div
       className="step3SourceGrid"
       style={{
-        gridTemplateColumns: `repeat(${matrixSize}, 27px)`,
+        gridTemplateColumns: `repeat(${matrixSize}, 1fr)`,
       }}
     >
       {values.flat().map((value, index) => {
         const isSelectedPixel = selectedPixelIndex === index;
         const isInSelectedGroup = selectedGroupSourceIndexes.includes(index);
+        const componentClass =
+          activeComponent === "Cb" ? "step3CbCell" : "step3CrCell";
 
         return (
           <button
             key={`${activeComponent}-source-${index}`}
             type="button"
-            className={`step3SourceCell ${
+            className={`step3SourceCell ${componentClass} ${
               isInSelectedGroup ? "step3SelectedGroupSourceCell" : ""
             } ${isSelectedPixel ? "step3SelectedSourcePixel" : ""}`}
             onClick={() => onCellClick(index)}
@@ -141,18 +143,20 @@ function DownsampledMatrixGrid({
     <div
       className="step3OutputGrid"
       style={{
-        gridTemplateColumns: `repeat(${outputSize}, 34px)`,
+        gridTemplateColumns: `repeat(${outputSize}, 1fr)`,
       }}
     >
       {values.flat().map((value, index) => {
         const isRevealed = revealedGroupIndexes.includes(index);
         const isSelectedGroup = selectedGroupIndex === index;
+        const componentClass =
+          activeComponent === "Cb" ? "step3CbCell" : "step3CrCell";
 
         return (
           <span
             key={`${activeComponent}-downsampled-${index}`}
             className={`step3OutputCell ${
-              isRevealed ? "step3VisibleOutputCell" : "step3HiddenOutputCell"
+              isRevealed ? `step3VisibleOutputCell ${componentClass}` : "step3HiddenOutputCell"
             } ${isSelectedGroup ? "step3SelectedOutputCell" : ""}`}
           >
             {isRevealed ? value : "—"}
@@ -333,23 +337,11 @@ function Step3ChromaSubsampling({
   return (
     <div className="step3SimplePage">
       <div className="step3ConceptBox">
-        <div>
-          <strong>Step 3 Concept:</strong> Chroma subsampling reduces the color
-          information. The <b>Y matrix stays {normalizedY.length}×
-          {normalizedY[0]?.length}</b>, while <b>Cb</b> and <b>Cr</b> are
-          reduced from {sourceSize}×{sourceCols} to {outputRows}×{outputCols}.
-        </div>
-
-        <div>
-          <strong>Why?</strong> Human vision is more sensitive to brightness
-          than color detail, so JPEG keeps luminance Y unchanged and reduces
-          chrominance Cb/Cr data.
-        </div>
-
-        <div>
-          <strong>Method:</strong> Every 2×2 chroma group is replaced by one
-          average value.
-        </div>
+        <strong>Step 3 Concept:</strong> Human vision is more sensitive to
+        brightness than color, so JPEG keeps <b>Y</b> unchanged at{" "}
+        {normalizedY.length}×{normalizedY[0]?.length} and reduces{" "}
+        <b>Cb</b>/<b>Cr</b> from {sourceSize}×{sourceCols} to {outputRows}×
+        {outputCols} by averaging every 2×2 chroma group into one value.
       </div>
 
       <div className="step3SummaryGrid">
@@ -448,57 +440,38 @@ function Step3ChromaSubsampling({
         <div className="step3CalculationCard">
           <h3>Selected 2×2 Group</h3>
 
-          <div className="step3SelectedMeta">
-            <div>
-              <span>Selected Pixel</span>
-              <strong>P{selectedPixelIndex + 1}</strong>
-            </div>
-
-            <div>
-              <span>Source Position</span>
-              <strong>
-                Row {selectedSourceRow}, Col {selectedSourceCol}
-              </strong>
-            </div>
-
-            <div>
-              <span>Output Position</span>
-              <strong>
-                Row {selectedGroupRow}, Col {selectedGroupCol}
-              </strong>
-            </div>
+          <div className="step3PositionLine">
+            <span>
+              Source Row {selectedSourceRow}, Col {selectedSourceCol}
+            </span>
+            <span className="step3PositionArrow">→</span>
+            <span>
+              Output Row {selectedGroupRow}, Col {selectedGroupCol}
+            </span>
           </div>
 
-          <div className="step3GroupValues">
+          <div className="step3MiniGroupGrid">
             {activeGroupValues.map((item) => (
-              <div key={`${activeComponent}-${item.row}-${item.col}`}>
-                <span>
-                  ({item.row},{item.col})
-                </span>
-                <strong>{item.value}</strong>
+              <div
+                key={`${activeComponent}-${item.row}-${item.col}`}
+                className={
+                  activeComponent === "Cb" ? "step3CbCell" : "step3CrCell"
+                }
+              >
+                {item.value}
               </div>
             ))}
           </div>
 
           <div className="step3FormulaBox">
-            Output value = round((v1 + v2 + v3 + v4) / 4)
+            Output value = round(({activeGroupValues
+              .map((item) => item.value)
+              .join(" + ")}) / {activeGroupValues.length})
           </div>
 
           {showFormula ? (
             <div className="step3CalculationResult">
-              <div>
-                {activeComponent} average = round((
-                {activeGroupValues.map((item) => item.value).join(" + ")}) /{" "}
-                {activeGroupValues.length}) = <b>{activeAverage}</b>
-              </div>
-
-              <div>
-                Cb output for this group = <b>{selectedCbAverage}</b>
-              </div>
-
-              <div>
-                Cr output for this group = <b>{selectedCrAverage}</b>
-              </div>
+              {activeComponent} average = <b>{activeAverage}</b>
             </div>
           ) : (
             <div className="step3PendingBox">
@@ -525,10 +498,6 @@ function Step3ChromaSubsampling({
             values group by group.
           </p>
         </div>
-      </div>
-
-      <div className="rgbInfoBox">
-        Step 3 Output = Y remains 16×16, Cb becomes 8×8, Cr becomes 8×8
       </div>
     </div>
   );

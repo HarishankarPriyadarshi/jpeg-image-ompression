@@ -135,6 +135,7 @@ function Step6DCTTransform({
 }) {
   const runRef = useRef(0);
   const [showCalculation, setShowCalculation] = useState(false);
+  const [showFormula, setShowFormula] = useState(false);
 
   const inputBlock = useMemo(() => {
     if (levelShiftData?.values) {
@@ -252,24 +253,6 @@ function Step6DCTTransform({
 
   return (
     <div className="step6SimplePage">
-      <div className="step6ConceptBox">
-        <div>
-          <strong>Step 6 Concept:</strong> 2D DCT converts the level shifted
-          8×8 block from the spatial domain into frequency-domain coefficients.
-        </div>
-
-        <div>
-          <strong>Why?</strong> Natural image blocks usually have most energy in
-          low-frequency coefficients. After DCT, JPEG can reduce less important
-          high-frequency coefficients during quantization.
-        </div>
-
-        <div>
-          <strong>Output:</strong> An 8×8 DCT coefficient matrix. The top-left
-          coefficient is the <b>DC coefficient</b>, and the remaining 63 values
-          are <b>AC coefficients</b>.
-        </div>
-      </div>
 
       <div className="step6SummaryGrid">
         <div>
@@ -294,17 +277,33 @@ function Step6DCTTransform({
       </div>
 
       <div className="step6FormulaBox">
-        <h3>2D DCT Formula</h3>
+        <div className="step6FormulaHeader">
+          <h3>2D DCT Formula</h3>
 
-        <div className="step6FormulaText">
-          F(u,v) = 1/4 × C(u) × C(v) × ΣΣ f(x,y) × cos[(2x+1)uπ/16] ×
-          cos[(2y+1)vπ/16]
+          <button
+            type="button"
+            className={`step6ShowFormulaBtn ${
+              showFormula ? "step6ShowFormulaBtnOpen" : ""
+            }`}
+            onClick={() => setShowFormula((prev) => !prev)}
+          >
+            {showFormula ? "Hide Formula" : "Show Formula"}
+          </button>
         </div>
 
-        <p>
-          C(0) = 1/√2 and C(k) = 1 for k &gt; 0. Here f(x,y) is the level
-          shifted input block value.
-        </p>
+        {showFormula && (
+          <>
+            <div className="step6FormulaText">
+              F(u,v) = 1/4 × C(u) × C(v) × ΣΣ f(x,y) × cos[(2x+1)uπ/16] ×
+              cos[(2y+1)vπ/16]
+            </div>
+
+            <p>
+              C(0) = 1/√2 and C(k) = 1 for k &gt; 0. Here f(x,y) is the level
+              shifted input block value.
+            </p>
+          </>
+        )}
       </div>
 
       <div className="step6ControlBar">
@@ -332,15 +331,6 @@ function Step6DCTTransform({
             style={{ width: `${progressPercent}%` }}
           />
         </div>
-      </div>
-
-      <div className="step6FlowBox">
-        <span>Step 5 Output</span>
-        <b>Level Shifted 8×8 Block</b>
-        <span>↓</span>
-        <b>Apply 2D DCT / FDCT</b>
-        <span>↓</span>
-        <b>8×8 DCT Coefficient Matrix</b>
       </div>
 
       <div className="step6MainGrid">
@@ -423,9 +413,6 @@ function Step6DCTTransform({
         </div>
       </div>
 
-      <div className="rgbInfoBox">
-        Step 6 Output = 8×8 DCT coefficient matrix for Quantization
-      </div>
     </div>
   );
 }

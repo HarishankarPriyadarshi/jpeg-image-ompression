@@ -127,6 +127,7 @@ function Step7Quantization({
 }) {
   const runRef = useRef(0);
   const [showCalculation, setShowCalculation] = useState(false);
+  const [showFormula, setShowFormula] = useState(false);
 
   const dctMatrix = useMemo(
     () => normalize8x8Block(dctData?.values),
@@ -254,24 +255,6 @@ function Step7Quantization({
 
   return (
     <div className="step7SimplePage">
-      <div className="step7ConceptBox">
-        <div>
-          <strong>Step 7 Concept:</strong> Quantization reduces the precision of
-          DCT coefficients. Each DCT coefficient is divided by the corresponding
-          value from the JPEG luminance quantization table and then rounded.
-        </div>
-
-        <div>
-          <strong>Why?</strong> Low-frequency coefficients are preserved more,
-          while high-frequency coefficients are reduced more. This is the main
-          lossy step in baseline JPEG compression.
-        </div>
-
-        <div>
-          <strong>Formula:</strong> Quantized Value = round(DCT Coefficient ÷
-          Quantization Table Value)
-        </div>
-      </div>
 
       <div className="step7SummaryGrid">
         <div>
@@ -296,16 +279,32 @@ function Step7Quantization({
       </div>
 
       <div className="step7FormulaBox">
-        <h3>Quantization Formula</h3>
+        <div className="step7FormulaHeader">
+          <h3>Quantization Formula</h3>
 
-        <div className="step7FormulaText">
-          Q(u,v) = round( DCT(u,v) ÷ QuantizationTable(u,v) )
+          <button
+            type="button"
+            className={`step7ShowFormulaBtn ${
+              showFormula ? "step7ShowFormulaBtnOpen" : ""
+            }`}
+            onClick={() => setShowFormula((prev) => !prev)}
+          >
+            {showFormula ? "Hide Formula" : "Show Formula"}
+          </button>
         </div>
 
-        <p>
-          Smaller table values preserve low-frequency information. Larger table
-          values reduce high-frequency information more strongly.
-        </p>
+        {showFormula && (
+          <>
+            <div className="step7FormulaText">
+              Q(u,v) = round( DCT(u,v) ÷ QuantizationTable(u,v) )
+            </div>
+
+            <p>
+              Smaller table values preserve low-frequency information. Larger
+              table values reduce high-frequency information more strongly.
+            </p>
+          </>
+        )}
       </div>
 
       <div className="step7QualityBox">
@@ -330,10 +329,8 @@ function Step7Quantization({
         />
 
         <p className="step7QualityNote">
-          Moving this slider scales the standard quantization table using the
-          real IJG formula used by libjpeg: scale = quality &lt; 50 ?
-          floor(5000/quality) : 200-2×quality. Lower quality → bigger table
-          values → more coefficients become zero → smaller file, more loss.
+          Lower quality = bigger table values = more coefficients turn into
+          zero = smaller file, more loss. Higher quality = the opposite.
         </p>
       </div>
 
@@ -362,15 +359,6 @@ function Step7Quantization({
             style={{ width: `${progressPercent}%` }}
           />
         </div>
-      </div>
-
-      <div className="step7FlowBox">
-        <span>Step 6 Output</span>
-        <b>DCT Coefficient Matrix</b>
-        <span>↓</span>
-        <b>Divide by Quantization Table</b>
-        <span>↓</span>
-        <b>Rounded Quantized Matrix</b>
       </div>
 
       <div className="step7MainGrid">
@@ -477,9 +465,6 @@ function Step7Quantization({
         </div>
       </div>
 
-      <div className="rgbInfoBox">
-        Step 7 Output = Quantized 8×8 coefficient matrix
-      </div>
     </div>
   );
 }

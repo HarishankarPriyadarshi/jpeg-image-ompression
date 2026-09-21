@@ -1,32 +1,26 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
-const formulaConfig = {
-  sample: {
-    title: "Sample Patch",
-    r: { base: 245, rowStep: 4, colStep: 3 },
-    g: { base: 218, rowStep: 3, colStep: 2 },
-    b: { base: 180, rowStep: 2, colStep: 1 },
-  },
-  bright: {
-    title: "Bright Patch",
-    r: { base: 255, rowStep: 3, colStep: 2 },
-    g: { base: 245, rowStep: 2, colStep: 1 },
-    b: { base: 235, rowStep: 1, colStep: 1 },
-  },
-  dark: {
-    title: "Dark Patch",
-    r: { base: 150, rowStep: 3, colStep: 2 },
-    g: { base: 130, rowStep: 2, colStep: 1 },
-    b: { base: 115, rowStep: 1, colStep: 1 },
-  },
-};
+function getPreviewTiles(type) {
+  const palettes = {
+    bright: ["#fff9e8", "#ffefc2", "#ffe28a", "#ffe9b3", "#fff3d1", "#ffdb70", "#fff6de", "#ffe6a3", "#ffd766"],
+    dark: ["#232b45", "#10182b", "#1a2338", "#0c1220", "#2a3350", "#161d33", "#0f1526", "#242c48", "#131a2c"],
+    random: ["#ff5f6d", "#47cf73", "#2f6bff", "#ffc371", "#a855f7", "#22d3ee", "#f43f5e", "#facc15", "#34d399"],
+  };
+  return palettes[type] || palettes.random;
+}
+
+function MatrixCardPreview({ type }) {
+  return (
+    <div className="matrixCardPreview">
+      {getPreviewTiles(type).map((color, i) => (
+        <span key={i} style={{ backgroundColor: color }} />
+      ))}
+    </div>
+  );
+}
 
 function clampRgb(value) {
   return Math.max(0, Math.min(255, Math.round(value)));
-}
-
-function getGeneratedValue(channel, row, col) {
-  return clampRgb(channel.base - row * channel.rowStep - col * channel.colStep);
 }
 
 function getLuminance(pixel) {
@@ -62,7 +56,7 @@ function ChannelMatrix({
       <div
         className="step1SimpleChannelGrid"
         style={{
-          gridTemplateColumns: `repeat(${matrixSize}, 24px)`,
+          gridTemplateColumns: `repeat(${matrixSize}, 1fr)`,
         }}
       >
         {values.flat().map((value, index) => (
@@ -85,6 +79,7 @@ function Step1RGBInput({
   selectedMatrixType,
   handleMatrixPresetChange,
   handleRandomMatrix,
+  randomPatternName,
   activeRgbMatrix,
   selectedPixelIndex,
   setSelectedPixelIndex,
@@ -93,8 +88,6 @@ function Step1RGBInput({
   greenMatrix,
   blueMatrix,
 }) {
-  const [showTupleMatrix, setShowTupleMatrix] = useState(false);
-  const [showFormula, setShowFormula] = useState(false);
   const [showChannels, setShowChannels] = useState(false);
 
   const matrixSize = activeRgbMatrix ? activeRgbMatrix.length : 16;
@@ -102,18 +95,6 @@ function Step1RGBInput({
 
   const selectedRow = Math.floor(selectedPixelIndex / matrixSize);
   const selectedCol = selectedPixelIndex % matrixSize;
-
-  const selectedFormula = formulaConfig[selectedMatrixType] || null;
-
-  const formulaResult = useMemo(() => {
-    if (!selectedFormula) return null;
-
-    return {
-      r: getGeneratedValue(selectedFormula.r, selectedRow, selectedCol),
-      g: getGeneratedValue(selectedFormula.g, selectedRow, selectedCol),
-      b: getGeneratedValue(selectedFormula.b, selectedRow, selectedCol),
-    };
-  }, [selectedFormula, selectedRow, selectedCol]);
 
   const isValidRgbMatrix = activeRgbMatrix
     ? activeRgbMatrix.flat().every(
@@ -126,80 +107,108 @@ function Step1RGBInput({
 
   const matrixLabel =
     selectedMatrixType === "random"
-      ? "Random Matrix"
+      ? `Random Matrix${randomPatternName ? ` — ${randomPatternName}` : ""}`
       : rgbMatrixPresets[selectedMatrixType]?.label || "No Matrix Selected";
+
+  const matrixCardMeta = {
+    bright: {
+      desc: "High-brightness 16×16 sample",
+    },
+    dark: {
+      desc: "Low-brightness 16×16 sample",
+    },
+    random: {
+      desc: "Randomized RGB values",
+    },
+  };
 
   return (
     <div className="step1SimplePage">
-      <div className="matrixCategoryBar">
-        <span className="matrixCategoryLabel">Choose RGB Matrix:</span>
+      <div className="matrixSelectorPanel">
+        <div className="matrixSelectorHeader">
+          <span className="matrixSelectorTitle">Choose RGB Matrix</span>
+          <span className="matrixSelectorSubtitle">
+            {activeRgbMatrix
+              ? `Selected: ${matrixLabel}`
+              : "Select one matrix to begin"}
+          </span>
+        </div>
 
-        {Object.entries(rgbMatrixPresets).map(([type, preset]) => (
+        <div className="matrixSelectorGrid">
+          {Object.entries(rgbMatrixPresets).map(([type, preset]) => (
+            <button
+              key={type}
+              type="button"
+              className={`matrixSelectorCard ${
+                selectedMatrixType === type ? "matrixSelectorCardActive" : ""
+              }`}
+              onClick={() => handleMatrixPresetChange(type)}
+            >
+              {selectedMatrixType === type && (
+                <span className="matrixCardCheck">✓ Selected</span>
+              )}
+              <MatrixCardPreview type={type} />
+              <span className="matrixCardLabel">{preset.label}</span>
+              <span className="matrixCardDesc">{matrixCardMeta[type].desc}</span>
+            </button>
+          ))}
+
           <button
-            key={type}
             type="button"
-            className={`matrixPresetBtn ${
-              selectedMatrixType === type ? "activeMatrixPreset" : ""
+            className={`matrixSelectorCard ${
+              selectedMatrixType === "random" ? "matrixSelectorCardActive" : ""
             }`}
-            onClick={() => handleMatrixPresetChange(type)}
+            onClick={handleRandomMatrix}
           >
-            {preset.label}
+            {selectedMatrixType === "random" && (
+              <span className="matrixCardCheck">✓ Selected</span>
+            )}
+            <MatrixCardPreview type="random" />
+            <span className="matrixCardLabel">Random Matrix</span>
+            <span className="matrixCardDesc">{matrixCardMeta.random.desc}</span>
           </button>
-        ))}
-
-        <button
-          type="button"
-          className={`matrixPresetBtn randomPresetBtn ${
-            selectedMatrixType === "random" ? "activeMatrixPreset" : ""
-          }`}
-          onClick={handleRandomMatrix}
-        >
-          Random Matrix
-        </button>
-
-      </div>
-
-      <div className="step1SimpleConceptBox">
-        <div>
-          <strong>Step 1 Concept:</strong> JPEG starts with a 24-bit RGB image.
-          Each pixel is stored as <b>[R, G, B]</b>, where R, G and B are 8-bit
-          values from <b>0 to 255</b>.
-        </div>
-
-        <div>
-          <strong>Current Matrix:</strong>{" "}
-          {activeRgbMatrix
-            ? `${matrixSize}×${matrixSize} RGB patch = ${totalPixels} pixels.`
-            : "No matrix selected yet."}
-          {activeRgbMatrix && (
-            <span className={isValidRgbMatrix ? "step1ValidText" : "step1ErrorText"}>
-              {" "}
-              {isValidRgbMatrix ? "Valid RGB range." : "Invalid RGB values."}
-            </span>
-          )}
-        </div>
-
-        <div>
-          <strong>Note:</strong> No compression happens in Step 1. This step
-          only prepares RGB values for RGB to YCbCr conversion.
         </div>
       </div>
 
+      {!activeRgbMatrix && (
+        <div className="step1EmptyStateWrap">
+          <div className="step1EmptyState">
+            <div className="step1EmptyIcon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="3" width="7" height="7" rx="1.4" stroke="currentColor" strokeWidth="1.8" />
+                <rect x="14" y="3" width="7" height="7" rx="1.4" stroke="currentColor" strokeWidth="1.8" />
+                <rect x="3" y="14" width="7" height="7" rx="1.4" stroke="currentColor" strokeWidth="1.8" />
+                <rect x="14" y="14" width="7" height="7" rx="1.4" stroke="currentColor" strokeWidth="1.8" />
+              </svg>
+            </div>
+            <div className="step1EmptyTextCol">
+              <h3>Select a Matrix to Begin</h3>
+              <p>
+                Choose Bright, Dark or Random from the options above — the
+                16×16 pixel grid and R/G/B channel matrices will appear here
+                instantly.
+              </p>
+              <div className="step1EmptyHints">
+                <span>One click to select</span>
+                <span>16×16 RGB sample</span>
+                <span>Inspect any pixel</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeRgbMatrix && (
       <div className="step1SimpleMainGrid">
         <div className="step1SimpleCard">
-          <h3>Input: {matrixSize}×{matrixSize} RGB {matrixLabel}</h3>
+          <h3>{matrixLabel}</h3>
 
-          {!activeRgbMatrix ? (
-            <p className="matrixNote">
-              Select an RGB matrix above (Sample / Bright / Dark / Random) to
-              view the input patch.
-            </p>
-          ) : (
           <>
+          <div className="step1SimplePatchGridScroll">
           <div
             className="step1SimplePatchGrid"
             style={{
-              gridTemplateColumns: `repeat(${matrixSize}, 30px)`,
+              gridTemplateColumns: `repeat(${matrixSize}, 1fr)`,
             }}
           >
             {activeRgbMatrix.flat().map((pixel, index) => (
@@ -218,9 +227,11 @@ function Step1RGBInput({
                   pixel[2]
                 })`}
               >
-                P{index + 1}
+                <span className="pixelPrefix">P</span>
+                <span className="pixelNumber">{index + 1}</span>
               </button>
             ))}
+          </div>
           </div>
 
           <p className="matrixNote">
@@ -228,10 +239,8 @@ function Step1RGBInput({
             pixel to inspect its Red, Green and Blue values.
           </p>
           </>
-          )}
         </div>
 
-        {activeRgbMatrix && (
         <div className="step1SimpleInspector">
           <h3>Selected RGB Pixel</h3>
 
@@ -279,159 +288,17 @@ function Step1RGBInput({
             One RGB pixel stores three separate color component values.
           </p>
         </div>
-        )}
       </div>
+      )}
 
       {activeRgbMatrix && (
       <div className="step1SimpleActionRow">
-        <button type="button" onClick={() => setShowFormula((prev) => !prev)}>
-          {showFormula ? "Hide Value Source Formula" : "Show Value Source Formula"}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setShowTupleMatrix((prev) => !prev)}
-        >
-          {showTupleMatrix ? "Hide RGB Tuple Matrix" : "Show Full RGB Tuple Matrix"}
-        </button>
-
         <button type="button" onClick={() => setShowChannels((prev) => !prev)}>
           {showChannels
             ? "Hide R/G/B Matrices"
             : "Separate RGB Components into Matrices"}
         </button>
       </div>
-      )}
-
-      {showFormula && (
-        <div className="step1SimpleCard step1SimpleFade">
-          <h3>Value Source / Validity</h3>
-
-          {selectedFormula ? (
-            <>
-              <p className="step1SimpleFormulaIntro">
-                This is a fixed synthetic RGB sample patch. The values are not
-                copied from a paper; they are generated using a smooth gradient
-                formula while keeping every R, G and B value inside 0–255.
-              </p>
-
-              <div className="step1SimpleFormulaGrid">
-                <div>
-                  R(row, col) = {selectedFormula.r.base} −{" "}
-                  {selectedFormula.r.rowStep}row −{" "}
-                  {selectedFormula.r.colStep}col
-                </div>
-
-                <div>
-                  G(row, col) = {selectedFormula.g.base} −{" "}
-                  {selectedFormula.g.rowStep}row −{" "}
-                  {selectedFormula.g.colStep}col
-                </div>
-
-                <div>
-                  B(row, col) = {selectedFormula.b.base} −{" "}
-                  {selectedFormula.b.rowStep}row −{" "}
-                  {selectedFormula.b.colStep}col
-                </div>
-              </div>
-
-              <div className="step1SimpleCalculation">
-                <h4>Selected Pixel Calculation</h4>
-
-                <div>
-                  R = {selectedFormula.r.base} − {selectedFormula.r.rowStep}(
-                  {selectedRow}) − {selectedFormula.r.colStep}({selectedCol}) ={" "}
-                  <b>{formulaResult.r}</b>
-                </div>
-
-                <div>
-                  G = {selectedFormula.g.base} − {selectedFormula.g.rowStep}(
-                  {selectedRow}) − {selectedFormula.g.colStep}({selectedCol}) ={" "}
-                  <b>{formulaResult.g}</b>
-                </div>
-
-                <div>
-                  B = {selectedFormula.b.base} − {selectedFormula.b.rowStep}(
-                  {selectedRow}) − {selectedFormula.b.colStep}({selectedCol}) ={" "}
-                  <b>{formulaResult.b}</b>
-                </div>
-              </div>
-            </>
-          ) : selectedMatrixType === "real" ? (
-            <>
-              <p className="step1SimpleFormulaIntro">
-                These are <b>real pixel values</b>, not generated by any
-                formula. A real photo is loaded in the browser, drawn onto an
-                HTML canvas, and a 16×16 pixel block is read directly using{" "}
-                <b>canvas.getImageData()</b> starting at real image position
-                row {realPhotoCrop?.row}, col {realPhotoCrop?.col}.
-              </p>
-
-              <div className="step1SimpleCalculation">
-                <h4>How This Pixel's Value Was Obtained</h4>
-
-                <div>
-                  Source image pixel = (row {realPhotoCrop?.row + selectedRow},
-                  col {realPhotoCrop?.col + selectedCol}) of the real photo
-                </div>
-
-                <div>
-                  getImageData() returns raw bytes → this pixel&apos;s actual
-                  bytes are{" "}
-                  <b>
-                    [{selectedPixel[0]}, {selectedPixel[1]}, {selectedPixel[2]}]
-                  </b>
-                </div>
-
-                <div>
-                  No rounding, no generation — this is the exact stored RGB
-                  value of that real image pixel.
-                </div>
-              </div>
-            </>
-          ) : (
-            <p className="step1SimpleFormulaIntro">
-              Random Matrix creates random valid RGB values between 0 and 255.
-              It is useful for testing, but the fixed sample matrix is better
-              for explaining JPEG compression.
-            </p>
-          )}
-        </div>
-      )}
-
-      {showTupleMatrix && (
-        <div className="step1SimpleCard step1SimpleFade">
-          <h3>RGB Pixel Matrix Form</h3>
-
-          <div className="step1SimpleTupleScroll">
-            <div
-              className="step1SimpleTupleGrid"
-              style={{
-                gridTemplateColumns: `repeat(${matrixSize}, 84px)`,
-              }}
-            >
-              {activeRgbMatrix.flat().map((pixel, index) => (
-                <button
-                  key={`tuple-${index}`}
-                  type="button"
-                  className={`step1SimpleTupleCell ${
-                    selectedPixelIndex === index
-                      ? "step1SimpleTupleActive"
-                      : ""
-                  }`}
-                  onClick={() => setSelectedPixelIndex(index)}
-                >
-                  [{pixel[0]},{pixel[1]},{pixel[2]}]
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <p className="matrixNote">
-            These are the same pixels shown as [R, G, B] tuples before RGB to
-            YCbCr conversion.
-          </p>
-        </div>
       )}
 
       {showChannels && (
@@ -474,10 +341,6 @@ function Step1RGBInput({
           </p>
         </div>
       )}
-
-      <div className="rgbInfoBox">
-        Step 1 Output = RGB pixel matrix + R, G and B component matrices
-      </div>
     </div>
   );
 }

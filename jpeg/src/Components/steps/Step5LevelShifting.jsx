@@ -205,23 +205,6 @@ function Step5LevelShifting({
 
   return (
     <div className="step5SimplePage">
-      <div className="step5ConceptBox">
-        <div>
-          <strong>Step 5 Concept:</strong> JPEG applies level shifting before
-          DCT. Each value in the selected 8×8 block is shifted by subtracting{" "}
-          <b>128</b>.
-        </div>
-
-        <div>
-          <strong>Why?</strong> Image samples are originally in the unsigned
-          range <b>0 to 255</b>. Subtracting 128 centers the values around zero,
-          giving an approximate range of <b>-128 to +127</b>.
-        </div>
-
-        <div>
-          <strong>Formula:</strong> Shifted Value = Original Value - 128
-        </div>
-      </div>
 
       <div className="step5SummaryGrid">
         <div>
@@ -270,17 +253,6 @@ function Step5LevelShifting({
             style={{ width: `${progressPercent}%` }}
           />
         </div>
-      </div>
-
-      <div className="step5FlowBox">
-        <span>Step 4 Output</span>
-        <b>
-          {componentName} Block B{blockNumber}
-        </b>
-        <span>↓</span>
-        <b>Subtract 128 from each cell</b>
-        <span>↓</span>
-        <b>Level shifted block for DCT</b>
       </div>
 
       <div className="step5MainGrid">
@@ -372,9 +344,6 @@ function Step5LevelShifting({
         </div>
       </div>
 
-      <div className="rgbInfoBox">
-        Step 5 Output = Level shifted 8×8 block for 2D DCT
-      </div>
     </div>
   );
 }

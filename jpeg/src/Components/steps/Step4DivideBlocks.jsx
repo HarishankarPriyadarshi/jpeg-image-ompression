@@ -52,7 +52,12 @@ function getBlockLabel(blockIndex) {
   return `B${blockIndex + 1}`;
 }
 
-function YSourceMatrixGrid({ values, selectedBlockIndex, onBlockSelect }) {
+function YSourceMatrixGrid({
+  values,
+  selectedBlockIndex,
+  onBlockSelect,
+  isLocked,
+}) {
   return (
     <div className="step4SourceGrid">
       {values.flat().map((value, index) => {
@@ -68,7 +73,8 @@ function YSourceMatrixGrid({ values, selectedBlockIndex, onBlockSelect }) {
             type="button"
             className={`step4SourceCell ${
               isSelectedBlock ? "step4SelectedSourceBlockCell" : ""
-            }`}
+            } ${isLocked && !isSelectedBlock ? "step4LockedSourceCell" : ""}`}
+            disabled={isLocked && !isSelectedBlock}
             onClick={() => onBlockSelect(cellBlockIndex)}
             title={`Y(${row}, ${col}) = ${value}, ${getBlockLabel(
               cellBlockIndex
@@ -185,23 +191,6 @@ useEffect(() => {
 
   return (
     <div className="step4SimplePage">
-      <div className="step4ConceptBox">
-        <div>
-          <strong>Step 4 Concept:</strong> JPEG processes image components in{" "}
-          <b>8×8 blocks</b>. In this simulation, the <b>16×16 Y matrix</b> from
-          Step 3 is divided into four non-overlapping 8×8 blocks.
-        </div>
-
-        <div>
-          <strong>Why Y matrix?</strong> Y stores luminance or brightness
-          information. The selected 8×8 Y block is passed to Level Shifting and
-          then DCT.
-        </div>
-
-        <div>
-          <strong>Output:</strong> One selected 8×8 Y processing block.
-        </div>
-      </div>
 
       <div className="step4BlockSelectorGrid">
         {blockCards.map((block) => (
@@ -225,19 +214,8 @@ useEffect(() => {
 
       <div className="step4ControlBar">
         <button type="button" onClick={createSelectedBlock} disabled={!hasSelection || isExtracted}>
-          {isExtracted ? "Block Extracted ✓" : "Extract Selected 8×8 Block"}
+          {isExtracted ? "Block Extracted" : "Extract Selected 8×8 Block"}
         </button>
-      </div>
-
-      <div className="step4FlowBox">
-        <span>Step 3 Output</span>
-        <b>Y Matrix 16×16</b>
-        <span>↓</span>
-        <b>Divide into four 8×8 blocks</b>
-        <span>↓</span>
-        <b>
-          Selected Block {hasSelection ? getBlockLabel(effectiveBlockIndex) : "—"} → Level Shifting
-        </b>
       </div>
 
       <div className="step4MainGrid">
@@ -248,6 +226,7 @@ useEffect(() => {
             values={normalizedYMatrix}
             selectedBlockIndex={selectedBlockIndex}
             onBlockSelect={handleBlockSelect}
+            isLocked={isExtracted}
           />
 
           <p className="step4SmallNote">
@@ -313,9 +292,6 @@ useEffect(() => {
         </div>
       </div>
 
-      <div className="rgbInfoBox">
-        Step 4 Output = Selected 8×8 Y Block for Level Shifting
-      </div>
     </div>
   );
 }

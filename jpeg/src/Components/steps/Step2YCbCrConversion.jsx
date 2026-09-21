@@ -67,7 +67,7 @@ function RgbInputGrid({
     <div
       className="step2RgbGrid"
       style={{
-        gridTemplateColumns: `repeat(${matrixSize}, 28px)`,
+        gridTemplateColumns: `repeat(${matrixSize}, 1fr)`,
       }}
     >
       {values.flat().map((pixel, index) => {
@@ -88,7 +88,8 @@ function RgbInputGrid({
             onClick={() => setSelectedPixelIndex(index)}
             title={`P${index + 1}: RGB(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`}
           >
-            P{index + 1}
+            <span className="step2PixelPrefix">P</span>
+            <span className="step2PixelNumber">{index + 1}</span>
           </button>
         );
       })}
@@ -109,7 +110,7 @@ function OutputMatrixGrid({
     <div
       className="step2OutputGrid"
       style={{
-        gridTemplateColumns: `repeat(${matrixSize}, 28px)`,
+        gridTemplateColumns: `repeat(${matrixSize}, 1fr)`,
       }}
     >
       {values.flat().map((value, index) => {
@@ -175,23 +176,10 @@ function Step2YCbCrConversion({
   return (
     <div className="step2SimplePage">
       <div className="step2ConceptBox">
-        <div>
-          <strong>Step 2 Concept:</strong> The same {matrixSize}×{matrixSize} RGB
-          patch from Step 1 is converted into <b>Y</b>, <b>Cb</b> and <b>Cr</b>{" "}
-          matrices.
-        </div>
-
-        <div>
-          <strong>Why?</strong> Y stores brightness information, while Cb and Cr
-          store color-difference information. JPEG separates brightness and color
-          so that color data can be reduced in the next step.
-        </div>
-
-        <div>
-          <strong>Output:</strong> {matrixSize}×{matrixSize} Y matrix +{" "}
-          {matrixSize}×{matrixSize} Cb matrix + {matrixSize}×{matrixSize} Cr
-          matrix.
-        </div>
+        <strong>Step 2 Concept:</strong> The same {matrixSize}×{matrixSize} RGB
+        patch from Step 1 is converted into <b>Y</b>, <b>Cb</b> and <b>Cr</b>{" "}
+        matrices — Y stores brightness, Cb and Cr store color-difference
+        information.
       </div>
 
       <div className="step2FormulaBox">
