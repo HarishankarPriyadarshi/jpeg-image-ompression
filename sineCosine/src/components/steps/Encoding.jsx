@@ -3,11 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { useMatrix } from "../../context/MatrixContext";
 import { runLengthEncode } from "../../utils/transformUtils";
 
-// Sir's own teaching example, shown as the general concept before
-// applying it to the actual 8x8 block.
-const EXAMPLE_SEQUENCE = [1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0];
-const EXAMPLE_PAIRS = runLengthEncode(EXAMPLE_SEQUENCE);
-
 function Encoding() {
   const { zigzagArray, encodedRuns, setEncodedRuns, selectedBlock, transform } = useMatrix();
 
@@ -75,29 +70,6 @@ function Encoding() {
           Run-Length Encoding scans a sequence and counts how many times each value repeats
           <b> consecutively</b>. Every run of the same value — whatever that value is — is stored as a
           single <b>(value, count)</b> pair instead of writing the value out every time.
-        </p>
-      </div>
-
-      <div className="rleRuleCard">
-        <h3>How RLE Works — A Simple Example</h3>
-        <p className="rleExampleIntro">Take the sequence:</p>
-        <div className="rleExampleRow">
-          {EXAMPLE_SEQUENCE.map((v, i) => (
-            <span key={i} className={"encChip" + (v === 0 ? " encChipZero" : "")}>{v}</span>
-          ))}
-        </div>
-        <p className="rleExampleIntro">Count how many times each value repeats in a row:</p>
-        <div className="rleExampleRow">
-          {EXAMPLE_PAIRS.map((p, i) => (
-            <div key={i} className="encPair">
-              <span className="encPairRun">({p.value},</span>
-              <span className="encPairVal">{p.count})</span>
-            </div>
-          ))}
-        </div>
-        <p className="rleExampleNote">
-          Four 1's, then four 0's, then six 1's, then two 0's — giving <b>(1,4) (0,4) (1,6) (0,2)</b>.
-          16 numbers compressed into 4 pairs (8 numbers).
         </p>
       </div>
 

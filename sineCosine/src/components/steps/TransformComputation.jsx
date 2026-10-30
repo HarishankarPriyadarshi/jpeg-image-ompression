@@ -1,519 +1,505 @@
 import "./TransformComputation.css";
 import React, { useState, useEffect, useRef } from "react";
 import { useMatrix } from "../../context/MatrixContext";
+import useNarrow from "../../utils/useNarrow";
+import { generateBasisMatrix, transpose, multiply, extractBlock, N } from "../../utils/transformUtils";
+
+// toFixed that never prints "-0.00" / "-0.0"
+const fx = (x, d) => {
+  const t = Number(x).toFixed(d);
+  return /^-0\.?0*$/.test(t) ? t.slice(1) : t;
+};
+
+const isComplete = (m) => m && m.length === N && m.every((row) => row.every((v) => v !== null));
+
+// Colour for a frequency coefficient: darker = larger magnitude
+// (square-root scaling so the small coefficients are still visible next to a big DC term)
+function heat(value, maxAbs) {
+  const r = maxAbs > 0 ? Math.sqrt(Math.abs(value) / maxAbs) : 0;
+  if (r >= 0.8) return "tcHeat4";
+  if (r >= 0.55) return "tcHeat3";
+  if (r >= 0.35) return "tcHeat2";
+  if (r >= 0.15) return "tcHeat1";
+  return "tcHeat0";
+}
+
+function bandOf(u, v) {
+  const s = u + v;
+  return s <= 3 ? "low" : s <= 7 ? "medium" : "high";
+}
+
+// What kind of coefficient is F(u,v)?  (DC / AC only makes sense for the DCT)
+function coefficientInfo(transform, u, v) {
+  const band = bandOf(u, v);
+  const meaning =
+    band === "low" ? "Describes smooth, slow brightness changes."
+    : band === "medium" ? "Describes texture and moderate detail."
+    : "Describes sharp edges and fine detail.";
+  if (transform === "DCT") {
+    if (u === 0 && v === 0) {
+      return {
+        tag: "DC coefficient",
+        text: "The zero-frequency term: F(0,0) = (sum of all 64 pixels) ÷ 8, i.e. 8 × the block's average brightness.",
+      };
+    }
+    return { tag: `AC coefficient · ${band} frequency`, text: meaning };
+  }
+  if (u === 0 && v === 0) {
+    return {
+      tag: "Lowest-frequency coefficient",
+      text: "The DST has no flat (DC) basis vector, so F(0,0) is simply the slowest-varying sine pattern — not the average brightness.",
+    };
+  }
+  return { tag: `${band[0].toUpperCase() + band.slice(1)} frequency coefficient`, text: meaning };
+}
 
 function TransformComputation() {
+  const { selectedMatrix, selectedBlock, transform, frequencyMatrix, setFrequencyMatrix } = useMatrix();
 
-  const {
-    selectedMatrix,
-    frequencyMatrix,
-    setFrequencyMatrix,
-    transform,
-    selectedBlock
-  } = useMatrix();
+  const [stage, setStage] = useState(isComplete(frequencyMatrix) ? 4 : 0); // 0 idle · 1 C×A · 2 ×Cᵀ · 3 revealing · 4 done
+  const [running, setRunning] = useState(false);
+  const [showEq, setShowEq] = useState(!isComplete(frequencyMatrix)); // matrices fold away once F is ready
+  const [sel, setSel] = useState({ u: 0, v: 0 });
+  const [calcStep, setCalcStep] = useState(99);
+  const narrow = useNarrow(480); // phones show 3-digit basis values so each matrix fits the screen
 
-  const [progress, setProgress] = useState(frequencyMatrix && frequencyMatrix.length ? 100 : 0);
-  const [status, setStatus] = useState(frequencyMatrix && frequencyMatrix.length ? "Completed ✓" : "Waiting");
-  const [step, setStep] = useState(frequencyMatrix && frequencyMatrix.length ? 4 : 0);
-  const [hasRun, setHasRun] = useState(frequencyMatrix && frequencyMatrix.length ? true : false);
-
-  const [selectedCoefficient, setSelectedCoefficient] = useState({ u: 0, v: 0 });
-  const u = selectedCoefficient.u;
-  const v = selectedCoefficient.v;
-
-  const [coeffCalcStep, setCoeffCalcStep] = useState(4);
-
-  const selectedValue = frequencyMatrix.length ? Number(frequencyMatrix[u][v]).toFixed(2) : 0;
-
-  const maxCoefficient = frequencyMatrix.length
-    ? Math.max(...frequencyMatrix.flat().map(v => Math.abs(v)))
-    : 1;
-
-  let maxRow = -1, maxCol = -1;
-  if (frequencyMatrix.length) {
-    frequencyMatrix.forEach((row, ri) => {
-      row.forEach((val, ci) => {
-        if (Math.abs(val) === maxCoefficient) {
-          maxRow = ri;
-          maxCol = ci;
-        }
-      });
-    });
-  }
-
-  const calculateEnergy = () => {
-    if (!frequencyMatrix.length) {
-      return { dc: 0, low: 0, medium: 0, high: 0 };
-    }
-    let dc = 0, low = 0, medium = 0, high = 0, total = 0;
-    frequencyMatrix.forEach((row, u) => {
-      row.forEach((value, v) => {
-        const energyVal = value * value;
-        total += energyVal;
-        if (u === 0 && v === 0) dc += energyVal;
-        else if (u + v <= 3) low += energyVal;
-        else if (u + v <= 7) medium += energyVal;
-        else high += energyVal;
-      });
-    });
-    return {
-      dc: ((dc / total) * 100).toFixed(1),
-      low: ((low / total) * 100).toFixed(1),
-      medium: ((medium / total) * 100).toFixed(1),
-      high: ((high / total) * 100).toFixed(1)
-    };
-  };
-
-  const energy = calculateEnergy();
-
-  const getEnergyLevel = (value) => {
-    const ratio = Math.abs(value) / maxCoefficient;
-    if (ratio >= 0.75) return "energyVeryHigh";
-    if (ratio >= 0.50) return "energyHigh";
-    if (ratio >= 0.25) return "energyMedium";
-    if (ratio >= 0.10) return "energyLow";
-    return "energyVeryLow";
-  };
-
-  if (!selectedMatrix) return null;
-
-  // -------- Select Current 8×8 Block --------
-  let rowStart = 0;
-  let colStart = 0;
-
-  switch (selectedBlock) {
-    case 1: rowStart = 0; colStart = 0; break;
-    case 2: rowStart = 0; colStart = 8; break;
-    case 3: rowStart = 8; colStart = 0; break;
-    case 4: rowStart = 8; colStart = 8; break;
-    default: rowStart = 0; colStart = 0;
-  }
-
-  const imageBlock = selectedMatrix.data
-    .slice(rowStart, rowStart + 8)
-    .map(row => row.slice(colStart, colStart + 8));
-
-  const N = 8;
-
-  const generateBasisMatrix = () => {
-    const matrix = [];
-    for (let u = 0; u < N; u++) {
-      const row = [];
-      for (let x = 0; x < N; x++) {
-        let value;
-        if (transform === "DCT") {
-          const alpha = u === 0 ? Math.sqrt(1 / N) : Math.sqrt(2 / N);
-          value = alpha * Math.cos(((2 * x + 1) * u * Math.PI) / (2 * N));
-        } else {
-          value = Math.sqrt(2 / (N + 1)) * Math.sin(((u + 1) * (x + 1) * Math.PI) / (N + 1));
-        }
-        row.push(Number(value.toFixed(4)));
-      }
-      matrix.push(row);
-    }
-    return matrix;
-  };
-
-  const [basisMatrix, setBasisMatrix] = useState([]);
-
-  useEffect(() => {
-    setBasisMatrix(generateBasisMatrix());
-  }, [transform]);
-
-  const transpose = (matrix) => matrix[0].map((_, col) => matrix.map(row => row[col]));
-
-  const multiply = (A, B) => {
-    const result = [];
-    for (let i = 0; i < A.length; i++) {
-      result[i] = [];
-      for (let j = 0; j < B[0].length; j++) {
-        let sum = 0;
-        for (let k = 0; k < B.length; k++) sum += A[i][k] * B[k][j];
-        result[i][j] = sum;
-      }
-    }
-    return result;
-  };
-
+  const timers = useRef([]);
+  const revealTimer = useRef(null);
+  const finishRef = useRef(null);
+  const playTimer = useRef(null);
   const prevKey = useRef(selectedBlock + "_" + transform);
 
+  const clearTimers = () => {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+    if (revealTimer.current) clearInterval(revealTimer.current);
+    revealTimer.current = null;
+    if (playTimer.current) clearInterval(playTimer.current);
+    playTimer.current = null;
+  };
+
+  // A different block or transform makes the old result invalid.
   useEffect(() => {
     const key = selectedBlock + "_" + transform;
     if (prevKey.current === key) return;
     prevKey.current = key;
+    clearTimers();
     setFrequencyMatrix([]);
-    setProgress(0);
-    setStatus("Waiting");
-    setStep(0);
-    setHasRun(false);
-    setSelectedCoefficient({ u: 0, v: 0 });
+    setStage(0);
+    setRunning(false);
+    setShowEq(true);
+    setSel({ u: 0, v: 0 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedBlock, transform]);
 
-  const performTransform = () => {
-    if (hasRun) return;
-    setHasRun(true);
-    setProgress(0);
-    setStatus("Computing C × A");
-    setStep(1);
+  // Leaving mid-animation: finish the result instantly so nothing is left half-built.
+  useEffect(() => {
+    return () => {
+      const wasRunning = timers.current.length > 0 || revealTimer.current;
+      clearTimers();
+      if (wasRunning && finishRef.current) finishRef.current();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!selectedMatrix) return null;
+
+  if (!transform) {
+    return (
+      <div className="transformContainer tcRoot">
+        <div className="tcHeading"><h2>Transform Computation</h2></div>
+        <div className="tcEmpty">Please choose DCT or DST and generate the basis matrix in Step 3 first.</div>
+      </div>
+    );
+  }
+
+  const sym = transform === "DCT" ? "C" : "S";
+  const T = generateBasisMatrix(transform);
+  const TT = transpose(T);
+  const A = extractBlock(selectedMatrix.data, selectedBlock || 1);
+  const CA = multiply(T, A);
+  const Ffull = multiply(CA, TT).map((row) => row.map((v) => Number(v.toFixed(2))));
+
+  const done = isComplete(frequencyMatrix);
+  const F = frequencyMatrix.length === N ? frequencyMatrix : Array.from({ length: N }, () => Array(N).fill(null));
+
+  const perform = () => {
+    if (running || done) return;
+    clearTimers();
+    setRunning(true);
+    setStage(1);
     setFrequencyMatrix([]);
+    finishRef.current = () => setFrequencyMatrix(Ffull);
 
-    let p = 0;
-    const interval = setInterval(() => {
-      p += 5;
-      setProgress(p);
-
-      if (p === 35) {
-        setStatus("Computing (C × A) × Cᵀ");
-        setStep(2);
-      }
-      if (p === 70) {
-        setStatus("Generating Frequency Matrix");
-        setStep(3);
-      }
-      if (p >= 100) {
-        clearInterval(interval);
-        setProgress(100);
-        setStatus("Completed ✓");
-        setStep(4);
-
-        const T = basisMatrix;
-        const TT = transpose(T);
-        const first = multiply(T, imageBlock);
-        const second = multiply(first, TT).map(row => row.map(value => Number(value.toFixed(2))));
-
-        const revealMatrix = Array.from({ length: 8 }, () => Array(8).fill(null));
-        setFrequencyMatrix(revealMatrix.map(r => [...r]));
-
-        let ru = 0, rx = 0;
-        const revealInterval = setInterval(() => {
-          revealMatrix[ru][rx] = second[ru][rx];
-          setFrequencyMatrix(revealMatrix.map(r => [...r]));
-          rx++;
-          if (rx >= 8) { rx = 0; ru++; }
-          if (ru >= 8) clearInterval(revealInterval);
-        }, 35);
-      }
-    }, 80);
+    timers.current.push(setTimeout(() => setStage(2), 700));
+    timers.current.push(setTimeout(() => setStage(3), 1400));
+    timers.current.push(
+      setTimeout(() => {
+        timers.current = [];
+        const reveal = Array.from({ length: N }, () => Array(N).fill(null));
+        setFrequencyMatrix(reveal.map((r) => [...r]));
+        let i = 0;
+        revealTimer.current = setInterval(() => {
+          reveal[Math.floor(i / N)][i % N] = Ffull[Math.floor(i / N)][i % N];
+          setFrequencyMatrix(reveal.map((r) => [...r]));
+          i++;
+          if (i >= N * N) {
+            clearInterval(revealTimer.current);
+            revealTimer.current = null;
+            finishRef.current = null;
+            setStage(4);
+            setRunning(false);
+            setShowEq(false);
+          }
+        }, 28);
+      }, 2100)
+    );
   };
 
-  const intermediateMatrix = basisMatrix.length && imageBlock.length
-    ? multiply(basisMatrix, imageBlock)
-    : [];
+  // ---------- numbers about the finished matrix ----------
+  const flat = done ? frequencyMatrix.flat() : [];
+  const maxAbs = flat.length ? Math.max(...flat.map((v) => Math.abs(v))) : 0;
+  const nearZero = flat.filter((v) => Math.abs(v) < 1).length;
 
-  const calcTerms = intermediateMatrix.length
-    ? intermediateMatrix[u].map((val, y) => ({
-        a: val,
-        b: basisMatrix[v][y],
-        p: val * basisMatrix[v][y]
-      }))
-    : [];
+  // ---------- energy (share of the sum of squares) ----------
+  let eDc = 0, eLow = 0, eMed = 0, eHigh = 0, eTotal = 0;
+  if (done) {
+    frequencyMatrix.forEach((row, ru) =>
+      row.forEach((val, cv) => {
+        const e = val * val;
+        eTotal += e;
+        if (ru === 0 && cv === 0) eDc += e;
+        else if (ru + cv <= 3) eLow += e;
+        else if (ru + cv <= 7) eMed += e;
+        else eHigh += e;
+      })
+    );
+  }
+  const pct = (x) => (eTotal > 0 ? ((x / eTotal) * 100).toFixed(1) : "0.0");
+  const energy = { dc: pct(eDc), low: pct(eLow), medium: pct(eMed), high: pct(eHigh) };
+  const energyLevel = (val) => {
+    const r = maxAbs > 0 ? Math.abs(val) / maxAbs : 0;
+    if (r >= 0.75) return "energyVeryHigh";
+    if (r >= 0.5) return "energyHigh";
+    if (r >= 0.25) return "energyMedium";
+    if (r >= 0.1) return "energyLow";
+    return "energyVeryLow";
+  };
+  const firstLabel = transform === "DCT" ? "DC" : "F(0,0)";
 
-  const calcSum = calcTerms.reduce((s, t) => s + t.p, 0);
+  // ---------- selected coefficient ----------
+  const { u, v } = sel;
+  const info = coefficientInfo(transform, u, v);
+  const terms = CA[u].map((a, k) => ({ a, b: T[v][k], p: a * T[v][k] }));
+  const total = terms.reduce((s, t) => s + t.p, 0);
 
-  const transposeMatrix = basisMatrix.length
-    ? basisMatrix[0].map((_, col) => basisMatrix.map(row => row[col]))
-    : [];
-
-  const basisSymbol = transform === "DCT" ? "C" : "S";
-  const transposeSymbol = transform === "DCT" ? "Cᵀ" : "Sᵀ";
-
-  // -------- Coefficient calculation timeline (same pattern as Step 3) --------
-  const coeffSteps = () => [
+  const steps = [
+    { label: "Formula", node: <>F({u},{v}) = Σ<sub>k</sub> ({sym}×A)[{u},k] × {sym}[{v},k]</> },
     {
-      label: "Formula",
-      node: <>F(u,v) = Σ (C×A)[u,k] × {basisSymbol}[v,k], for k = 0…7</>
-    },
-    {
-      label: "Selected position",
-      node: <>u = <b>{u}</b>, v = <b>{v}</b></>
-    },
-    {
-      label: "Multiply matching terms",
+      label: "Multiply terms",
       node: (
-        <div className="multiplyRow">
-          {calcTerms.map((t, i) => (
-            <span key={i} className="multiplyChip">
-              {i > 0 && <span className="plusSign">+</span>}
-              ({t.a.toFixed(2)}×{t.b.toFixed(2)})
-            </span>
+        <span className="tcTerms">
+          {terms.map((t, i) => (
+            <span key={i} className="tcTerm">{i > 0 && <i>+</i>}({t.a.toFixed(2)} × {fx(t.b, narrow ? 3 : 4)})</span>
           ))}
-        </div>
-      )
+        </span>
+      ),
     },
-    {
-      label: "Sum all products",
-      node: <>Σ = <b>{calcSum.toFixed(2)}</b></>,
-      isResult: true
-    }
+    { label: "Add them up", node: <>F({u},{v}) = <b>{total.toFixed(2)}</b></>, isResult: true },
   ];
 
-  const coeffTimelineSteps = coeffSteps();
-
-  useEffect(() => {
-    setCoeffCalcStep(coeffTimelineSteps.length);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [u, v, transform, selectedBlock, frequencyMatrix]);
-
-  const playCoeffCalc = () => {
-    setCoeffCalcStep(0);
+  const playCalc = () => {
+    if (playTimer.current) clearInterval(playTimer.current);
+    setCalcStep(0);
     let s = 0;
-    const total = coeffTimelineSteps.length;
-    const interval = setInterval(() => {
+    playTimer.current = setInterval(() => {
       s++;
-      setCoeffCalcStep(s);
-      if (s >= total) clearInterval(interval);
+      setCalcStep(s);
+      if (s >= steps.length) {
+        clearInterval(playTimer.current);
+        playTimer.current = null;
+      }
     }, 700);
   };
 
-  const fastForwardCoeffCalc = () => {
-    setCoeffCalcStep(coeffTimelineSteps.length);
+  const pickCell = (r, c) => {
+    if (!done) return;
+    if (playTimer.current) clearInterval(playTimer.current);
+    setSel({ u: r, v: c });
+    setCalcStep(99);
   };
 
-  return (
-    <div className="transformContainer">
+  const signClass = (x) => (x < 0 ? "tcNeg" : "tcPos");
+  const flow = [
+    { t: sym, on: stage >= 1 },
+    { op: "×" },
+    { t: "A", on: stage >= 1 },
+    { op: "=" },
+    { t: sym + "A", on: stage >= 2 },
+    { op: "×" },
+    { t: sym + "ᵀ", on: stage >= 3 },
+    { op: "=" },
+    { t: "F", on: stage >= 4, result: true },
+  ];
 
-      <div className="transformHeading">
+  return (
+    <div className="transformContainer tcRoot">
+
+      <div className="tcHeading">
         <h2>Transform Computation</h2>
         <p>
-          Apply the selected transform (DCT/DST) on the selected
-          8 × 8 image block to generate frequency coefficients.
-        </p>
-        <div className="formulaDisplay">
-          <h2>{transform === "DCT" ? "F = C × A × Cᵀ" : "F = S × A × Sᵀ"}</h2>
-        </div>
-      </div>
-
-      <div className="transformLayout">
-
-        <div className="matrixCard">
-          <h3>Basis Matrix ({basisSymbol})</h3>
-          <div className="miniMatrix">
-            {basisMatrix.map((row, rowIndex) =>
-              row.map((value, colIndex) => (
-                <span key={rowIndex + "-" + colIndex} title={value}>{value}</span>
-              ))
-            )}
-          </div>
-        </div>
-
-        <div className="operator">×</div>
-
-        <div className="matrixCard">
-          <h3>Selected Block (A)</h3>
-          <div className="miniMatrix">
-            {imageBlock.map((row, rowIndex) =>
-              row.map((value, colIndex) => (
-                <span key={rowIndex + "-" + colIndex}>{value}</span>
-              ))
-            )}
-          </div>
-        </div>
-
-        <div className="operator">×</div>
-
-        <div className="matrixCard">
-          <h3>Transpose Matrix ({transposeSymbol})</h3>
-          <div className="miniMatrix">
-            {transposeMatrix.map((row, rowIndex) =>
-              row.map((value, colIndex) => (
-                <span key={rowIndex + "-" + colIndex} title={value}>{value}</span>
-              ))
-            )}
-          </div>
-        </div>
-
-      </div>
-
-      <div className="matrixAnimationCard">
-        <div className="matrixAnimation">
-          <div className={step >= 1 ? "miniMatrixBox miniActiveMatrix" : "miniMatrixBox"}>{basisSymbol}</div>
-          <div className="matrixOperator">×</div>
-          <div className={step >= 1 ? "miniMatrixBox miniActiveMatrix" : "miniMatrixBox"}>A</div>
-          <div className="matrixOperator">=</div>
-          <div className={step >= 2 ? "miniMatrixBox miniActiveMatrix" : "miniMatrixBox"}>{basisSymbol}A</div>
-          <div className="matrixOperator">×</div>
-          <div className={step >= 3 ? "miniMatrixBox miniActiveMatrix" : "miniMatrixBox"}>{transposeSymbol}</div>
-          <div className="matrixOperator">=</div>
-          <div className={step >= 4 ? "matrixResult activeResult" : "matrixResult"}>F</div>
-        </div>
-      </div>
-
-      <div className="frequencyCard">
-        <h3>Frequency Coefficient Matrix (F)</h3>
-
-        <div className="freqGrid">
-          <div className="freqCorner"></div>
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={"fh" + i} className="freqHeader">v={i}</div>
-          ))}
-
-          {(frequencyMatrix.length > 0 ? frequencyMatrix : Array.from({ length: 8 }, () => Array(8).fill(null))).map((row, rowIndex) => (
-            <React.Fragment key={rowIndex}>
-              <div className="freqHeader">u={rowIndex}</div>
-              {row.map((value, colIndex) => (
-                <span
-                  key={(value === null ? "blank-" : "filled-") + rowIndex + "-" + colIndex}
-                  onClick={() => { if (value !== null) setSelectedCoefficient({ u: rowIndex, v: colIndex }); }}
-                  className={
-                    value === null
-                      ? "frequencyBlankCell"
-                      : `${getEnergyLevel(value)}${rowIndex === maxRow && colIndex === maxCol ? " maxCoefficientCell" : ""}${selectedCoefficient.u === rowIndex && selectedCoefficient.v === colIndex ? " activeCoefficient" : ""}`
-                  }
-                >
-                  {value === null ? "" : Number(value).toFixed(2)}
-                </span>
-              ))}
-            </React.Fragment>
-          ))}
-        </div>
-
-        <button className="transformButton" disabled={hasRun} onClick={performTransform}>
-          Perform Transform
-        </button>
-      </div>
-
-      <div className="coefficientCard">
-        <h3>Selected Frequency Coefficient</h3>
-        <h2>F({selectedCoefficient.u}, {selectedCoefficient.v})</h2>
-        <h1>{frequencyMatrix.length > 0 ? Number(frequencyMatrix[selectedCoefficient.u][selectedCoefficient.v]).toFixed(2) : 0}</h1>
-        <p>
-          {selectedCoefficient.u === 0 && selectedCoefficient.v === 0
-            ? "DC Coefficient (Average intensity of image block)"
-            : "AC Coefficient"}
+          Multiply the basis matrix with the block to get the frequency coefficients:
+          <span className="tcFormulaPill">F = {sym} × A × {sym}ᵀ</span>
         </p>
       </div>
 
-      <div className="calculationPanel">
-        <div className="calcHeaderRow">
-          <h3>Coefficient Calculation</h3>
-          <span className="calcCellBadge">u = {u}, v = {v}</span>
+      {showEq && (
+      <div className="tcEq">
+        <div className="tcMat">
+          <h3>Basis Matrix ({sym})</h3>
+          <div className="tcGrid">
+            {T.flat().map((x, i) => (
+              <span key={i} className={signClass(x)} title={x.toFixed(6)}>{fx(x, narrow ? 3 : 4)}</span>
+            ))}
+          </div>
         </div>
 
-        <div className="playControls">
-          <button className="calcPlayBtn" onClick={playCoeffCalc}>▶ Play</button>
-          <button className="calcPlayBtn calcFastForward" onClick={fastForwardCoeffCalc}>⏩ Show All</button>
+        <div className="tcOp">×</div>
+
+        <div className="tcMat">
+          <h3>Block A ({selectedBlock ? `B${selectedBlock}` : "—"})</h3>
+          <div className="tcGrid">
+            {A.flat().map((x, i) => (
+              <span key={i} className="tcPix" style={{ background: `rgb(${x},${x},${x})`, color: x < 128 ? "#fff" : "#0f172a" }}>{x}</span>
+            ))}
+          </div>
         </div>
 
-        <div className="calcTimeline">
-          {coeffTimelineSteps.slice(0, coeffCalcStep).map((s, i) => (
-            <div key={i} className={s.isResult ? "calcTimelineItem calcResultItem" : "calcTimelineItem"}>
-              <div className="calcStepBadge">{s.isResult ? "✓" : i + 1}</div>
-              <div className="calcStepBody">
-                <div className="calcStepLabel">{s.label}</div>
-                <div className="calcStepExpr">{s.node}</div>
+        <div className="tcOp">×</div>
+
+        <div className="tcMat">
+          <h3>Transpose ({sym}ᵀ)</h3>
+          <div className="tcGrid">
+            {TT.flat().map((x, i) => (
+              <span key={i} className={signClass(x)} title={x.toFixed(6)}>{fx(x, narrow ? 3 : 4)}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+      )}
+
+      <div className="tcFlow">
+        <div className="tcFlowChips">
+          {flow.map((f, i) =>
+            f.op ? (
+              <span key={i} className="tcFlowOp">{f.op}</span>
+            ) : (
+              <span key={i} className={"tcChip" + (f.on ? " tcChipOn" : "") + (f.result && f.on ? " tcChipResult" : "")}>{f.t}</span>
+            )
+          )}
+        </div>
+        <div className="tcFlowBtns">
+          {done && (
+            <button className="tcToggle" onClick={() => setShowEq((x) => !x)}>
+              {showEq ? "Hide matrices ▲" : "Show matrices ▼"}
+            </button>
+          )}
+          <button className="actionBtn tcRunBtn" disabled={running || done} onClick={perform}>
+            {running ? "Computing…" : done ? "Transform Done" : "Perform Transform"}
+          </button>
+        </div>
+      </div>
+
+      <div className="tcResult">
+
+        <div className="tcFreq">
+          <div className="tcFreqHead">
+            <h3>Frequency Coefficients F</h3>
+            {done && (
+              <div className="tcLegend">
+                <span>small</span>
+                <i className="tcHeat0" /><i className="tcHeat1" /><i className="tcHeat2" /><i className="tcHeat3" /><i className="tcHeat4" />
+                <span>large</span>
+              </div>
+            )}
+          </div>
+
+          <div className="tcFreqGrid">
+            <div className="tcCorner">u \ v</div>
+            {Array.from({ length: N }).map((_, i) => (
+              <div key={"h" + i} className="tcHead">v={i}</div>
+            ))}
+            {F.map((row, r) => (
+              <React.Fragment key={r}>
+                <div className="tcHead">u={r}</div>
+                {row.map((val, c) => {
+                  const on = done && sel.u === r && sel.v === c;
+                  return (
+                    <span
+                      key={r + "-" + c}
+                      className={val === null ? "tcBlank" : "tcCoef " + heat(val, maxAbs) + (on ? " tcCoefOn" : "")}
+                      onClick={() => val !== null && pickCell(r, c)}
+                    >
+                      {val === null ? "" : fx(val, 1)}
+                    </span>
+                  );
+                })}
+              </React.Fragment>
+            ))}
+          </div>
+
+          {done ? (
+            <div className="tcStats">
+              <div><b>{frequencyMatrix[0][0].toFixed(1)}</b><span>F(0,0)</span></div>
+              <div><b>{maxAbs.toFixed(1)}</b><span>largest |F|</span></div>
+              <div><b>{nearZero} / 64</b><span>nearly zero (|F| &lt; 1)</span></div>
+            </div>
+          ) : (
+            <div className="tcHint">{running ? "Computing the frequency coefficients…" : "Press “Perform Transform” to compute F."}</div>
+          )}
+        </div>
+
+        <div className="tcDetail">
+          {!done ? (
+            <>
+              <h3>Selected Coefficient</h3>
+              <div className="tcEmpty">After the transform, click any coefficient to see what it means and how it is calculated.</div>
+            </>
+          ) : (
+            <>
+              <div className="tcSelTop">
+                <div className="tcSelName">F({u},{v})</div>
+                <div className="tcSelValue">{frequencyMatrix[u][v].toFixed(2)}</div>
+              </div>
+              <div className="tcSelTag">{info.tag}</div>
+              <p className="tcSelText">{info.text}</p>
+
+              <div className="tcCalcHead">
+                <h4>How it is calculated</h4>
+                <div className="tcPlay">
+                  <button onClick={playCalc}>▶ Play</button>
+                  <button onClick={() => setCalcStep(99)}>Show all</button>
+                </div>
+              </div>
+
+              <div className="tcCalc">
+                {steps.slice(0, calcStep).map((s, i) => (
+                  <div key={i} className={"tcCalcRow" + (s.isResult ? " tcCalcResult" : "")}>
+                    <div className="tcCalcLabel">{s.label}</div>
+                    <div className="tcCalcExpr">{s.node}</div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {done && (
+        <div className="tcExtra">
+
+          <div className="largestCoeffCard">
+            <h3>Largest Frequency Coefficient</h3>
+            <h1>{maxAbs.toFixed(2)}</h1>
+            <p>
+              {transform === "DCT"
+                ? "Usually the DC term (or one next to it) — it holds most of the block's energy."
+                : "Usually one of the lowest-frequency coefficients — it holds most of the block's energy."}
+            </p>
+          </div>
+
+          <div className="dcAcCard">
+            <h3>{transform === "DCT" ? "DC vs AC Components" : "First vs Remaining Coefficients"}</h3>
+            <div className="dcAcGrid">
+              <div>
+                <h4>{transform === "DCT" ? "DC Coefficient" : "F(0,0)"}</h4>
+                <h2>{Number(frequencyMatrix[0][0]).toFixed(2)}</h2>
+                <p className="dcAcNote">
+                  {transform === "DCT" ? "8 × average intensity of the block" : "Lowest-frequency sine pattern (the DST has no DC term)"}
+                </p>
+              </div>
+              <div>
+                <h4>{transform === "DCT" ? "AC Coefficients" : "Other Coefficients"}</h4>
+                <h2>63</h2>
+                <p className="dcAcNote">Remaining frequency values</p>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="largestCoeffCard">
-        <h3>Largest Frequency Coefficient</h3>
-        <h1>{maxCoefficient.toFixed(2)}</h1>
-        <p>Usually located near the DC region and contains maximum image energy.</p>
-      </div>
-
-      <div className="dcAcCard">
-        <h3>DC vs AC Components</h3>
-        <div className="dcAcGrid">
-          <div>
-            <h4>DC Coefficient</h4>
-            <h2>{frequencyMatrix.length ? Number(frequencyMatrix[0][0]).toFixed(2) : "0.00"}</h2>
-            <p className="dcAcNote">Average intensity value</p>
           </div>
-          <div>
-            <h4>AC Coefficients</h4>
-            <h2>63</h2>
-            <p className="dcAcNote">Remaining frequency values</p>
+
+          <div className="compressionInsight">
+            <h3>Compression Insight</h3>
+            <ul>
+              <li>Low-frequency coefficients preserve image quality.</li>
+              <li>High-frequency coefficients carry edge details.</li>
+              <li>JPEG mainly removes high-frequency coefficients.</li>
+              <li>Compression occurs after quantization.</li>
+            </ul>
           </div>
+
+          <div className="energyLegend">
+            <div><span className="legend veryHigh"></span>Very High</div>
+            <div><span className="legend high"></span>High</div>
+            <div><span className="legend medium"></span>Medium</div>
+            <div><span className="legend low"></span>Low</div>
+            <div><span className="legend veryLow"></span>Very Low</div>
+          </div>
+
+          <div className="energyCard">
+            <h3>Frequency Energy Distribution</h3>
+            <div className="energyGrid">
+              {frequencyMatrix.flat().map((value, index) => (
+                <div key={index} className={energyLevel(value)}></div>
+              ))}
+            </div>
+            <p>Brighter cells indicate coefficients carrying higher image energy.</p>
+          </div>
+
+          <div className="energyDistribution">
+            <h3>Energy Compaction</h3>
+            <div className="energyBar">
+              <div className="dcBar" style={{ width: `${energy.dc}%` }}></div>
+              <div className="lowBar" style={{ width: `${energy.low}%` }}></div>
+              <div className="mediumBar" style={{ width: `${energy.medium}%` }}></div>
+              <div className="highBar" style={{ width: `${energy.high}%` }}></div>
+            </div>
+            <div className="energyLabels">
+              <span>{firstLabel}<br /><b>{energy.dc}%</b></span>
+              <span>Low<br /><b>{energy.low}%</b></span>
+              <span>Medium<br /><b>{energy.medium}%</b></span>
+              <span>High<br /><b>{energy.high}%</b></span>
+            </div>
+            <p>Most image energy remains concentrated in the first and low-frequency coefficients after the transform.</p>
+          </div>
+
+          <div className="jpegObservation">
+            <h3>JPEG Observation</h3>
+            <ul>
+              <li>{transform === "DCT" ? "The DC coefficient usually contains the most image energy." : "The lowest-frequency coefficients usually contain the most image energy."}</li>
+              <li>Most image information is concentrated in low frequencies.</li>
+              <li>High-frequency coefficients are usually close to zero.</li>
+              <li>JPEG removes many high-frequency values during quantization.</li>
+            </ul>
+          </div>
+
+          <div className="researchNote">
+            <h3>Research Interpretation</h3>
+            <p>
+              Each frequency coefficient is calculated by multiplying one row of the <b>{transform} Basis Matrix</b> with the selected <b>8 × 8 Image Block</b> and one column of the <b>Transpose Basis Matrix</b>, using double summation.
+            </p>
+            <p>
+              The selected coefficient <b>F({u}, {v})</b> represents the contribution of one particular spatial frequency inside the image block.
+            </p>
+          </div>
+
+          <div className="frequencyTypeCard">
+            <h3>Frequency Band</h3>
+            <p>{bandOf(u, v)[0].toUpperCase() + bandOf(u, v).slice(1)} Frequency</p>
+          </div>
+
+          <div className="coefficientExplanation">{info.text}</div>
+
         </div>
-      </div>
-
-      <div className="compressionInsight">
-        <h3>Compression Insight</h3>
-        <ul>
-          <li>Low-frequency coefficients preserve image quality.</li>
-          <li>High-frequency coefficients carry edge details.</li>
-          <li>JPEG mainly removes high-frequency coefficients.</li>
-          <li>Compression occurs after quantization.</li>
-        </ul>
-      </div>
-
-      <div className="energyLegend">
-        <div><span className="legend veryHigh"></span>Very High</div>
-        <div><span className="legend high"></span>High</div>
-        <div><span className="legend medium"></span>Medium</div>
-        <div><span className="legend low"></span>Low</div>
-        <div><span className="legend veryLow"></span>Very Low</div>
-      </div>
-
-      <div className="energyCard">
-        <h3>Frequency Energy Distribution</h3>
-        <div className="energyGrid">
-          {frequencyMatrix.flat().map((value, index) => (
-            <div key={index} className={getEnergyLevel(value)}></div>
-          ))}
-        </div>
-        <p>Brighter cells indicate coefficients carrying higher image energy.</p>
-      </div>
-
-      <div className="energyDistribution">
-        <h3>Energy Compaction</h3>
-        <div className="energyBar">
-          <div className="dcBar" style={{ width: `${energy.dc}%` }}></div>
-          <div className="lowBar" style={{ width: `${energy.low}%` }}></div>
-          <div className="mediumBar" style={{ width: `${energy.medium}%` }}></div>
-          <div className="highBar" style={{ width: `${energy.high}%` }}></div>
-        </div>
-        <div className="energyLabels">
-          <span>DC<br /><b>{energy.dc}%</b></span>
-          <span>Low<br /><b>{energy.low}%</b></span>
-          <span>Medium<br /><b>{energy.medium}%</b></span>
-          <span>High<br /><b>{energy.high}%</b></span>
-        </div>
-        <p>Most image energy remains concentrated inside the DC and Low-frequency coefficients after transform.</p>
-      </div>
-
-      <div className="jpegObservation">
-        <h3>JPEG Observation</h3>
-        <ul>
-          <li>DC coefficient contains maximum image energy.</li>
-          <li>Most image information is concentrated in low frequencies.</li>
-          <li>High-frequency coefficients are usually close to zero.</li>
-          <li>JPEG removes many high-frequency values during quantization.</li>
-        </ul>
-      </div>
-
-      <div className="researchNote">
-        <h3>Research Interpretation</h3>
-        <p>
-          Each frequency coefficient is calculated by multiplying one row of the <b>{transform} Basis Matrix</b> with the selected <b>8 × 8 Image Block</b> and one column of the <b>Transpose Basis Matrix</b>, using double summation.
-        </p>
-        <p>
-          The selected coefficient <b>F({u}, {v})</b> represents the contribution of one particular spatial frequency inside the image block.
-        </p>
-      </div>
-
-      <div className="frequencyTypeCard">
-        <h3>Frequency Band</h3>
-        <p>
-          {selectedCoefficient.u + selectedCoefficient.v <= 2
-            ? "Low Frequency"
-            : selectedCoefficient.u + selectedCoefficient.v <= 8
-            ? "Medium Frequency"
-            : "High Frequency"}
-        </p>
-      </div>
-
-      <div className="coefficientExplanation">
-        {selectedCoefficient.u === 0 && selectedCoefficient.v === 0
-          ? "The DC coefficient stores the average brightness of the entire image block. It usually contains the largest amount of image energy."
-          : selectedCoefficient.u + selectedCoefficient.v <= 2
-          ? "Low-frequency coefficients describe smooth intensity changes. JPEG preserves these values after quantization."
-          : selectedCoefficient.u + selectedCoefficient.v <= 8
-          ? "Medium-frequency coefficients represent texture and moderate image details."
-          : "High-frequency coefficients represent sharp edges and fine image details. These are usually compressed aggressively."}
-      </div>
+      )}
 
     </div>
   );

@@ -24,6 +24,7 @@ export const baseQuantizationTable = [
 ];
 
 // Generate the orthogonal DCT-II or DST-I basis matrix (N x N).
+// Values keep full precision (so C x C^T = I exactly); round only when displaying.
 export function generateBasisMatrix(transform) {
   const matrix = [];
   for (let u = 0; u < N; u++) {
@@ -36,7 +37,7 @@ export function generateBasisMatrix(transform) {
       } else {
         value = Math.sqrt(2 / (N + 1)) * Math.sin(((u + 1) * (x + 1) * Math.PI) / (N + 1));
       }
-      row.push(Number(value.toFixed(4)));
+      row.push(value);
     }
     matrix.push(row);
   }

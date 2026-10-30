@@ -1727,3 +1727,505 @@ cursor:not-allowed;
 .miniFormulaText{
 font-size:16px;
 }
+/* =====================================================================
+   Step 3 (Basis Matrix) — compact redesign
+   ===================================================================== */
+
+.bmContainer{
+  gap:14px;
+}
+
+.bmHeading h2{
+  font-size:30px;
+  margin-bottom:4px;
+}
+
+.bmHeading p{
+  max-width:none;
+  font-size:16px;
+  line-height:1.4;
+  margin:0 auto;
+}
+
+/* ---- top row: transform chooser + formula ---- */
+.bmTop{
+  display:flex;
+  gap:18px;
+  align-items:stretch;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+.bmCard{
+  background:#fff;
+  padding:12px 20px 14px;
+  border-radius:16px;
+  box-shadow:0 6px 16px rgba(0,0,0,.08);
+  text-align:center;
+}
+
+.bmCard h3{
+  margin:0 0 8px;
+  font-size:15px;
+  color:#123b8d;
+}
+
+.bmTransformCard{
+  flex:0 0 300px;
+}
+
+.bmTransformName{
+  margin-top:9px;
+  font-size:13.5px;
+  font-weight:600;
+  color:#475569;
+}
+
+.bmFormulaCard{
+  flex:1 1 560px;
+  max-width:860px;
+}
+
+.bmFormulaCard .miniFormulaText{
+  margin:0;
+  min-height:70px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-family:"Cambria Math",Cambria,serif;
+}
+
+.bmHint{
+  font-family:Arial,sans-serif;
+  font-size:15px;
+  font-weight:600;
+  color:#94a3b8;
+}
+
+.bmFormulaNote{
+  margin-top:6px;
+  font-family:Arial,sans-serif;
+  font-size:13px;
+  font-weight:500;
+  color:#64748b;
+  line-height:1.4;
+}
+
+/* formula typography */
+.fx{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:21px;
+  font-weight:600;
+  color:#0f2a6b;
+  white-space:nowrap;
+}
+
+.fxParen{
+  display:inline-flex;
+  align-items:center;
+}
+
+.fxBr{
+  font-size:40px;
+  font-weight:200;
+  line-height:1;
+  color:#0f2a6b;
+  transform:scaleY(1.25);
+}
+
+.fx .inlineFracNum,
+.fx .inlineFracDen{
+  font-size:16px;
+  line-height:1.35;
+  padding:0 4px;
+}
+
+.fx .inlineFracLine{
+  height:1.5px;
+  background:#0f2a6b;
+}
+
+.calcStepExpr .fx{
+  font-size:15px;
+  gap:4px;
+}
+.calcStepExpr .fxBr{
+  font-size:28px;
+}
+.calcStepExpr .fx .inlineFracNum,
+.calcStepExpr .fx .inlineFracDen{
+  font-size:12px;
+}
+
+/* ---- middle row: block + matrix ---- */
+.bmMain{
+  margin-top:0;
+  gap:18px;
+  align-items:stretch;
+  flex-wrap:nowrap;
+}
+
+.bmMain .basisCard{
+  padding:14px 18px 16px;
+  border-radius:16px;
+}
+
+.bmMain .basisCard h3{
+  margin:0 0 10px;
+  font-size:16px;
+}
+
+.bmBlockCard{
+  flex:0 0 310px;
+  max-width:310px;
+}
+
+.bmBlockCard .basisBlockPreview{
+  gap:2px;
+  max-width:none;
+}
+
+.bmBlockCard .basisBlockPixel{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:700;
+  border-radius:2px;
+  border:none;
+}
+
+.bmBlockNote{
+  margin:10px 0 0;
+  font-size:13px;
+  color:#64748b;
+  font-weight:600;
+}
+
+.bmMatrixCard{
+  flex:1 1 0;
+  max-width:860px;
+}
+
+.bmCardHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+
+.bmCardHead h3{
+  margin:0 !important;
+}
+
+.bmCardHead .generateButton{
+  width:auto;
+  margin:0;
+  padding:9px 22px;
+  font-size:14px;
+}
+
+.bmCardHead .generateButton.bmDone,
+.bmCardHead .generateButton.bmDone:disabled{
+  background:#16a34a;
+  animation:none;
+  opacity:1;
+  box-shadow:none;
+}
+
+.bmMatrixCard .basisGrid{
+  grid-template-columns:52px repeat(8,minmax(0,1fr));
+}
+
+.bmMatrixCard .basisGrid span{
+  aspect-ratio:auto;
+  height:34px;
+  font-size:clamp(11px,1.15vw,14px);
+  letter-spacing:0;
+}
+
+.bmMatrixCard .matrixHeader,
+.bmMatrixCard .matrixCorner{
+  min-height:34px;
+  height:34px;
+  font-size:13px;
+}
+
+.bmMatrixCard .matrixCorner{
+  font-size:11px;
+  color:#64748b;
+}
+
+.bmMatrixCard .hdrClick{
+  cursor:pointer;
+  transition:background .15s;
+}
+.bmMatrixCard .hdrClick:hover{
+  background:#d4e3ff;
+}
+.bmMatrixCard .hdrSel{
+  background:#2563eb !important;
+  color:#fff;
+}
+
+.bmMatrixCard .basisGrid span.rowSel{
+  background:#eaf2ff;
+}
+
+.bmMatrixCard .activeVector{
+  transform:none;
+  box-shadow:inset 0 0 0 2px #1d4ed8;
+}
+
+.bmOrtho{
+  margin-top:10px;
+  padding:8px 12px;
+  text-align:left;
+  font-size:13px;
+  line-height:1.45;
+  font-weight:600;
+  color:#166534;
+  background:#f0fdf4;
+  border:1px solid #bbf7d0;
+  border-radius:10px;
+}
+.bmOrtho span{
+  font-weight:500;
+  color:#64748b;
+}
+.bmOrthoWait{
+  color:#64748b;
+  background:#f8fafc;
+  border-color:#e2e8f0;
+  text-align:center;
+}
+
+/* ---- bottom row: calculation + wave ---- */
+.bmBottom{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  align-items:stretch;
+}
+
+.bmCalc,
+.bmWave{
+  padding:14px 20px 16px;
+  border-radius:16px;
+  min-height:300px;
+}
+
+.bmWave h3,
+.bmCalc h3{
+  margin:0;
+  font-size:16px;
+  color:#123b8d;
+  text-align:center;
+}
+
+.bmEmpty{
+  margin-top:14px;
+  padding:60px 24px;
+  text-align:center;
+  font-size:15px;
+  font-weight:600;
+  color:#7c8aa5;
+  line-height:1.5;
+  background:#f8fbff;
+  border:2px dashed #c7d7ff;
+  border-radius:14px;
+}
+
+.bmCalc .calcTimeline{
+  margin-top:12px;
+}
+.bmCalc .calcTimelineItem{
+  padding-bottom:12px;
+}
+
+/* graph */
+.bmWave .waveSvg{
+  max-width:none;
+  margin-top:6px;
+}
+
+.bmWave .gridLine{
+  stroke:#e2e8f0;
+  stroke-width:1;
+  stroke-dasharray:4 4;
+}
+.bmWave .waveCurve{
+  stroke:#93c5fd;
+  stroke-width:2.5;
+  stroke-dasharray:6 4;
+}
+.bmWave .waveStem{
+  stroke:#2563eb;
+  stroke-width:2.5;
+}
+.bmWave .waveStemOn{
+  stroke:#f97316;
+  stroke-width:3.5;
+}
+.bmWave .wavePoint{
+  fill:#2563eb;
+}
+.bmWave .wavePointOn{
+  fill:#f97316;
+  stroke:#fff;
+  stroke-width:2;
+}
+.bmWave .waveTick{
+  font-size:11px;
+  fill:#64748b;
+  font-weight:600;
+}
+.bmWave .waveValue{
+  font-size:13px;
+  font-weight:800;
+  fill:#c2410c;
+}
+.bmWave .waveAxisTitle{
+  font-size:12px;
+  font-weight:600;
+  fill:#64748b;
+}
+.bmWave .waveDescription{
+  margin-top:8px;
+  padding:10px 14px;
+  font-size:14px;
+  line-height:1.5;
+}
+
+@media(max-width:1150px){
+  .bmMain{
+    flex-wrap:wrap;
+  }
+  .bmBlockCard,
+  .bmMatrixCard{
+    flex:1 1 100%;
+    max-width:100%;
+  }
+  .bmBottom{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:768px){
+  .bmHeading h2{font-size:22px;}
+  .bmHeading p{font-size:13px;}
+  .bmTransformCard,
+  .bmFormulaCard{flex:1 1 100%;}
+  .fx{font-size:15px;flex-wrap:wrap;white-space:normal;justify-content:center;}
+  .bmCardHead{flex-wrap:wrap;justify-content:center;}
+  .bmMatrixCard .basisGrid{grid-template-columns:34px repeat(8,minmax(0,1fr));}
+  .bmMatrixCard .basisGrid span{font-size:clamp(7px,2.2vw,10px);height:26px;}
+}
+
+
+/* ---- compaction pass ---- */
+.bmContainer{gap:12px;}
+.bmHeading h2{font-size:28px;}
+.bmHeading p{font-size:15px;}
+.bmCard{padding:10px 18px 12px;}
+.bmFormulaCard .miniFormulaText{min-height:56px;}
+
+.bmMain{align-items:flex-start;}
+.bmBlockCard{align-self:flex-start;}
+
+.bmMatrixCard .basisGrid span{height:30px;}
+.bmMatrixCard .matrixHeader,
+.bmMatrixCard .matrixCorner{min-height:30px;height:30px;}
+
+.bmOrtho{margin-top:8px;padding:6px 12px;font-size:12.5px;}
+
+.bmCalc,
+.bmWave{min-height:0;padding:12px 18px 14px;}
+.bmBottom{align-items:start;}
+
+.bmEmpty{padding:44px 24px;margin-top:10px;}
+
+/* each calculation step on a single compact row: label | expression */
+.bmCalc .calcTimeline{margin-top:8px;}
+.bmCalc .calcTimelineItem{padding-bottom:7px;}
+.bmCalc .calcTimelineItem:not(:last-child)::before{bottom:-2px;}
+.bmCalc .calcStepBody{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding-top:0;
+}
+.bmCalc .calcStepLabel{
+  flex:0 0 150px;
+  margin:0;
+}
+.bmCalc .calcStepExpr{
+  flex:1;
+  min-width:0;
+}
+.bmCalc .playControls{margin-top:8px;}
+
+.bmWave .waveSvg{max-height:285px;}
+
+
+/* ---- simple look: no green / ticks, enabled generate button, popup ---- */
+.bmOrtho{
+  color:#0d2c72;
+  background:#f1f5f9;
+  border:1px solid #dbe3ef;
+}
+.bmPopupBack{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.45);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:2000;
+}
+.bmPopup{
+  background:#fff;
+  border-radius:14px;
+  padding:24px 30px 22px;
+  width:min(360px,90vw);
+  text-align:center;
+  box-shadow:0 20px 50px rgba(15,23,42,.3);
+}
+.bmPopup h3{
+  margin:0 0 8px;
+  font-size:20px;
+  color:#0d2c72;
+}
+.bmPopup p{
+  margin:0 0 18px;
+  font-size:15px;
+  line-height:1.5;
+  color:#475569;
+}
+.bmPopup button{
+  padding:9px 34px;
+  border:none;
+  border-radius:8px;
+  background:#0d2c72;
+  color:#fff;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+}
+.bmPopup button:hover{background:#1e40af;}
+
+.bmCardHead .actionBtn{min-width:0;padding:10px 24px;}
+
+/* ---- mobile: keep the 4-digit values readable (grid scrolls sideways) ---- */
+@media (max-width:768px){
+  .bmMatrixCard{padding-left:8px;padding-right:8px;}
+  .bmMatrixCard .basisGrid{grid-template-columns:34px repeat(8,minmax(0,1fr));gap:1px;}
+  .bmMatrixCard .basisGrid span{font-size:10.5px;letter-spacing:-.3px;padding:0;}
+  .bmMatrixCard .basisGrid .matrixHeader,
+  .bmMatrixCard .basisGrid .matrixCorner{font-size:10px;padding:0;}
+  .bmCardHead{flex-wrap:wrap;justify-content:center;}
+}

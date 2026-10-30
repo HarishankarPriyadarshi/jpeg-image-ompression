@@ -70,7 +70,7 @@
 .zzGridWrap{
   position:relative;
   width:100%;
-  max-width:560px;
+  max-width:min(400px,46vh);
   aspect-ratio:1;
   margin:auto;
   container-type:inline-size;
@@ -279,3 +279,13 @@ word-break:break-all;
 .zzTok{color:#7dd3fc;}
 .zzTokZero{color:#64748b;}
 .zzTokPending{color:#f59e0b;}
+
+/* compact: the whole card (matrix + button) must fit on one screen */
+.zzContainer{gap:18px;}
+.zzGridCard,
+.zz1dCard{padding:16px 22px;}
+.zzGridCard h3,
+.zz1dCard h3{margin-bottom:10px;}
+.zzGridCard .zzButton{margin-top:12px;}
+.zzHeading{padding-bottom:12px;}
+.zzHeading h2{margin-bottom:6px;}

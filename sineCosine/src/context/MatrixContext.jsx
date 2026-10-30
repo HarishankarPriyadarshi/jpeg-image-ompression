@@ -5,9 +5,9 @@ const MatrixContext = createContext();
 export const MatrixProvider = ({ children }) => {
 
   // Selected Input Matrix (Step 1)
-  const [selectedMatrix, setSelectedMatrix] = useState(null);
+  const [selectedMatrix, setSelectedMatrixRaw] = useState(null);
 
-  // Step 5 Output (Frequency Matrix of the selected 8x8 block)
+  // Step 4 Output (Frequency Matrix of the selected 8x8 block)
   const [frequencyMatrix, setFrequencyMatrix] = useState([]);
 
   // Selected Processing Block (1-4)
@@ -24,22 +24,55 @@ export const MatrixProvider = ({ children }) => {
   const [popupMessage, setPopupMessage] = useState("");
 
   // Selected Transform (used by Step 3 onward)
-  const [transform, setTransform] = useState(null);
+  const [transform, setTransformRaw] = useState(null);
 
-  // Step 6 : Quantization
+  // Step 5 : Quantization
   const [qualityFactor, setQualityFactor] = useState(50);
   const [quantTable, setQuantTable] = useState([]);           // T(u,v) scaled table actually used
   const [quantizedMatrix, setQuantizedMatrix] = useState([]); // Q(u,v)
 
-  // Step 7 : Zig-Zag Scan
+  // Step 6 : Zig-Zag Scan
   const [zigzagArray, setZigzagArray] = useState([]);
 
-  // Step 8 : Encoding (Run Length Encoding)
+  // Step 7 : Encoding (Run Length Encoding)
   const [encodedRuns, setEncodedRuns] = useState(null);
 
-  // Step 9 : Inverse Transform / Reconstruction
+  // Step 8 : Reconstruction (Comparison) / Reconstruction
   const [dequantizedMatrix, setDequantizedMatrix] = useState([]);
   const [reconstructedBlock, setReconstructedBlock] = useState([]);
+
+  // Switching DCT <-> DST invalidates the basis matrix and everything computed
+  // from it (frequency matrix, quantization, zig-zag, encoding).
+  const setTransform = (t) => {
+    if (t === transform) return;
+    setTransformRaw(t);
+    setBasisMatrix([]);
+    setBasisGenerated(false);
+    setFrequencyMatrix([]);
+    setQuantTable([]);
+    setQuantizedMatrix([]);
+    setZigzagArray([]);
+    setEncodedRuns(null);
+    setDequantizedMatrix([]);
+    setReconstructedBlock([]);
+  };
+
+  // Choosing a DIFFERENT image invalidates everything computed from the old
+  // one (block, transform output, quantization, zig-zag, encoding, ...), so
+  // reset all of it. Re-selecting the same image keeps the current progress.
+  const setSelectedMatrix = (matrix) => {
+    if (matrix === selectedMatrix) return;
+    setSelectedMatrixRaw(matrix);
+    setSelectedBlock(null);
+    setBlockCreated(false);
+    setFrequencyMatrix([]);
+    setQuantTable([]);
+    setQuantizedMatrix([]);
+    setZigzagArray([]);
+    setEncodedRuns(null);
+    setDequantizedMatrix([]);
+    setReconstructedBlock([]);
+  };
 
   return (
     <MatrixContext.Provider
