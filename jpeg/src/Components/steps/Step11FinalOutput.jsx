@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 
 function createFallback8x8Block() {
   return Array.from({ length: 8 }, () => Array.from({ length: 8 }, () => 0));
@@ -100,29 +100,15 @@ function GrayBlockGrid({ values, title, selectedIndex, onCellClick, errorFlat, s
 
 function Step11FinalOutput({
   huffmanData,
-  rleData,
-  dcCodingData,
   quantizationData,
   originalBlockData,
   isGenerated,
   setIsGenerated,
+  selectedCellIndex = 0,
+  setSelectedCellIndex = () => {},
+  showHeatmap = false,
+  setShowHeatmap = () => {},
 }) {
-
-  const componentName =
-    huffmanData?.component ||
-    rleData?.component ||
-    dcCodingData?.component ||
-    quantizationData?.component ||
-    "Y";
-
-  const blockIndex =
-    typeof huffmanData?.blockIndex === "number"
-      ? huffmanData.blockIndex
-      : typeof quantizationData?.blockIndex === "number"
-      ? quantizationData.blockIndex
-      : 0;
-
-  const blockNumber = blockIndex + 1;
 
   const finalBitstream = huffmanData?.finalBitstream || "";
 
@@ -166,8 +152,6 @@ function Step11FinalOutput({
     return (total / 64).toFixed(2);
   }, [errorFlat]);
 
-  const [selectedCellIndex, setSelectedCellIndex] = useState(0);
-  const [showHeatmap, setShowHeatmap] = useState(false);
 
   const selectedRow = Math.floor(selectedCellIndex / 8);
   const selectedCol = selectedCellIndex % 8;
@@ -192,16 +176,6 @@ function Step11FinalOutput({
 
   return (
     <div className="step11SimplePage">
-      <div className="step11InfoStrip">
-        <span>
-          Selected Block: <strong>{componentName} Block B{blockNumber}</strong>
-        </span>
-        <span className="step11InfoStripNote">
-          This is the same block you selected all the way back in Step 1 — see
-          exactly what compression did to it below.
-        </span>
-      </div>
-
       <div className="step11ControlBar">
         <button type="button" onClick={generateFinalOutput}>
           Generate Final Compressed Output
@@ -233,12 +207,6 @@ function Step11FinalOutput({
               <span><i className="step11AcSwatch" />AC bits ({finalBitstream.length - dcCode.length})</span>
             </div>
           )}
-
-          <p className="step11SmallNote">
-            {isGenerated
-              ? `${finalBitstream.length} bits generated for this block.`
-              : "Click Generate Final Output to reveal the compressed bitstream."}
-          </p>
         </div>
 
         <div className="step11StatsCard">
@@ -258,16 +226,12 @@ function Step11FinalOutput({
             <span>Compression Ratio</span>
             <strong>{isGenerated ? `${compressionRatio} : 1` : "—"}</strong>
           </div>
-
-          <p className="step11SmallNote">
-            Compression Ratio = Original Bits ÷ Compressed Bits
-          </p>
         </div>
       </div>
 
       <div className="step11ReconstructCard">
         <div className="step11ReconstructHeader">
-          <h3>What Changed — Step 1&apos;s Block, Before vs After Compression</h3>
+          <h3>What Changed — Your Selected Block, Before vs After Compression</h3>
 
           <label className="step11HeatmapToggle">
             <input
@@ -280,10 +244,7 @@ function Step11FinalOutput({
         </div>
 
         <p className="step11SmallNote">
-          Click any pixel to compare it on both sides. The quantized matrix
-          from Step 7 is <b>dequantized</b>, passed through the{" "}
-          <b>Inverse DCT</b>, then shifted back by <b>+128</b> — compared
-          against the original 8×8 block you selected in Step 1.
+          Click any pixel to compare it on both sides.
         </p>
 
         <div className="step11ReconstructRow">

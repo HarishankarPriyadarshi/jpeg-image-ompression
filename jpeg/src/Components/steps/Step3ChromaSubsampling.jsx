@@ -112,12 +112,20 @@ function SourceMatrixGrid({
         const isInSelectedGroup = selectedGroupSourceIndexes.includes(index);
         const componentClass =
           activeComponent === "Cb" ? "step3CbCell" : "step3CrCell";
+        const row = Math.floor(index / matrixSize);
+        const col = index % matrixSize;
+        // Outer edge is drawn by the grid border only (avoids a double line)
+        const edgeClass = `${col === 0 ? "step3EdgeLeft" : ""} ${
+          col === matrixSize - 1 ? "step3EdgeRight" : ""
+        } ${row === 0 ? "step3EdgeTop" : ""} ${
+          row === matrixSize - 1 ? "step3EdgeBottom" : ""
+        }`;
 
         return (
           <button
             key={`${activeComponent}-source-${index}`}
             type="button"
-            className={`step3SourceCell ${componentClass} ${
+            className={`step3SourceCell ${componentClass} ${edgeClass} ${
               isInSelectedGroup ? "step3SelectedGroupSourceCell" : ""
             } ${isSelectedPixel ? "step3SelectedSourcePixel" : ""}`}
             onClick={() => onCellClick(index)}
@@ -168,7 +176,6 @@ function DownsampledMatrixGrid({
 }
 
 function Step3ChromaSubsampling({
-  yMatrix,
   cbMatrix,
   crMatrix,
   selectedPixelIndex,
@@ -180,7 +187,6 @@ function Step3ChromaSubsampling({
   const [isAutoSubsampling, setIsAutoSubsampling] = useState(false);
   const [showFormula, setShowFormula] = useState(false);
 
-  const normalizedY = useMemo(() => normalizeMatrix(yMatrix), [yMatrix]);
   const normalizedCb = useMemo(() => normalizeMatrix(cbMatrix), [cbMatrix]);
   const normalizedCr = useMemo(() => normalizeMatrix(crMatrix), [crMatrix]);
 
@@ -258,10 +264,6 @@ function Step3ChromaSubsampling({
     activeComponent === "Cb" ? selectedCbAverage : selectedCrAverage;
 
   const totalGroups = outputRows * outputCols;
-  const revealedCount = safeRevealedGroupIndexes.length;
-  const progressPercent = totalGroups
-    ? Math.round((revealedCount / totalGroups) * 100)
-    : 0;
 
   function revealSelectedGroup() {
     if (typeof setRevealedGroupIndexes !== "function") return;
@@ -336,89 +338,6 @@ function Step3ChromaSubsampling({
 
   return (
     <div className="step3SimplePage">
-      <div className="step3ConceptBox">
-        <strong>Step 3 Concept:</strong> Human vision is more sensitive to
-        brightness than color, so JPEG keeps <b>Y</b> unchanged at{" "}
-        {normalizedY.length}×{normalizedY[0]?.length} and reduces{" "}
-        <b>Cb</b>/<b>Cr</b> from {sourceSize}×{sourceCols} to {outputRows}×
-        {outputCols} by averaging every 2×2 chroma group into one value.
-      </div>
-
-      <div className="step3SummaryGrid">
-        <div>
-          <span>Y Matrix</span>
-          <strong>
-            {normalizedY.length}×{normalizedY[0]?.length}
-          </strong>
-          <small>Unchanged luminance</small>
-        </div>
-
-        <div>
-          <span>Cb Matrix</span>
-          <strong>
-            {normalizedCb.length}×{normalizedCb[0]?.length} →{" "}
-            {downsampledCbMatrix.length}×{downsampledCbMatrix[0]?.length}
-          </strong>
-          <small>Blue chroma reduced</small>
-        </div>
-
-        <div>
-          <span>Cr Matrix</span>
-          <strong>
-            {normalizedCr.length}×{normalizedCr[0]?.length} →{" "}
-            {downsampledCrMatrix.length}×{downsampledCrMatrix[0]?.length}
-          </strong>
-          <small>Red chroma reduced</small>
-        </div>
-      </div>
-
-      <div className="step3ControlBar">
-        <button
-          type="button"
-          onClick={autoSubsampleFullMatrix}
-          disabled={isAutoSubsampling}
-        >
-          {isAutoSubsampling ? "Downsampling..." : "Run 2×2 Chroma Downsampling"}
-        </button>
-      </div>
-
-      <div className="step3ProgressBox">
-        <div className="step3ProgressTop">
-          <span>
-            Revealed Groups: {revealedCount} / {totalGroups}
-          </span>
-
-          <strong>{progressPercent}%</strong>
-        </div>
-
-        <div className="step3ProgressTrack">
-          <div
-            className="step3ProgressFill"
-            style={{
-              width: `${progressPercent}%`,
-            }}
-          />
-        </div>
-      </div>
-
-      <div className="step3Tabs">
-        <button
-          type="button"
-          className={activeComponent === "Cb" ? "step3ActiveTab" : ""}
-          onClick={() => setActiveComponent("Cb")}
-        >
-          Cb Downsampling
-        </button>
-
-        <button
-          type="button"
-          className={activeComponent === "Cr" ? "step3ActiveTab" : ""}
-          onClick={() => setActiveComponent("Cr")}
-        >
-          Cr Downsampling
-        </button>
-      </div>
-
       <div className="step3MainGrid">
         <div className="step3Card">
           <h3>Input: {activeComponent} Matrix from Step 2</h3>
@@ -435,6 +354,7 @@ function Step3ChromaSubsampling({
             Click any chroma value. The highlighted 2×2 group is averaged into
             one output value.
           </p>
+
         </div>
 
         <div className="step3CalculationCard">
@@ -497,6 +417,36 @@ function Step3ChromaSubsampling({
             Unrevealed output cells stay hidden as “—”. Auto Downsample reveals
             values group by group.
           </p>
+        </div>
+
+        <div className="step3Controls">
+          <div className="step3ControlBar">
+            <button
+              type="button"
+              onClick={autoSubsampleFullMatrix}
+              disabled={isAutoSubsampling}
+            >
+              {isAutoSubsampling ? "Downsampling..." : "Run 2×2 Chroma Downsampling"}
+            </button>
+          </div>
+
+          <div className="step3Tabs">
+            <button
+              type="button"
+              className={activeComponent === "Cb" ? "step3ActiveTab" : ""}
+              onClick={() => setActiveComponent("Cb")}
+            >
+              Cb Downsampling
+            </button>
+
+            <button
+              type="button"
+              className={activeComponent === "Cr" ? "step3ActiveTab" : ""}
+              onClick={() => setActiveComponent("Cr")}
+            >
+              Cr Downsampling
+            </button>
+          </div>
         </div>
       </div>
     </div>

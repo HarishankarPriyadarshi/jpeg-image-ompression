@@ -134,9 +134,6 @@ function Step5LevelShifting({
   const absoluteRow = startRow + row;
   const absoluteCol = startCol + col;
 
-  const shiftedCount = revealedIndexes.length;
-  const progressPercent = Math.round((shiftedCount / 64) * 100);
-
   useEffect(() => {
     if (typeof onLevelShiftChange === "function") {
       onLevelShiftChange({
@@ -228,33 +225,6 @@ function Step5LevelShifting({
         </div>
       </div>
 
-      <div className="step5ControlBar">
-        <button
-          type="button"
-          onClick={autoShiftFullBlock}
-          disabled={isAutoShifting}
-        >
-          {isAutoShifting ? "Shifting..." : "Run Level Shift (Subtract 128)"}
-        </button>
-      </div>
-
-      <div className="step5ProgressBox">
-        <div className="step5ProgressTop">
-          <span>
-            Shifted Cells: {shiftedCount} / 64
-          </span>
-
-          <strong>{progressPercent}%</strong>
-        </div>
-
-        <div className="step5ProgressTrack">
-          <div
-            className="step5ProgressFill"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-      </div>
-
       <div className="step5MainGrid">
         <div className="step5Card">
           <h3>
@@ -341,6 +311,18 @@ function Step5LevelShifting({
             Output values appear after subtracting 128. This block is passed to
             Step 6 for 2D DCT.
           </p>
+        </div>
+
+        <div className="step5Controls">
+      <div className="step5ControlBar">
+        <button
+          type="button"
+          onClick={autoShiftFullBlock}
+          disabled={isAutoShifting}
+        >
+          {isAutoShifting ? "Shifting..." : "Run Level Shift (Subtract 128)"}
+        </button>
+      </div>
         </div>
       </div>
 

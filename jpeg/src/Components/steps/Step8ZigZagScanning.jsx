@@ -96,6 +96,13 @@ function Step8ZigZagScanning({
     };
   }, []);
 
+  // Yellow dot sits in the top-left corner of the current cell so it never hides the value or the #order label.
+  const cellPitch = cellLayout
+    ? Math.abs(cellLayout.centers[1][0] - cellLayout.centers[0][0]) || 50
+    : 50;
+  const dotOffset = cellPitch * 0.33;
+  const dotRadius = Math.min(6, Math.max(3.5, cellPitch * 0.11));
+
   function cellCenter(row, col) {
     if (cellLayout) return cellLayout.centers[row * 8 + col];
     return [col * 50 + 25, row * 50 + 25];
@@ -121,10 +128,7 @@ function Step8ZigZagScanning({
       ? quantizationData.blockIndex
       : 0;
 
-  const blockNumber = blockIndex + 1;
-
   const scannedCount = scannedIndexes.length;
-  const progressPercent = Math.round((scannedCount / 64) * 100);
   const currentCell = ZIG_ZAG_ORDER[scanIndex] || [0, 0];
   const cellFlatIndex = currentCell[0] * 8 + currentCell[1];
 
@@ -199,52 +203,6 @@ function Step8ZigZagScanning({
   return (
     <div className="step8SimplePage">
 
-      <div className="step8SummaryGrid">
-        <div>
-          <span>Input From Step 7</span>
-          <strong>
-            {componentName} Block B{blockNumber}
-          </strong>
-          <small>Quantized 8×8 coefficient matrix</small>
-        </div>
-
-        <div>
-          <span>Operation</span>
-          <strong>Zig-Zag Traversal</strong>
-          <small>Low frequency → high frequency order</small>
-        </div>
-
-        <div>
-          <span>Output To Step 9</span>
-          <strong>63 AC Values</strong>
-          <small>DC value already handled automatically</small>
-        </div>
-      </div>
-
-      <div className="step8ControlBar">
-        <button
-          type="button"
-          onClick={autoZigZagScan}
-          disabled={isAutoScanning}
-        >
-          {isAutoScanning ? "Scanning..." : "Run Zig-Zag Scan"}
-        </button>
-      </div>
-
-      <div className="step8ProgressBox">
-        <div className="step8ProgressTop">
-          <span>Scanned Positions: {scannedCount} / 64</span>
-          <strong>{progressPercent}%</strong>
-        </div>
-
-        <div className="step8ProgressTrack">
-          <div
-            className="step8ProgressFill"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-      </div>
-
       <div className="step8MainGrid">
         <div className="step8Card">
           <h3>Input: Quantized 8×8 Matrix With Zig-Zag Path</h3>
@@ -275,9 +233,9 @@ function Step8ZigZagScanning({
 
               <circle
                 className="step8PathDot"
-                cx={cellCenter(currentCell[0], currentCell[1])[0]}
-                cy={cellCenter(currentCell[0], currentCell[1])[1]}
-                r="7"
+                cx={cellCenter(currentCell[0], currentCell[1])[0] - dotOffset}
+                cy={cellCenter(currentCell[0], currentCell[1])[1] - dotOffset}
+                r={dotRadius}
               />
             </svg>
 
@@ -383,6 +341,17 @@ function Step8ZigZagScanning({
               <small>Sent forward as a string to Run-Length Encoding in Step 9</small>
             </div>
           </div>
+        </div>
+
+
+        <div className="step8ControlBar">
+          <button
+            type="button"
+            onClick={autoZigZagScan}
+            disabled={isAutoScanning}
+          >
+            {isAutoScanning ? "Scanning..." : "Run Zig-Zag Scan"}
+          </button>
         </div>
       </div>
 

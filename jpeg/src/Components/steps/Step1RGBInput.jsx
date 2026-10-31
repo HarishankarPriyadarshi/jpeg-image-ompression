@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 function getPreviewTiles(type) {
   const palettes = {
     bright: ["#fff9e8", "#ffefc2", "#ffe28a", "#ffe9b3", "#fff3d1", "#ffdb70", "#fff6de", "#ffe6a3", "#ffd766"],
@@ -87,8 +85,9 @@ function Step1RGBInput({
   redMatrix,
   greenMatrix,
   blueMatrix,
+  showChannels,
+  setShowChannels,
 }) {
-  const [showChannels, setShowChannels] = useState(false);
 
   const matrixSize = activeRgbMatrix ? activeRgbMatrix.length : 16;
   const totalPixels = activeRgbMatrix ? activeRgbMatrix.flat().length : 0;

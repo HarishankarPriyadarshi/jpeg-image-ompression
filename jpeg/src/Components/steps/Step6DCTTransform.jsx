@@ -46,7 +46,7 @@ function alpha(index) {
   return index === 0 ? 1 / Math.sqrt(2) : 1;
 }
 
-function calculateDctCoefficient(block, u, v) {
+function calculateDctCoefficient(block, u, v, shouldRound = true) {
   let sum = 0;
 
   for (let x = 0; x < 8; x += 1) {
@@ -60,12 +60,24 @@ function calculateDctCoefficient(block, u, v) {
     }
   }
 
-  return roundToTwo(0.25 * alpha(u) * alpha(v) * sum);
+  const exact = 0.25 * alpha(u) * alpha(v) * sum;
+
+  if (shouldRound) return roundToTwo(exact);
+
+  // Clean tiny floating-point noise (e.g. -47.49999999999999 -> -47.5) so exact
+  // ties like x.5 are rounded the same way a real JPEG encoder rounds them.
+  const clean = Math.round(exact * 1e9) / 1e9;
+
+  return Object.is(clean, -0) ? 0 : clean;
 }
 
-function calculateDctMatrix(block) {
+// shouldRound=true  -> values shown on screen (2 decimals)
+// shouldRound=false -> exact values used by Step 7 (real JPEG never rounds the DCT before quantizing)
+function calculateDctMatrix(block, shouldRound = true) {
   return Array.from({ length: 8 }, (_, u) =>
-    Array.from({ length: 8 }, (_, v) => calculateDctCoefficient(block, u, v))
+    Array.from({ length: 8 }, (_, v) =>
+      calculateDctCoefficient(block, u, v, shouldRound)
+    )
   );
 }
 
@@ -151,6 +163,10 @@ function Step6DCTTransform({
   }, [levelShiftData, selectedBlockData]);
 
   const dctMatrix = useMemo(() => calculateDctMatrix(inputBlock), [inputBlock]);
+  const exactDctMatrix = useMemo(
+    () => calculateDctMatrix(inputBlock, false),
+    [inputBlock]
+  );
 
   const { row: u, col: v } = getRowCol(selectedCoefficientIndex);
 
@@ -182,15 +198,13 @@ function Step6DCTTransform({
       ? selectedBlockData.startCol
       : 0;
 
-  const revealedCount = revealedIndexes.length;
-  const progressPercent = Math.round((revealedCount / 64) * 100);
-
   useEffect(() => {
     if (typeof onDctChange === "function") {
       onDctChange({
         component: componentName,
         blockIndex,
         values: dctMatrix,
+        exactValues: exactDctMatrix,
         inputValues: inputBlock,
         startRow,
         startCol,
@@ -253,85 +267,6 @@ function Step6DCTTransform({
 
   return (
     <div className="step6SimplePage">
-
-      <div className="step6SummaryGrid">
-        <div>
-          <span>Input From Step 5</span>
-          <strong>
-            {componentName} Block B{blockNumber}
-          </strong>
-          <small>Level shifted 8×8 block</small>
-        </div>
-
-        <div>
-          <span>Operation</span>
-          <strong>2D DCT / FDCT</strong>
-          <small>Spatial domain → frequency domain</small>
-        </div>
-
-        <div>
-          <span>Output To Step 7</span>
-          <strong>DCT Coefficient Matrix</strong>
-          <small>Input for quantization</small>
-        </div>
-      </div>
-
-      <div className="step6FormulaBox">
-        <div className="step6FormulaHeader">
-          <h3>2D DCT Formula</h3>
-
-          <button
-            type="button"
-            className={`step6ShowFormulaBtn ${
-              showFormula ? "step6ShowFormulaBtnOpen" : ""
-            }`}
-            onClick={() => setShowFormula((prev) => !prev)}
-          >
-            {showFormula ? "Hide Formula" : "Show Formula"}
-          </button>
-        </div>
-
-        {showFormula && (
-          <>
-            <div className="step6FormulaText">
-              F(u,v) = 1/4 × C(u) × C(v) × ΣΣ f(x,y) × cos[(2x+1)uπ/16] ×
-              cos[(2y+1)vπ/16]
-            </div>
-
-            <p>
-              C(0) = 1/√2 and C(k) = 1 for k &gt; 0. Here f(x,y) is the level
-              shifted input block value.
-            </p>
-          </>
-        )}
-      </div>
-
-      <div className="step6ControlBar">
-        <button
-          type="button"
-          onClick={autoApplyFullDct}
-          disabled={isAutoApplying}
-        >
-          {isAutoApplying ? "Applying DCT..." : "Run 2D DCT Transform"}
-        </button>
-      </div>
-
-      <div className="step6ProgressBox">
-        <div className="step6ProgressTop">
-          <span>
-            Calculated Coefficients: {revealedCount} / 64
-          </span>
-
-          <strong>{progressPercent}%</strong>
-        </div>
-
-        <div className="step6ProgressTrack">
-          <div
-            className="step6ProgressFill"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-      </div>
 
       <div className="step6MainGrid">
         <div className="step6Card">
@@ -411,8 +346,49 @@ function Step6DCTTransform({
             coefficient.
           </p>
         </div>
+
+        <div className="step6Controls">
+      <div className="step6ControlBar">
+        <button
+          type="button"
+          onClick={autoApplyFullDct}
+          disabled={isAutoApplying}
+        >
+          {isAutoApplying ? "Applying DCT..." : "Run 2D DCT Transform"}
+        </button>
+      </div>
+        </div>
       </div>
 
+      <div className="step6FormulaBox">
+        <div className="step6FormulaHeader">
+          <h3>2D DCT Formula</h3>
+
+          <button
+            type="button"
+            className={`step6ShowFormulaBtn ${
+              showFormula ? "step6ShowFormulaBtnOpen" : ""
+            }`}
+            onClick={() => setShowFormula((prev) => !prev)}
+          >
+            {showFormula ? "Hide Formula" : "Show Formula"}
+          </button>
+        </div>
+
+        {showFormula && (
+          <>
+            <div className="step6FormulaText">
+              F(u,v) = 1/4 × C(u) × C(v) × ΣΣ f(x,y) × cos[(2x+1)uπ/16] ×
+              cos[(2y+1)vπ/16]
+            </div>
+
+            <p>
+              C(0) = 1/√2 and C(k) = 1 for k &gt; 0. Here f(x,y) is the level
+              shifted input block value.
+            </p>
+          </>
+        )}
+      </div>
     </div>
   );
 }

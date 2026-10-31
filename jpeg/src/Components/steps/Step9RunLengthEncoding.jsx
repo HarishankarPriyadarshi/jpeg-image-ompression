@@ -168,15 +168,6 @@ function Step9RunLengthEncoding({
 
   return (
     <div className="step9SimplePage">
-      <div className="step9ControlBar">
-        <button type="button" onClick={autoRLE} disabled={isAutoEncoding}>
-          {isAutoEncoding ? "Counting..." : "Run Run-Length Encoding"}
-        </button>
-        <span className="step9ProgressTop">
-          Position {selectedIndex + 1} / {acSequence.length}
-        </span>
-      </div>
-
       <div
         className="step9MainGrid"
         style={{ gridTemplateColumns: "minmax(0, 1fr)", justifyContent: "stretch" }}
@@ -219,6 +210,15 @@ function Step9RunLengthEncoding({
             Same values next to each other form one run. Click any value to
             highlight its run.
           </p>
+        </div>
+
+        <div className="step9ControlBar">
+          <button type="button" onClick={autoRLE} disabled={isAutoEncoding}>
+            {isAutoEncoding ? "Counting..." : "Run Run-Length Encoding"}
+          </button>
+          <span className="step9ProgressTop">
+            Position {selectedIndex + 1} / {acSequence.length}
+          </span>
         </div>
 
         <div className="step9OutputCard">

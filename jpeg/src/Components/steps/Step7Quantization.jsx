@@ -67,6 +67,12 @@ function getRowCol(index) {
   };
 }
 
+function formatExactValue(value) {
+  if (Math.abs(value) < 0.00005) return "0";
+
+  return String(Number(value.toFixed(4)));
+}
+
 function formatDctValue(value) {
   if (Math.abs(value) < 0.005) return "0";
 
@@ -134,19 +140,26 @@ function Step7Quantization({
     [dctData]
   );
 
+  // Exact (unrounded) DCT values are used for dividing, like a real JPEG encoder.
+  const exactDctMatrix = useMemo(
+    () => normalize8x8Block(dctData?.exactValues ?? dctData?.values),
+    [dctData]
+  );
+
   const activeQuantizationTable = useMemo(
     () => scaleQuantizationTable(luminanceQuantizationTable, quality),
     [quality]
   );
 
   const quantizedMatrix = useMemo(
-    () => quantizeDctMatrix(dctMatrix, activeQuantizationTable),
-    [dctMatrix, activeQuantizationTable]
+    () => quantizeDctMatrix(exactDctMatrix, activeQuantizationTable),
+    [exactDctMatrix, activeQuantizationTable]
   );
 
   const { row, col } = getRowCol(selectedIndex);
 
   const selectedDctValue = dctMatrix[row][col];
+  const selectedExactDctValue = exactDctMatrix[row][col];
   const selectedQuantValue = activeQuantizationTable[row][col];
   const selectedQuantizedValue = quantizedMatrix[row][col];
 
@@ -155,13 +168,9 @@ function Step7Quantization({
   const blockIndex =
     typeof dctData?.blockIndex === "number" ? dctData.blockIndex : 0;
 
-  const blockNumber = blockIndex + 1;
-
   const startRow = typeof dctData?.startRow === "number" ? dctData.startRow : 0;
   const startCol = typeof dctData?.startCol === "number" ? dctData.startCol : 0;
 
-  const revealedCount = revealedIndexes.length;
-  const progressPercent = Math.round((revealedCount / 64) * 100);
 
   useEffect(() => {
     if (typeof onQuantizationChange === "function") {
@@ -186,7 +195,7 @@ function Step7Quantization({
 
     if (typeof onQuantizationChange === "function") {
       const table = scaleQuantizationTable(luminanceQuantizationTable, newQuality);
-      const newQuantizedMatrix = quantizeDctMatrix(dctMatrix, table);
+      const newQuantizedMatrix = quantizeDctMatrix(exactDctMatrix, table);
 
       onQuantizationChange({
         component: componentName,
@@ -256,57 +265,6 @@ function Step7Quantization({
   return (
     <div className="step7SimplePage">
 
-      <div className="step7SummaryGrid">
-        <div>
-          <span>Input From Step 6</span>
-          <strong>
-            {componentName} Block B{blockNumber}
-          </strong>
-          <small>8×8 DCT coefficient matrix</small>
-        </div>
-
-        <div>
-          <span>Operation</span>
-          <strong>DCT ÷ Quant Table</strong>
-          <small>Then round to nearest integer</small>
-        </div>
-
-        <div>
-          <span>Output To Step 8</span>
-          <strong>Quantized 8×8 Matrix</strong>
-          <small>Input for DC coding / scanning</small>
-        </div>
-      </div>
-
-      <div className="step7FormulaBox">
-        <div className="step7FormulaHeader">
-          <h3>Quantization Formula</h3>
-
-          <button
-            type="button"
-            className={`step7ShowFormulaBtn ${
-              showFormula ? "step7ShowFormulaBtnOpen" : ""
-            }`}
-            onClick={() => setShowFormula((prev) => !prev)}
-          >
-            {showFormula ? "Hide Formula" : "Show Formula"}
-          </button>
-        </div>
-
-        {showFormula && (
-          <>
-            <div className="step7FormulaText">
-              Q(u,v) = round( DCT(u,v) ÷ QuantizationTable(u,v) )
-            </div>
-
-            <p>
-              Smaller table values preserve low-frequency information. Larger
-              table values reduce high-frequency information more strongly.
-            </p>
-          </>
-        )}
-      </div>
-
       <div className="step7QualityBox">
         <label htmlFor="step7-quality-slider">
           JPEG Quality: <b>{quality}</b>{" "}
@@ -328,6 +286,18 @@ function Step7Quantization({
           onChange={(event) => handleQualityChange(Number(event.target.value))}
         />
 
+        <div className="step7QualityScale" aria-hidden="true">
+          {[1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((mark) => (
+            <span
+              key={mark}
+              className={quality === mark ? "step7QualityScaleActive" : ""}
+              style={{ left: `calc(11px + (100% - 22px) * ${(mark - 1) / 99})` }}
+            >
+              {mark}
+            </span>
+          ))}
+        </div>
+
         <p className="step7QualityNote">
           Lower quality = bigger table values = more coefficients turn into
           zero = smaller file, more loss. Higher quality = the opposite.
@@ -342,23 +312,6 @@ function Step7Quantization({
         >
           {isAutoQuantizing ? "Quantizing..." : "Run Quantization (DCT ÷ Table)"}
         </button>
-      </div>
-
-      <div className="step7ProgressBox">
-        <div className="step7ProgressTop">
-          <span>
-            Quantized Coefficients: {revealedCount} / 64
-          </span>
-
-          <strong>{progressPercent}%</strong>
-        </div>
-
-        <div className="step7ProgressTrack">
-          <div
-            className="step7ProgressFill"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
       </div>
 
       <div className="step7MainGrid">
@@ -428,8 +381,13 @@ function Step7Quantization({
           {showCalculation ? (
             <div className="step7CalculationResult">
               <div>
-                round({formatDctValue(selectedDctValue)} ÷ {selectedQuantValue})
+                round({formatExactValue(selectedExactDctValue)} ÷ {selectedQuantValue})
                 = <b>{selectedQuantizedValue}</b>
+              </div>
+
+              <div className="step7ExactNote">
+                The matrix shows 2 decimals, but the exact DCT value is divided
+                (as a real JPEG encoder does).
               </div>
 
               <div>
@@ -465,6 +423,34 @@ function Step7Quantization({
         </div>
       </div>
 
+      <div className="step7FormulaBox">
+        <div className="step7FormulaHeader">
+          <h3>Quantization Formula</h3>
+
+          <button
+            type="button"
+            className={`step7ShowFormulaBtn ${
+              showFormula ? "step7ShowFormulaBtnOpen" : ""
+            }`}
+            onClick={() => setShowFormula((prev) => !prev)}
+          >
+            {showFormula ? "Hide Formula" : "Show Formula"}
+          </button>
+        </div>
+
+        {showFormula && (
+          <>
+            <div className="step7FormulaText">
+              Q(u,v) = round( DCT(u,v) ÷ QuantizationTable(u,v) )
+            </div>
+
+            <p>
+              Smaller table values preserve low-frequency information. Larger
+              table values reduce high-frequency information more strongly.
+            </p>
+          </>
+        )}
+      </div>
     </div>
   );
 }

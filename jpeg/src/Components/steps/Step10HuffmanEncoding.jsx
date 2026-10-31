@@ -159,8 +159,6 @@ function Step10HuffmanEncoding({
       ? dcCodingData.blockIndex
       : 0;
 
-  const blockNumber = blockIndex + 1;
-
   const finalBitstream = useMemo(() => {
     const revealedAc = acEncodedSymbols
       .slice(0, acEncodedUpTo + 1)
@@ -237,83 +235,63 @@ function Step10HuffmanEncoding({
 
   return (
     <div className="step10SimplePage">
-      <div className="step10SummaryGrid">
-        <div>
-          <span>Input</span>
-          <strong>
-            {componentName} Block B{blockNumber}
-          </strong>
-          <small>DC difference (automatic) + RLE symbols (Step 9)</small>
-        </div>
-
-        <div>
-          <span>Operation</span>
-          <strong>Huffman Code + Bits</strong>
-          <small>Standard JPEG luminance tables (ITU-T T.81, Annex K)</small>
-        </div>
-
-        <div>
-          <span>Output To Step 11</span>
-          <strong>Entropy Bitstream</strong>
-          <small>Final compressed scan data</small>
-        </div>
-      </div>
-
-      <div className="step10ControlBar">
-        <button
-          type="button"
-          onClick={autoHuffmanEncode}
-          disabled={isAutoEncoding}
-        >
-          {isAutoEncoding ? "Encoding..." : "Run Huffman Encoding"}
-        </button>
-      </div>
-
       <div className="step10MainGrid">
-        <div className="step10Card">
-          <h3>DC Encoding</h3>
+        <div className="step10DcColumn">
+          <div className="step10Card">
+            <h3>DC Encoding</h3>
 
-          <div className="step10InfoRow">
-            <span>DC Category / Size</span>
-            <strong>
-              <span style={hintStyle}>
-                (DC {dcDifference} = {dcAbsBinary} → {dcCategory} bits)
-              </span>
-              {dcCategory}
-            </strong>
-          </div>
-
-          <div className="step10InfoRow">
-            <span>Huffman Code</span>
-            <strong>
-              {isDcEncoded && (
-                <span style={hintStyle}>(JPEG DC table: size {dcCategory} →)</span>
-              )}
-              {isDcEncoded ? dcHuffmanCode : "—"}
-            </strong>
-          </div>
-
-          <div className="step10InfoRow">
-            <span>Magnitude Bits</span>
-            <strong>
-              {isDcEncoded && dcMagnitudeBits && (
+            <div className="step10InfoRow">
+              <span>DC Category / Size</span>
+              <strong>
                 <span style={hintStyle}>
-                  ({describeValueBits(dcDifference, dcMagnitudeBits)})
+                  (DC {dcDifference} = {dcAbsBinary} → {dcCategory} bits)
                 </span>
+                {dcCategory}
+              </strong>
+            </div>
+
+            <div className="step10InfoRow">
+              <span>Huffman Code</span>
+              <strong>
+                {isDcEncoded && (
+                  <span style={hintStyle}>(JPEG DC table: size {dcCategory} →)</span>
+                )}
+                {isDcEncoded ? dcHuffmanCode : "—"}
+              </strong>
+            </div>
+
+            <div className="step10InfoRow">
+              <span>Magnitude Bits</span>
+              <strong>
+                {isDcEncoded && dcMagnitudeBits && (
+                  <span style={hintStyle}>
+                    ({describeValueBits(dcDifference, dcMagnitudeBits)})
+                  </span>
+                )}
+                {isDcEncoded ? dcMagnitudeBits || "—" : "—"}
+              </strong>
+            </div>
+
+            <div className="step10MiniFormula">
+              {isDcEncoded ? (
+                <>
+                  {dcHuffmanCode} + {dcMagnitudeBits || "(none)"} ={" "}
+                  <b>{dcFullCode}</b>
+                </>
+              ) : (
+                "Run Huffman Encoding to reveal the DC Huffman code"
               )}
-              {isDcEncoded ? dcMagnitudeBits || "—" : "—"}
-            </strong>
+            </div>
           </div>
 
-          <div className="step10MiniFormula">
-            {isDcEncoded ? (
-              <>
-                {dcHuffmanCode} + {dcMagnitudeBits || "(none)"} ={" "}
-                <b>{dcFullCode}</b>
-              </>
-            ) : (
-              "Run Huffman Encoding to reveal the DC Huffman code"
-            )}
+          <div className="step10ControlBar">
+            <button
+              type="button"
+              onClick={autoHuffmanEncode}
+              disabled={isAutoEncoding}
+            >
+              {isAutoEncoding ? "Encoding..." : "Run Huffman Encoding"}
+            </button>
           </div>
         </div>
 

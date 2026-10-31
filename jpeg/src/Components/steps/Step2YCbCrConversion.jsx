@@ -147,15 +147,9 @@ function Step2YCbCrConversion({
   autoConvertFullMatrix,
 }) {
   const [activeComponent, setActiveComponent] = useState("Y");
+  const [showFormula, setShowFormula] = useState(false);
 
   const matrixSize = activeRgbMatrix.length;
-  const totalPixels = activeRgbMatrix.flat().length;
-
-  const convertedCount = convertedPixelIndexes.length;
-  const progressPercent = totalPixels
-    ? Math.round((convertedCount / totalPixels) * 100)
-    : 0;
-
   const selectedRow = Math.floor(selectedPixelIndex / matrixSize);
   const selectedCol = selectedPixelIndex % matrixSize;
 
@@ -175,65 +169,6 @@ function Step2YCbCrConversion({
 
   return (
     <div className="step2SimplePage">
-      <div className="step2ConceptBox">
-        <strong>Step 2 Concept:</strong> The same {matrixSize}×{matrixSize} RGB
-        patch from Step 1 is converted into <b>Y</b>, <b>Cb</b> and <b>Cr</b>{" "}
-        matrices — Y stores brightness, Cb and Cr store color-difference
-        information.
-      </div>
-
-      <div className="step2FormulaBox">
-        <h3>RGB to YCbCr Formula</h3>
-
-        <div className="step2FormulaGrid">
-          <div>
-            <b>Y</b> = 0.299R + 0.587G + 0.114B
-          </div>
-
-          <div>
-            <b>Cb</b> = -0.169R - 0.334G + 0.500B + 128
-          </div>
-
-          <div>
-            <b>Cr</b> = 0.500R - 0.419G - 0.081B + 128
-          </div>
-        </div>
-
-        <p>
-          In this simulation, results are rounded and kept inside the valid
-          8-bit range 0–255.
-        </p>
-      </div>
-
-      <div className="step2ControlBar">
-        <button
-          type="button"
-          onClick={autoConvertFullMatrix}
-          disabled={isAutoConverting}
-        >
-          {isAutoConverting ? "Converting..." : "Run RGB → YCbCr Color Transform"}
-        </button>
-      </div>
-
-      <div className="step2ProgressBox">
-        <div className="step2ProgressTop">
-          <span>
-            Converted Pixels: {convertedCount} / {totalPixels}
-          </span>
-
-          <strong>{progressPercent}%</strong>
-        </div>
-
-        <div className="step2ProgressTrack">
-          <div
-            className="step2ProgressFill"
-            style={{
-              width: `${progressPercent}%`,
-            }}
-          />
-        </div>
-      </div>
-
       <div className="step2MainGrid">
         <div className="step2Card">
           <h3>Input: Same RGB Patch from Step 1</h3>
@@ -316,6 +251,16 @@ function Step2YCbCrConversion({
         </div>
       </div>
 
+      <div className="step2ControlBar">
+        <button
+          type="button"
+          onClick={autoConvertFullMatrix}
+          disabled={isAutoConverting}
+        >
+          {isAutoConverting ? "Converting..." : "Run RGB → YCbCr Color Transform"}
+        </button>
+      </div>
+
       <div className="step2OutputCard">
         <div className="step2OutputHeader">
           <div>
@@ -355,8 +300,43 @@ function Step2YCbCrConversion({
         </p>
       </div>
 
-      <div className="rgbInfoBox">
-        Step 2 Output = 16×16 Y Matrix + 16×16 Cb Matrix + 16×16 Cr Matrix
+      <div className="step2FormulaBox">
+        <div className="step2FormulaHeader">
+          <h3>RGB to YCbCr Formula</h3>
+
+          <button
+            type="button"
+            className={`step2ShowFormulaBtn ${
+              showFormula ? "step2ShowFormulaBtnOpen" : ""
+            }`}
+            onClick={() => setShowFormula((prev) => !prev)}
+          >
+            {showFormula ? "Hide Formula" : "Show Formula"}
+          </button>
+        </div>
+
+        {showFormula && (
+          <>
+            <div className="step2FormulaGrid">
+              <div>
+                <b>Y</b> = 0.299R + 0.587G + 0.114B
+              </div>
+
+              <div>
+                <b>Cb</b> = -0.169R - 0.334G + 0.500B + 128
+              </div>
+
+              <div>
+                <b>Cr</b> = 0.500R - 0.419G - 0.081B + 128
+              </div>
+            </div>
+
+            <p>
+              In this simulation, results are rounded and kept inside the valid
+              8-bit range 0–255.
+            </p>
+          </>
+        )}
       </div>
     </div>
   );

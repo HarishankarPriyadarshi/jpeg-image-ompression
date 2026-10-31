@@ -70,27 +70,6 @@ function getStep2Steps() {
       target: null,
     },
     {
-      title: "Concept Reminder",
-      text: "This box briefly explains that Y stores brightness, while Cb/Cr store color-difference. The human eye is more sensitive to brightness, so Cb/Cr can be reduced later.",
-      target: ".step2ConceptBox",
-      placement: "bottom",
-    },
-    {
-      title: "RGB to YCbCr Formula",
-      text: "These are the three formulas that convert every RGB pixel into Y, Cb, and Cr. The results are rounded and kept within the valid 0-255 range.",
-      target: ".step2FormulaBox",
-      placement: "bottom",
-    },
-    {
-      title: "Run the Color Transform",
-      text: "This button converts the whole patch to YCbCr pixel by pixel — the progress bar above will fill up as it goes.",
-      target: ".step2ControlBar",
-      placement: "bottom",
-      requiresAction: (ctx) => !!ctx.isStep2Complete,
-      actionMessage:
-        "Please run \"RGB → YCbCr Color Transform\" on the full patch before continuing.",
-    },
-    {
       title: "Input RGB Patch",
       text: "This is the same RGB patch you selected in Step 1. Click any pixel to inspect its conversion.",
       target: ".step2Card",
@@ -103,9 +82,30 @@ function getStep2Steps() {
       placement: "left",
     },
     {
+      title: "Run the Color Transform",
+      text: "This button converts the whole patch to YCbCr pixel by pixel.",
+      target: ".step2ControlBar",
+      placement: "top",
+      requiresAction: (ctx) => !!ctx.isStep2Complete,
+      actionMessage:
+        "Please run \"RGB → YCbCr Color Transform\" on the full patch before continuing.",
+    },
+    {
       title: "Output Y, Cb, Cr Matrices",
       text: "You can view all three output matrices here in tabs — Y, Cb, and Cr. The selected pixel is highlighted here too.",
       target: ".step2OutputCard",
+      placement: "top",
+    },
+    {
+      title: "RGB to YCbCr Formula",
+      text: "Press the 'Show Formula' button to see the three formulas that convert every RGB pixel into Y, Cb, and Cr. The results are rounded and kept within the valid 0-255 range.",
+      target: ".step2FormulaBox",
+      placement: "top",
+    },
+    {
+      title: "Concept Reminder",
+      text: "The Explanation box at the bottom explains that Y stores brightness, while Cb/Cr store color-difference. The human eye is more sensitive to brightness, so Cb/Cr can be reduced later.",
+      target: ".explanationBox",
       placement: "top",
     },
     {
@@ -126,42 +126,42 @@ function getStep3Steps() {
       target: null,
     },
     {
-      title: "Concept Reminder",
-      text: "The Y matrix remains unchanged at its 16×16 size. Cb and Cr are reduced to 8×8 by averaging each 2×2 group.",
-      target: ".step3ConceptBox",
-      placement: "bottom",
-    },
-    {
-      title: "Cb / Cr Tabs",
-      text: "Switch between Cb and Cr here — both are independently downsampled using 2×2 averaging.",
-      target: ".step3Tabs",
-      placement: "bottom",
-    },
-    {
-      title: "Run the Downsampling",
-      text: "This button downsamples the whole matrix group by group — each 2×2 group turns into a single average value.",
-      target: ".step3ControlBar",
-      placement: "bottom",
-      requiresAction: (ctx) => !!ctx.isStep3Complete,
-      actionMessage:
-        "Please run \"Run 2×2 Chroma Downsampling\" on the full matrix before continuing.",
-    },
-    {
       title: "Input Matrix",
       text: "This is the 16×16 matrix of the current component (Cb or Cr) — click any value to select its 2×2 group.",
       target: ".step3MainGrid > div:first-child",
       placement: "right",
     },
     {
+      title: "Cb / Cr Tabs",
+      text: "Switch between Cb and Cr here — both are independently downsampled using 2×2 averaging.",
+      target: ".step3Tabs",
+      placement: "top",
+    },
+    {
+      title: "Run the Downsampling",
+      text: "This button downsamples the whole matrix group by group — each 2×2 group turns into a single average value.",
+      target: ".step3ControlBar",
+      placement: "top",
+      requiresAction: (ctx) => !!ctx.isStep3Complete,
+      actionMessage:
+        "Please run \"Run 2×2 Chroma Downsampling\" on the full matrix before continuing.",
+    },
+    {
       title: "Selected 2×2 Group",
       text: "This shows the 4 values of the selected 2×2 group and their average calculation — this same formula is applied to every group.",
       target: ".step3CalculationCard",
-      placement: "left",
+      placement: "top",
     },
     {
       title: "Output Matrix",
-      text: "This shows the downsampled 8×8 matrix — each cell is the average value of one 2×2 group. This becomes the input for building the 8×8 blocks in Step 4.",
-      target: ".step3MainGrid > div:last-child",
+      text: "This shows the downsampled 8×8 matrix — each cell is the average value of one 2×2 group. This shows how much color data chroma subsampling removes. From Step 4 onward, the simulation follows the Y (brightness) channel to explain the remaining steps.",
+      target: ".step3MainGrid > div:nth-child(3)",
+      placement: "top",
+    },
+    {
+      title: "Concept Reminder",
+      text: "The Explanation box at the bottom explains that the Y matrix remains unchanged at its 16×16 size, while Cb and Cr are reduced to 8×8 by averaging each 2×2 group.",
+      target: ".explanationBox",
       placement: "top",
     },
     {
@@ -240,31 +240,31 @@ function getStep5Steps() {
       placement: "bottom",
     },
     {
-      title: "Run the Level Shift",
-      text: "This button subtracts 128 from all 64 values of the 8×8 block, one at a time.",
-      target: ".step5ControlBar",
-      placement: "bottom",
-      requiresAction: (ctx) => !!ctx.isStep5Complete,
-      actionMessage:
-        "Please run \"Run Level Shift (Subtract 128)\" on the full block before continuing.",
-    },
-    {
       title: "Input: Selected 8×8 Block",
       text: "This is the same block you selected in Step 4 — all values are in the 0-255 range.",
       target: ".step5MainGrid > div:first-child",
       placement: "right",
     },
     {
+      title: "Run the Level Shift",
+      text: "This button, placed below the input and output matrices, subtracts 128 from all 64 values of the 8×8 block, one at a time.",
+      target: ".step5ControlBar",
+      placement: "top",
+      requiresAction: (ctx) => !!ctx.isStep5Complete,
+      actionMessage:
+        "Please run \"Run Level Shift (Subtract 128)\" on the full block before continuing.",
+    },
+    {
       title: "Selected Cell Calculation",
       text: "This shows the full calculation for any selected cell — Original Value - 128 = Shifted Value.",
       target: ".step5CalculationCard",
-      placement: "left",
+      placement: "top",
     },
     {
       title: "Output: Level Shifted Block",
       text: "This shows all the shifted values, now in the range -128 to +127 — this becomes the input for Step 6 (2D DCT).",
-      target: ".step5MainGrid > div:last-child",
-      placement: "top",
+      target: ".step5MainGrid > div:nth-child(3)",
+      placement: "left",
     },
     {
       title: "Move to Step 6",
@@ -284,42 +284,36 @@ function getStep6Steps() {
       target: null,
     },
     {
-      title: "Quick Summary",
-      text: "The input is the level-shifted block from Step 5, the operation is 2D DCT, and the output is a DCT coefficient matrix for Step 7 (Quantization).",
-      target: ".step6SummaryGrid",
-      placement: "bottom",
-    },
-    {
-      title: "2D DCT Formula",
-      text: "This is the actual DCT formula. Press the 'Show Formula' button to view it anytime — the cosine terms calculate every coefficient from all 64 input values.",
-      target: ".step6FormulaBox",
-      placement: "bottom",
-    },
-    {
-      title: "Run 2D DCT Transform",
-      text: "This button calculates all 64 DCT coefficients (u=0..7, v=0..7) one at a time.",
-      target: ".step6ControlBar",
-      placement: "bottom",
-      requiresAction: (ctx) => !!ctx.isStep6Complete,
-      actionMessage:
-        "Please run \"Run 2D DCT Transform\" on the full block before continuing.",
-    },
-    {
       title: "Input: Level Shifted Block",
       text: "This is the level-shifted block from Step 5 — values are in the range -128 to +127.",
       target: ".step6MainGrid > div:first-child",
       placement: "right",
     },
     {
+      title: "Run 2D DCT Transform",
+      text: "This button, placed below the input and output matrices, calculates all 64 DCT coefficients (u=0..7, v=0..7) one at a time.",
+      target: ".step6ControlBar",
+      placement: "top",
+      requiresAction: (ctx) => !!ctx.isStep6Complete,
+      actionMessage:
+        "Please run \"Run 2D DCT Transform\" on the full block before continuing.",
+    },
+    {
       title: "Selected DCT Coefficient",
       text: "This shows the position (u,v), type (DC or AC), and calculated value of the selected coefficient.",
       target: ".step6CalculationCard",
-      placement: "left",
+      placement: "top",
     },
     {
       title: "Output: DCT Coefficient Matrix",
       text: "The coefficient in the top-left corner is the DC coefficient (average brightness), and the rest are AC coefficients that store detail/frequency information. This becomes the input for Step 7 (Quantization).",
-      target: ".step6MainGrid > div:last-child",
+      target: ".step6MainGrid > div:nth-child(3)",
+      placement: "left",
+    },
+    {
+      title: "2D DCT Formula",
+      text: "This is the actual DCT formula. Press the 'Show Formula' button to view it anytime — the cosine terms calculate every coefficient from all 64 input values.",
+      target: ".step6FormulaBox",
       placement: "top",
     },
     {
@@ -336,14 +330,8 @@ function getStep7Steps() {
   return [
     {
       title: "Step 7 — Quantization",
-      text: "This is the most lossy (data-losing) step in JPEG. Every DCT coefficient is divided by a quantization table value and rounded — this turns many high-frequency coefficients into zero.",
+      text: "This is the most lossy (data-losing) step in JPEG. Every DCT coefficient is divided by a quantization table value and rounded — this turns many high-frequency coefficients into zero. The input is the DCT matrix from Step 6, the operation is DCT ÷ Quant Table, and the output is a quantized matrix for Step 8 (Zig-Zag Scanning).",
       target: null,
-    },
-    {
-      title: "Quick Summary",
-      text: "The input is the DCT coefficient matrix from Step 6, the operation is DCT ÷ Quant Table, and the output is a quantized matrix for Step 8 (Zig-Zag Scanning).",
-      target: ".step7SummaryGrid",
-      placement: "bottom",
     },
     {
       title: "Quantization Formula",
@@ -404,14 +392,8 @@ function getStep8Steps() {
   return [
     {
       title: "Step 8 — Zig-Zag Scanning",
-      text: "Now we traverse the quantized 8×8 matrix along a zig-zag diagonal path, turning it into a single 1D sequence (list) — low-frequency values come first, high-frequency values come later.",
+      text: "Now we traverse the quantized 8×8 matrix along a zig-zag diagonal path, turning it into a single 1D sequence (list) — low-frequency values come first, high-frequency values come later. The input is the quantized matrix from Step 7, the operation is a zig-zag traversal, and the output is 63 AC values (DC is already handled separately) that go on to Step 9.",
       target: null,
-    },
-    {
-      title: "Quick Summary",
-      text: "The input is the quantized matrix from Step 7, the operation is a zig-zag traversal, and the output is 63 AC values (DC is already handled separately) that go on to Step 9.",
-      target: ".step8SummaryGrid",
-      placement: "bottom",
     },
     {
       title: "Run the Zig-Zag Scan",
@@ -490,14 +472,8 @@ function getStep10Steps() {
   return [
     {
       title: "Step 10 — Huffman Encoding",
-      text: "All the symbols built so far (the DC category, and the AC RLE symbols) are now converted into actual binary bits — the more common a symbol is, the shorter its code.",
+      text: "All the symbols built so far (the DC category, and the AC RLE symbols) are now converted into actual binary bits — the more common a symbol is, the shorter its code. The input is the DC difference (automatic) plus the RLE symbols, the operation is Huffman Code + extra bits, and the output is the final entropy bitstream for Step 11.",
       target: null,
-    },
-    {
-      title: "Quick Summary",
-      text: "The input is the DC difference (automatic) plus the RLE symbols, the operation is Huffman Code + extra bits, and the output is the final entropy bitstream for Step 11.",
-      target: ".step10SummaryGrid",
-      placement: "bottom",
     },
     {
       title: "Run Huffman Encoding",
@@ -510,7 +486,7 @@ function getStep10Steps() {
     {
       title: "DC Encoding",
       text: "The DC category number is first encoded with its own Huffman code, then the magnitude bits are appended to it — this is the DC's final code.",
-      target: ".step10MainGrid > div:first-child",
+      target: ".step10DcColumn > .step10Card",
       placement: "right",
     },
     {
@@ -541,12 +517,6 @@ function getStep11Steps() {
       title: "Step 11 — Final Compressed Output",
       text: "This is the final step of the JPEG pipeline. Here you'll see the block you selected back in Step 1, its final compressed bitstream, and the actual difference compression made — all together.",
       target: null,
-    },
-    {
-      title: "Selected Block",
-      text: "This is a reminder of which block you've been processing through the whole pipeline.",
-      target: ".step11InfoStrip",
-      placement: "bottom",
     },
     {
       title: "Generate Final Output",
