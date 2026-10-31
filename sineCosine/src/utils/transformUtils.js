@@ -24,6 +24,7 @@ export const baseQuantizationTable = [
 ];
 
 // Generate the orthogonal DCT-II or DST-I basis matrix (N x N).
+// Values keep full precision (so C x C^T = I exactly); round only when displaying.
 export function generateBasisMatrix(transform) {
   const matrix = [];
   for (let u = 0; u < N; u++) {
@@ -36,7 +37,7 @@ export function generateBasisMatrix(transform) {
       } else {
         value = Math.sqrt(2 / (N + 1)) * Math.sin(((u + 1) * (x + 1) * Math.PI) / (N + 1));
       }
-      row.push(Number(value.toFixed(4)));
+      row.push(value);
     }
     matrix.push(row);
   }
@@ -173,33 +174,32 @@ export function matrixToZigZagArray(matrix, order) {
   return order.map(([r, c]) => matrix[r][c]);
 }
 
-// Run-Length-Encode a zig-zag array of quantized coefficients.
-// Uses (run-of-zeros, value) pairs terminated by an End-Of-Block
-// (EOB) marker once only zeros remain — the standard transform
-// coding entropy-preparation stage.
-export function runLengthEncode(zigzagArray) {
+// Classic (generic) Run-Length Encoding: scan the sequence and
+// count how many times each value repeats CONSECUTIVELY, storing
+// every run as a (value, count) pair — e.g. 1,1,1,1,0,0,0,0,1,1,1,1,1,1,0,0
+// becomes (1,4) (0,4) (1,6) (0,2). This works for ANY repeated
+// value, not just zeros.
+export function runLengthEncode(array) {
   const pairs = [];
-  let zeroRun = 0;
+  if (!array.length) return pairs;
 
-  // Find last non-zero index (everything after is trailing zeros -> EOB)
-  let lastNonZero = -1;
-  for (let i = 0; i < zigzagArray.length; i++) {
-    if (zigzagArray[i] !== 0) lastNonZero = i;
-  }
+  let currentValue = array[0];
+  let count = 1;
+  let startIndex = 0;
 
-  for (let i = 0; i <= lastNonZero; i++) {
-    const value = zigzagArray[i];
-    if (value === 0) {
-      zeroRun++;
+  for (let i = 1; i < array.length; i++) {
+    if (array[i] === currentValue) {
+      count++;
     } else {
-      pairs.push({ run: zeroRun, value, index: i });
-      zeroRun = 0;
+      pairs.push({ value: currentValue, count, startIndex, endIndex: i - 1 });
+      currentValue = array[i];
+      count = 1;
+      startIndex = i;
     }
   }
+  pairs.push({ value: currentValue, count, startIndex, endIndex: array.length - 1 });
 
-  const hasEOB = lastNonZero < zigzagArray.length - 1;
-
-  return { pairs, hasEOB, lastNonZero };
+  return pairs;
 }
 
 export function mse(a, b) {

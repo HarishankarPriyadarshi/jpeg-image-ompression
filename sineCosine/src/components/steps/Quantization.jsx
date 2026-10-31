@@ -1,5 +1,5 @@
 import "./Quantization.css";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useMatrix } from "../../context/MatrixContext";
 import {
   generateBasisMatrix,
@@ -9,185 +9,214 @@ import {
   baseQuantizationTable,
 } from "../../utils/transformUtils";
 
+const N = 8;
+const isComplete = (m) => m && m.length === N && m.every((row) => row.every((v) => v !== null));
+
+// toFixed that never prints "-0.0"
+const fx = (x, d) => {
+  const t = Number(x).toFixed(d);
+  return /^-0\.?0*$/.test(t) ? t.slice(1) : t;
+};
+
 function Quantization() {
   const {
     selectedMatrix,
     frequencyMatrix,
     setFrequencyMatrix,
     transform,
-    setTransform,
     selectedBlock,
-    setSelectedBlock,
     qualityFactor,
     setQualityFactor,
     setQuantTable,
     quantizedMatrix,
     setQuantizedMatrix,
+    setZigzagArray,
+    setEncodedRuns,
+    setDequantizedMatrix,
+    setReconstructedBlock,
   } = useMatrix();
 
-  const [status, setStatus] = useState(quantizedMatrix && quantizedMatrix.length ? "Completed ✓" : "Waiting");
-  const [progress, setProgress] = useState(quantizedMatrix && quantizedMatrix.length ? 100 : 0);
-  const [currentRow, setCurrentRow] = useState(-1);
-  const [currentCol, setCurrentCol] = useState(-1);
+  const done = isComplete(quantizedMatrix);
+  const [running, setRunning] = useState(false);
+  const [current, setCurrent] = useState({ row: -1, col: -1 });
   const [selectedCell, setSelectedCell] = useState({ row: 0, col: 0 });
-  const [hasRun, setHasRun] = useState(quantizedMatrix && quantizedMatrix.length ? true : false);
+  const [calcStep, setCalcStep] = useState(99);
+
   const intervalRef = useRef(null);
+  const playRef = useRef(null);
+  const finishRef = useRef(null);
   const prevKey = useRef(selectedBlock + "_" + transform);
   const prevQF = useRef(qualityFactor);
 
-  useEffect(() => {
-    if (!selectedMatrix) return;
+  // ---- the frequency matrix from Step 4 (computed here only if it is missing) ----
+  const computedF = useMemo(() => {
+    if (!selectedMatrix) return null;
     const T = generateBasisMatrix(transform);
     const block = extractBlock(selectedMatrix.data, selectedBlock);
-    const F = forwardTransform(block, T).map((row) => row.map((v) => Number(v.toFixed(2))));
-    setFrequencyMatrix(F);
+    return forwardTransform(block, T).map((row) => row.map((v) => Number(v.toFixed(2))));
+  }, [selectedMatrix, selectedBlock, transform]);
+
+  const F = isComplete(frequencyMatrix) ? frequencyMatrix : computedF || Array.from({ length: N }, () => Array(N).fill(0));
+  const T = useMemo(() => buildQuantTable(qualityFactor), [qualityFactor]);
+
+  const stopTimers = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = null;
+    if (playRef.current) clearInterval(playRef.current);
+    playRef.current = null;
+  };
+
+  const clearResults = () => {
+    stopTimers();
+    finishRef.current = null;
+    setQuantizedMatrix([]);
+    setZigzagArray([]);
+    setEncodedRuns(null);
+    setDequantizedMatrix([]);
+    setReconstructedBlock([]);
+    setRunning(false);
+    setCurrent({ row: -1, col: -1 });
+  };
+
+  // keep the context in sync when Step 4's result is missing
+  useEffect(() => {
+    if (computedF && !isComplete(frequencyMatrix)) setFrequencyMatrix(computedF);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [computedF]);
+
+  // a different block or transform makes the old result invalid
+  useEffect(() => {
     const key = selectedBlock + "_" + transform;
     if (prevKey.current === key) return;
     prevKey.current = key;
-    setQuantizedMatrix([]);
-    setStatus("Waiting");
-    setProgress(0);
-    setCurrentRow(-1);
-    setCurrentCol(-1);
-    setHasRun(false);
+    clearResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedBlock, transform, selectedMatrix]);
+  }, [selectedBlock, transform]);
 
-  const currentFrequency =
-    frequencyMatrix.length === 8
-      ? frequencyMatrix
-      : Array.from({ length: 8 }, () => Array(8).fill(0));
-
-  const scaledQuantMatrix = buildQuantTable(qualityFactor);
-
+  // the scaled table is shared with later steps; a new quality invalidates the old result
   useEffect(() => {
-    setQuantTable(scaledQuantMatrix);
+    setQuantTable(T);
     if (prevQF.current === qualityFactor) return;
     prevQF.current = qualityFactor;
-    setQuantizedMatrix([]);
-    setStatus("Waiting");
-    setProgress(0);
-    setCurrentRow(-1);
-    setCurrentCol(-1);
+    clearResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qualityFactor]);
 
-  useEffect(() => () => intervalRef.current && clearInterval(intervalRef.current), []);
+  // leaving mid-animation: finish the result instantly so nothing is left half-built
+  useEffect(() => {
+    return () => {
+      const wasRunning = !!intervalRef.current;
+      stopTimers();
+      if (wasRunning && finishRef.current) finishRef.current();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const performQuantization = () => {
-    if (hasRun) return;
-    setHasRun(true);
-    if (intervalRef.current) clearInterval(intervalRef.current);
+  const fullQ = F.map((row, u) => row.map((v, c) => Math.round(v / T[u][c])));
 
-    setStatus("Performing Quantization...");
-    setProgress(0);
+  const perform = () => {
+    if (running || done) return;
+    stopTimers();
+    setRunning(true);
     setQuantizedMatrix([]);
+    finishRef.current = () => setQuantizedMatrix(fullQ);
 
-    const matrix = Array.from({ length: 8 }, () => Array(8).fill(null));
-    let row = 0;
-    let col = 0;
-
+    const matrix = Array.from({ length: N }, () => Array(N).fill(null));
+    let i = 0;
     intervalRef.current = setInterval(() => {
-      setCurrentRow(row);
-      setCurrentCol(col);
-
-      matrix[row][col] = Math.round(currentFrequency[row][col] / scaledQuantMatrix[row][col]);
-      setQuantizedMatrix(matrix.map((r) => [...r]));
-
-      const completed = row * 8 + col + 1;
-      setProgress(Math.round((completed / 64) * 100));
-
-      col++;
-      if (col === 8) {
-        col = 0;
-        row++;
-      }
-      if (row === 8) {
+      const r = Math.floor(i / N);
+      const c = i % N;
+      setCurrent({ row: r, col: c });
+      matrix[r][c] = fullQ[r][c];
+      setQuantizedMatrix(matrix.map((row) => [...row]));
+      i++;
+      if (i >= N * N) {
         clearInterval(intervalRef.current);
-        setStatus("Completed \u2713");
-        setCurrentRow(-1);
-        setCurrentCol(-1);
+        intervalRef.current = null;
+        finishRef.current = null;
+        setCurrent({ row: -1, col: -1 });
+        setRunning(false);
       }
-    }, 55);
+    }, 45);
   };
 
-  const flatQuantized = quantizedMatrix.length ? quantizedMatrix.flat() : [];
-  const totalCoeff = 64;
-  const zeroCount = flatQuantized.filter((v) => v === 0).length;
-  const nonZeroCount = flatQuantized.length ? flatQuantized.length - zeroCount : 0;
-  const zeroPercent = flatQuantized.length ? ((zeroCount / totalCoeff) * 100).toFixed(1) : "0.0";
+  // ---------- numbers about the result ----------
+  const flat = done ? quantizedMatrix.flat() : [];
+  const zeroCount = flat.filter((v) => v === 0).length;
+  const nonZeroCount = flat.length - zeroCount;
+  const zeroPercent = flat.length ? ((zeroCount / 64) * 100).toFixed(1) : "0.0";
+  const infoRemovedPercent = flat.length ? Number(zeroPercent) : 0;
+  const compressionRatio = flat.length ? (64 / Math.max(nonZeroCount, 1)).toFixed(2) : "1.00";
 
-  const originalBits = totalCoeff * 8;
-  const nonZeroBits = flatQuantized.length ? nonZeroCount * 8 : totalCoeff * 8;
-  const compressionRatio = flatQuantized.length ? (originalBits / Math.max(nonZeroBits, 8)).toFixed(2) : "1.00";
-  const infoRemovedPercent = flatQuantized.length ? Number(zeroPercent) : 0;
+  // ---------- selected coefficient ----------
+  const { row: sr, col: sc } = selectedCell;
+  const selF = F[sr][sc];
+  const selT = T[sr][sc];
+  const selDiv = selF / selT;
+  const selRound = Math.round(selDiv);
 
-  const selectedF = currentFrequency[selectedCell.row][selectedCell.col];
-  const selectedT = scaledQuantMatrix[selectedCell.row][selectedCell.col];
-  const selectedDivision = selectedF / selectedT;
-  const selectedRounded = Math.round(selectedDivision);
-  const selectedQuantized = quantizedMatrix.length ? quantizedMatrix[selectedCell.row][selectedCell.col] : null;
-
-  const isBaseTable = JSON.stringify(scaledQuantMatrix) === JSON.stringify(baseQuantizationTable);
-
-  // -------- Coefficient calculation timeline (same pattern as Steps 3 & 4) --------
-  const quantSteps = () => [
+  const calcRows = [
+    { label: "Formula", node: <>Q(u,v) = Round( F(u,v) ÷ T(u,v) )</> },
     {
-      label: "Formula",
-      node: <>Q(u,v) = Round( F(u,v) / T(u,v) )</>
+      label: "Divide",
+      node: <>F({sr},{sc}) ÷ T({sr},{sc}) = {fx(selF, 2)} ÷ {selT} = <b>{fx(selDiv, 3)}</b></>,
     },
-    {
-      label: "Selected position",
-      node: <>u = <b>{selectedCell.row}</b>, v = <b>{selectedCell.col}</b></>
-    },
-    {
-      label: "Substitute & divide",
-      node: <>F(u,v) = <b>{Number(selectedF).toFixed(2)}</b>, T(u,v) = <b>{selectedT}</b> &nbsp;→&nbsp; {Number(selectedF).toFixed(2)} ÷ {selectedT} = <b>{selectedDivision.toFixed(3)}</b></>
-    },
-    {
-      label: "Round to nearest integer",
-      node: <>Round({selectedDivision.toFixed(3)}) = <b>{selectedRounded}</b> &nbsp;→&nbsp; Q(u,v) = <b>{selectedRounded}</b></>,
-      isResult: true
-    }
+    { label: "Round", node: <>Round({fx(selDiv, 3)}) = <b>{selRound}</b> &nbsp;→&nbsp; Q({sr},{sc}) = <b>{selRound}</b></>, isResult: true },
   ];
 
-  const quantTimelineSteps = quantSteps();
-
-  const [calcStep, setCalcStep] = useState(quantTimelineSteps.length);
-
   useEffect(() => {
-    setCalcStep(quantTimelineSteps.length);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCell, frequencyMatrix, scaledQuantMatrix]);
+    setCalcStep(99);
+  }, [selectedCell, qualityFactor]);
 
   const playCalc = () => {
+    if (playRef.current) clearInterval(playRef.current);
     setCalcStep(0);
     let s = 0;
-    const total = quantTimelineSteps.length;
-    const interval = setInterval(() => {
+    playRef.current = setInterval(() => {
       s++;
       setCalcStep(s);
-      if (s >= total) clearInterval(interval);
+      if (s >= calcRows.length) {
+        clearInterval(playRef.current);
+        playRef.current = null;
+      }
     }, 700);
   };
 
-  const fastForwardCalc = () => {
-    setCalcStep(quantTimelineSteps.length);
+  const pick = (r, c) => {
+    if (!done) return;
+    if (playRef.current) clearInterval(playRef.current);
+    setSelectedCell({ row: r, col: c });
   };
 
+  if (!selectedMatrix) return null;
+
+  const isBase = JSON.stringify(T) === JSON.stringify(baseQuantizationTable);
+  const qLabel =
+    qualityFactor <= 30
+      ? "High compression — large step sizes, many coefficients become zero."
+      : qualityFactor <= 70
+      ? "Balanced — moderate step sizes."
+      : "High quality — fine step sizes, few coefficients removed.";
+
+  const cellCls = (r, c, extra = "") =>
+    "qzCell " + (done ? "qzClick " : "") + extra + (current.row === r && current.col === c ? " qzActive" : "") + (done && sr === r && sc === c ? " qzChosen" : "");
+
   return (
-    <div className="quantContainer">
-      <div className="quantHeading">
+    <div className="quantContainer qzRoot">
+
+      <div className="qzHeading">
         <h2>Quantization</h2>
-        <p>
-          Each frequency coefficient F(u,v) is divided by a quality-scaled
-          quantization step T(u,v) and rounded, removing perceptually minor detail.
-        </p>
+        <p>Each coefficient F(u,v) is divided by a step size T(u,v) and rounded — small, less important detail becomes zero.</p>
       </div>
 
-
-      <div className="qualityCard">
-        <h3>Quality Factor</h3>
+      <div className="qzQuality qualityCard">
+        <div className="qzQualityTop">
+          <h3>Quality Factor</h3>
+          <span className="qzQValue">Q = {qualityFactor}</span>
+          <span className="qzQText">
+            {qLabel} {isBase ? "(base table)" : ""}
+          </span>
+        </div>
         <input
           type="range"
           min="10"
@@ -195,203 +224,188 @@ function Quantization() {
           step="10"
           value={qualityFactor}
           onChange={(e) => setQualityFactor(Number(e.target.value))}
-          disabled={hasRun}
+          disabled={running}
         />
-        <div className="qfMarks">
+        <div className="qzMarks">
           {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((q) => (
-            <span key={q} className={qualityFactor === q ? "qfMarkActive" : ""}>Q{q}</span>
+            <span key={q} className={qualityFactor === q ? "qzMarkOn" : ""}>Q{q}</span>
           ))}
-        </div>
-        <h2>Q = {qualityFactor}</h2>
-        <p>
-          {qualityFactor <= 30
-            ? "High Compression \u2014 aggressive scaling, more coefficients rounded to zero."
-            : qualityFactor <= 70
-            ? "Balanced Compression \u2014 moderate step sizes, typical operating point."
-            : "High Image Quality \u2014 fine step sizes, fewer coefficients removed."}
-        </p>
-        <div className="qfNote">
-          {isBaseTable
-            ? "Currently using the unscaled base quantization table (Q = 50 reference point)."
-            : `Base table entries are ${qualityFactor < 50 ? "scaled up" : "scaled down"} using scale = ${
-                qualityFactor < 50 ? (5000 / qualityFactor).toFixed(0) : (200 - qualityFactor * 2).toFixed(0)
-              } / 100.`}
         </div>
       </div>
 
-      <div className="quantLayout">
-        <div className="matrixCard">
+      <div className="qzMatrices">
+        <div className="qzCard">
           <h3>Frequency Matrix F(u,v)</h3>
-          <div className="miniMatrix">
-            {currentFrequency.flat().map((value, index) => (
-              <span
-                key={index}
-                className={currentRow === Math.floor(index / 8) && currentCol === index % 8 ? "activeCell" : ""}
-              >
-                {Number(value).toFixed(1)}
-              </span>
-            ))}
+          <div className="qzGrid">
+            {F.map((row, r) =>
+              row.map((v, c) => (
+                <span key={r + "-" + c} className={cellCls(r, c)} onClick={() => pick(r, c)}>{fx(v, 1)}</span>
+              ))
+            )}
           </div>
         </div>
 
-        <div className="operator">÷</div>
+        <div className="qzOp">÷</div>
 
-        <div className="matrixCard">
+        <div className="qzCard">
           <h3>Quantization Table T(u,v)</h3>
-          <div className="miniMatrix">
-            {scaledQuantMatrix.flat().map((value, index) => (
-              <span
-                key={index}
-                className={currentRow === Math.floor(index / 8) && currentCol === index % 8 ? "activeCell" : ""}
-              >
-                {value}
-              </span>
-            ))}
+          <div className="qzGrid">
+            {T.map((row, r) =>
+              row.map((v, c) => (
+                <span key={r + "-" + c} className={cellCls(r, c)} onClick={() => pick(r, c)}>{v}</span>
+              ))
+            )}
           </div>
         </div>
 
-        <div className="operator">=</div>
+        <div className="qzOp">=</div>
 
-        <div className="matrixCard">
+        <div className="qzCard">
           <h3>Quantized Matrix Q(u,v)</h3>
-          <div className="miniMatrix">
-            {quantizedMatrix.length === 0
-              ? Array.from({ length: 64 }).map((_, index) => <span key={index} className="pendingCell">·</span>)
-              : quantizedMatrix.flat().map((value, index) => {
-                  const r = Math.floor(index / 8);
-                  const c = index % 8;
-                  return (
-                    <span
-                      key={index}
-                      onClick={() => setSelectedCell({ row: r, col: c })}
-                      className={
-                        (currentRow === r && currentCol === c ? "generatedCell " : "") +
-                        (value === 0 ? "zeroCell " : "") +
-                        (selectedCell.row === r && selectedCell.col === c ? "chosenCell" : "")
-                      }
-                    >
-                      {value}
-                    </span>
-                  );
-                })}
+          <div className="qzGrid">
+            {Array.from({ length: 64 }).map((_, i) => {
+              const r = Math.floor(i / N);
+              const c = i % N;
+              const val = quantizedMatrix.length === N ? quantizedMatrix[r][c] : null;
+              if (val === null || val === undefined) {
+                return <span key={i} className={cellCls(r, c, "qzPending")} onClick={() => pick(r, c)}>·</span>;
+              }
+              return (
+                <span key={i} className={cellCls(r, c, val === 0 ? "qzZero" : "qzNonZero")} onClick={() => pick(r, c)}>{val}</span>
+              );
+            })}
           </div>
         </div>
       </div>
 
-      <div className="progressCard">
-        <button className="quantButton" onClick={performQuantization} disabled={hasRun}>
-          Perform Quantization
+      <div className="qzBar">
+        <button className="actionBtn qzRunBtn" onClick={perform} disabled={running || done}>
+          {running ? "Quantizing…" : done ? "Quantization Done" : "Perform Quantization"}
         </button>
-      </div>
-
-      <div className="formulaSection">
-        <h3>Quantization Formula</h3>
-        <div className="formulaCard">
-          <h2>Q(u,v) = Round( F(u,v) / T(u,v) )</h2>
-          <p><b>F(u,v)</b> → Frequency coefficient from the transform stage</p>
-          <p><b>T(u,v)</b> → Quality-scaled quantization step size</p>
-          <p><b>Q(u,v)</b> → Quantized (compressed) coefficient</p>
-          <hr />
-          <p>
-            Each transform coefficient is divided by its corresponding quantization step
-            and rounded to the nearest integer, discarding the fractional remainder.
-            This rounding is the source of the information loss in transform coding.
-          </p>
-        </div>
-      </div>
-
-      <div className="currentCalculation">
-        <div className="calcHeaderRow">
-          <h3>Selected Coefficient Calculation</h3>
-          <span className="calcCellBadge">u = {selectedCell.row}, v = {selectedCell.col}</span>
-        </div>
-
-        <div className="playControls">
-          <button className="calcPlayBtn" onClick={playCalc}>▶ Play</button>
-          <button className="calcPlayBtn calcFastForward" onClick={fastForwardCalc}>⚡ Show All</button>
-        </div>
-
-        <div className="calcTimeline">
-          {quantTimelineSteps.slice(0, calcStep).map((step, i) => (
-            <div key={i} className={step.isResult ? "calcTimelineItem calcResultItem" : "calcTimelineItem"}>
-              <div className="calcStepBadge">{step.isResult ? "✓" : i + 1}</div>
-              <div className="calcStepBody">
-                <div className="calcStepLabel">{step.label}</div>
-                <div className="calcStepExpr">{step.node}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {selectedQuantized === null && (
-          <p className="calcHint">Click &quot;Perform Quantization&quot; above to also reveal this coefficient in the Quantized Matrix.</p>
+        {done ? (
+          <div className="qzStats">
+            <div><b>{zeroCount}</b><span>zero</span></div>
+            <div><b>{nonZeroCount}</b><span>non-zero</span></div>
+            <div><b>{zeroPercent}%</b><span>of the 64 are zero</span></div>
+          </div>
+        ) : (
+          <span className="qzHint">{running ? "Dividing each coefficient and rounding…" : "Press “Perform Quantization” to compute Q."}</span>
         )}
       </div>
 
-      <div className="zeroStatsSection">
-        <h3>Zero Coefficient Visualization</h3>
-        <div className="zeroStatsGrid">
-          <div className="zeroStatCard zeroCard">
-            <span className="statLabel">Zero Coefficients</span>
-            <span className="statValue">{zeroCount}</span>
-          </div>
-          <div className="zeroStatCard nonZeroCard">
-            <span className="statLabel">Non-Zero Coefficients</span>
-            <span className="statValue">{nonZeroCount}</span>
-          </div>
-          <div className="zeroStatCard percentCard">
-            <span className="statLabel">Zero Percentage</span>
-            <span className="statValue">{zeroPercent}%</span>
-          </div>
-        </div>
-        <div className="zeroBarTrack">
-          <div className="zeroBarFill" style={{ width: `${zeroPercent}%` }} />
-        </div>
-        <p className="zeroBarCaption">Proportion of the 64 coefficients rounded to zero (green cells above).</p>
-      </div>
-
-      <div className="compressionSection">
-        <h3>Compression Analysis</h3>
-        <div className="compressionGrid">
-          <div className="compressionCard">
-            <span className="statLabel">Estimated Compression Ratio</span>
-            <span className="statValue">{compressionRatio} : 1</span>
-          </div>
-          <div className="compressionCard">
-            <span className="statLabel">Information Removed</span>
-            <span className="statValue">{infoRemovedPercent}%</span>
-          </div>
-          <div className="compressionCard">
-            <span className="statLabel">Information Retained</span>
-            <span className="statValue">{(100 - infoRemovedPercent).toFixed(1)}%</span>
-          </div>
-        </div>
-        <div className="compressionChart">
-          <div className="chartBarGroup">
-            <div className="chartBar" style={{ height: "100%" }}><span>64</span></div>
-            <label>Before Quantization</label>
-          </div>
-          <div className="chartBarGroup">
-            <div
-              className="chartBar chartBarAfter"
-              style={{ height: `${Math.max(4, (nonZeroCount / 64) * 100)}%` }}
-            >
-              <span>{nonZeroCount || "\u2014"}</span>
+      <div className="qzCalc currentCalculation">
+        <div className="qzCalcHead">
+          <h3>Selected Coefficient</h3>
+          {done && <span className="qzBadge">u = {sr}, v = {sc}</span>}
+          {done && (
+            <div className="qzPlay">
+              <button onClick={playCalc}>▶ Play</button>
+              <button onClick={() => setCalcStep(99)}>Show all</button>
             </div>
-            <label>Non-Zero After Quantization</label>
-          </div>
+          )}
         </div>
+        {done ? (
+          <div className="qzRows">
+            {calcRows.slice(0, calcStep).map((s, i) => (
+              <div key={i} className={"qzRow" + (s.isResult ? " qzRowResult" : "")}>
+                <div className="qzRowLabel">{s.label}</div>
+                <div className="qzRowExpr">{s.node}</div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="qzEmpty">After quantization, click any cell to see how its value is calculated.</div>
+        )}
       </div>
 
-      <div className="observationCard">
-        <h3>Research Insights & Educational Observations</h3>
-        <ul>
-          <li><b>Why high frequencies vanish:</b> the quantization table assigns large step sizes to high (u,v) indices, so small high-frequency coefficients divide down toward zero and round away.</li>
-          <li><b>How compression is achieved:</b> long runs of zero coefficients (visible above) compress extremely well under run-length and entropy coding in the next stages.</li>
-          <li><b>Why visual quality remains acceptable:</b> most of a natural image's energy is concentrated in the low-frequency (top-left) coefficients, which this table preserves with fine step sizes.</li>
-          <li><b>Transform-coding generality:</b> this quantize-then-entropy-code strategy applies to any orthogonal transform (DCT, DST, Walsh-Hadamard, wavelets); it is a general transform-coding principle, not tied to one file format.</li>
-          <li><b>Trade-off:</b> lowering the quality factor increases the compression ratio but also increases reconstruction error, quantified later using PSNR in Step 10.</li>
-        </ul>
+      <div className="qzExtra">
+
+        <div className="formulaSection">
+          <h3>Quantization Formula</h3>
+          <div className="formulaCard">
+            <h2>Q(u,v) = Round( F(u,v) / T(u,v) )</h2>
+            <p><b>F(u,v)</b> → Frequency coefficient from the transform stage</p>
+            <p><b>T(u,v)</b> → Quality-scaled quantization step size</p>
+            <p><b>Q(u,v)</b> → Quantized (compressed) coefficient</p>
+            <hr />
+            <p>
+              Each transform coefficient is divided by its corresponding quantization step
+              and rounded to the nearest integer, discarding the fractional remainder.
+              This rounding is the source of the information loss in transform coding.
+            </p>
+          </div>
+        </div>
+
+        {done && (
+          <>
+        <div className="zeroStatsSection">
+          <h3>Zero Coefficient Visualization</h3>
+          <div className="zeroStatsGrid">
+            <div className="zeroStatCard zeroCard">
+              <span className="statLabel">Zero Coefficients</span>
+              <span className="statValue">{zeroCount}</span>
+            </div>
+            <div className="zeroStatCard nonZeroCard">
+              <span className="statLabel">Non-Zero Coefficients</span>
+              <span className="statValue">{nonZeroCount}</span>
+            </div>
+            <div className="zeroStatCard percentCard">
+              <span className="statLabel">Zero Percentage</span>
+              <span className="statValue">{zeroPercent}%</span>
+            </div>
+          </div>
+          <div className="zeroBarTrack">
+            <div className="zeroBarFill" style={{ width: `${zeroPercent}%` }} />
+          </div>
+          <p className="zeroBarCaption">Proportion of the 64 coefficients rounded to zero (grey cells above).</p>
+        </div>
+
+        <div className="compressionSection">
+          <h3>Compression Analysis</h3>
+          <div className="compressionGrid">
+            <div className="compressionCard">
+              <span className="statLabel">Estimated Compression Ratio</span>
+              <span className="statValue">{compressionRatio} : 1</span>
+            </div>
+            <div className="compressionCard">
+              <span className="statLabel">Coefficients Removed</span>
+              <span className="statValue">{infoRemovedPercent}%</span>
+            </div>
+            <div className="compressionCard">
+              <span className="statLabel">Coefficients Kept</span>
+              <span className="statValue">{(100 - infoRemovedPercent).toFixed(1)}%</span>
+            </div>
+          </div>
+          <div className="compressionChart">
+            <div className="chartBarGroup">
+              <div className="chartBar" style={{ height: "100%" }}><span>64</span></div>
+              <label>Before Quantization</label>
+            </div>
+            <div className="chartBarGroup">
+              <div
+                className="chartBar chartBarAfter"
+                style={{ height: `${Math.max(4, (nonZeroCount / 64) * 100)}%` }}
+              >
+                <span>{nonZeroCount || "\u2014"}</span>
+              </div>
+              <label>Non-Zero After Quantization</label>
+            </div>
+          </div>
+        </div>
+          </>
+        )}
+
+        <div className="observationCard">
+          <h3>Research Insights & Educational Observations</h3>
+          <ul>
+            <li><b>Why high frequencies vanish:</b> the quantization table assigns large step sizes to high (u,v) indices, so small high-frequency coefficients divide down toward zero and round away.</li>
+            <li><b>How compression is achieved:</b> long runs of zero coefficients (visible above) compress extremely well under run-length and entropy coding in the next stages.</li>
+            <li><b>Why visual quality remains acceptable:</b> most of a natural image&apos;s energy is concentrated in the low-frequency (top-left) coefficients, which this table preserves with fine step sizes.</li>
+            <li><b>Transform-coding generality:</b> this quantize-then-entropy-code strategy applies to any orthogonal transform (DCT, DST, Walsh-Hadamard, wavelets); it is a general transform-coding principle, not tied to one file format.</li>
+            <li><b>Trade-off:</b> lowering the quality factor increases the compression ratio but also increases reconstruction error, quantified later using PSNR in Step 8.</li>
+          </ul>
+        </div>
+
       </div>
 
     </div>

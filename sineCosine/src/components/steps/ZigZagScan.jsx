@@ -13,6 +13,7 @@ function ZigZagScan() {
   const [cursor, setCursor] = useState(-1);
   const [status, setStatus] = useState(zigzagArray && zigzagArray.length===64 ? "Completed ✓" : "Waiting");
   const intervalRef = useRef(null);
+  const finishRef = useRef(null);
   const prevKey = useRef(JSON.stringify(quantizedMatrix)+selectedBlock+transform);
 
   const hasQuantized = quantizedMatrix.length === 8;
@@ -28,7 +29,12 @@ function ZigZagScan() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quantizedMatrix, selectedBlock, transform]);
 
-  useEffect(() => () => intervalRef.current && clearInterval(intervalRef.current), []);
+  // leaving mid-scan: finish the result instantly so a half-filled array is never left behind
+  useEffect(() => () => {
+    const wasRunning = !!intervalRef.current;
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (wasRunning && finishRef.current) finishRef.current();
+  }, []);
 
   const runScan = () => {
     if (!hasQuantized) return;
@@ -38,6 +44,7 @@ function ZigZagScan() {
     setZigzagArray([]);
     let i = 0;
     const output = [];
+    finishRef.current = () => setZigzagArray(ORDER.map(([r, c]) => quantizedMatrix[r][c]));
 
     intervalRef.current = setInterval(() => {
       const [r, c] = ORDER[i];
@@ -47,6 +54,8 @@ function ZigZagScan() {
       i++;
       if (i >= ORDER.length) {
         clearInterval(intervalRef.current);
+        intervalRef.current = null;
+        finishRef.current = null;
         setStatus("Completed \u2713");
         setCursor(-1);
       }
@@ -71,7 +80,7 @@ function ZigZagScan() {
 
       {!hasQuantized && (
         <div className="zzWarning">
-          Please complete Step 6 (Quantization) for this block first, then return here.
+          Please complete Step 5 (Quantization) for this block first, then return here.
         </div>
       )}
 
@@ -130,7 +139,7 @@ function ZigZagScan() {
             {zigzagArray.length < 64 && <span className="zzTokPending"> …</span>}]
           </div>
           <p className="zz1dCaption">
-            Index 0 is the DC coefficient; trailing zeros form the run that Step 8 will compress.
+            Index 0 is the DC coefficient; trailing zeros form the run that Step 7 will compress.
           </p>
         </div>
       </div>
@@ -155,7 +164,7 @@ function ZigZagScan() {
         <h3>Research Observations</h3>
         <ul>
           <li>Low spatial frequencies dominate the early part of the sequence, since they carry most of the block's signal energy.</li>
-          <li>Long trailing zero-runs are the direct result of the diagonal ordering combined with Step 6's quantization.</li>
+          <li>Long trailing zero-runs are the direct result of the diagonal ordering combined with Step 5's quantization.</li>
           <li>Alternative scan orders (e.g. horizontal, vertical, or Hilbert-curve scans) exist, but the zig-zag order is preferred because it best matches the energy distribution of DCT/DST coefficients for natural images.</li>
         </ul>
       </div>

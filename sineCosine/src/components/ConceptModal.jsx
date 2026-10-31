@@ -42,22 +42,22 @@ const nextStep = () => {
     return;
   }
 
-  if (activeStep === 4 && (!frequencyMatrix || frequencyMatrix.length === 0)) {
+  if (activeStep === 4 && (!frequencyMatrix || frequencyMatrix.length === 0 || frequencyMatrix.some((row) => row.some((v) => v === null)))) {
     setPopupMessage("Please click 'Perform Transform' first before proceeding.");
     return;
   }
 
-  if (activeStep === 5 && (!quantizedMatrix || quantizedMatrix.length === 0)) {
+  if (activeStep === 5 && (!quantizedMatrix || quantizedMatrix.length === 0 || quantizedMatrix.some((row) => row.some((v) => v === null)))) {
     setPopupMessage("Please click 'Perform Quantization' first before proceeding.");
     return;
   }
 
-  if (activeStep === 6 && (!zigzagArray || zigzagArray.length === 0)) {
+  if (activeStep === 6 && (!zigzagArray || zigzagArray.length !== 64)) {
     setPopupMessage("Please run the Zig-Zag Scan first before proceeding.");
     return;
   }
 
-  if (activeStep === 7 && (!encodedRuns || !encodedRuns.pairs || encodedRuns.pairs.length === 0)) {
+  if (activeStep === 7 && (!encodedRuns || !encodedRuns.done)) {
     setPopupMessage("Please run Run-Length Encoding first before proceeding.");
     return;
   }
@@ -177,10 +177,14 @@ const startSimulation = () => {
           {step.id}
         </span>
 
-        {step.title}
+        <span className="stepTitle">{step.title}</span>
       </li>
     ))}
   </ul>
+
+  <div className="mobileStepTitle">
+    Step {activeStep} · {steps.find((x) => x.id === activeStep)?.title}
+  </div>
 
   <div className="controlButtons">
 
@@ -286,7 +290,8 @@ Output Data Here
 
 
 
-  <div className="explanationBox">
+{activeStep !== 1 && (
+<div className="explanationBox">
 
 <h3>Explanation</h3>
 
@@ -306,12 +311,7 @@ reduced or discarded, resulting in a significant
 reduction in storage requirements.
 </p>
 
-
-
-
 ) : (
-
-  
 
 <p>
 {steps[activeStep - 1]?.description}
@@ -319,10 +319,8 @@ reduction in storage requirements.
 
 )}
 
-
-
-
 </div>
+)}
 
 
 </div>

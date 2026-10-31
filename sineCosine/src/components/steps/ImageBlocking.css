@@ -10,7 +10,7 @@ display:flex;
 
 flex-direction:column;
 
-gap:28px;
+gap:16px;
 
 }
 
@@ -34,7 +34,7 @@ font-size:28px;
 
 color:#123b8d;
 
-margin-bottom:10px;
+margin-bottom:4px;
 
 }
 
@@ -46,7 +46,7 @@ margin:auto;
 
 color:#666;
 
-line-height:1.7;
+line-height:1.4;
 
 }
 
@@ -69,7 +69,7 @@ flex-wrap:nowrap;
 
 background:#fff;
 
-padding:24px;
+padding:18px 22px;
 
 border-radius:18px;
 
@@ -106,7 +106,7 @@ transform:scale(1.03);
 
 text-align:center;
 
-margin-bottom:18px;
+margin-bottom:12px;
 
 color:#123b8d;
 
@@ -237,7 +237,7 @@ flex-wrap:wrap;
 
 background:white;
 
-padding:18px;
+padding:12px 18px;
 
 border-radius:15px;
 
@@ -249,7 +249,7 @@ flex-direction:column;
 
 align-items:center;
 
-gap:10px;
+gap:6px;
 
 }
 
@@ -733,4 +733,204 @@ filter:brightness(1.7);
 
 }
 
+}
+
+/* ---------- Entry animation: image splits into 4 blocks ---------- */
+
+/* the 16x16 image is built from four 8x8 quadrants */
+.matrixPreviewGrid{
+  grid-template-columns:repeat(2,1fr);
+  grid-template-rows:repeat(2,1fr);
+}
+
+.quad{
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  grid-template-rows:repeat(8,1fr);
+  overflow:hidden;
+  border-radius:0;
+  transform-origin:center;
+  transition:
+    transform .9s cubic-bezier(.34,1.56,.64,1),
+    border-radius .5s,
+    box-shadow .5s,
+    opacity .4s,
+    filter .4s;
+}
+
+.phaseHeading{
+  min-height:1.3em;
+  animation:phaseHeadIn .45s ease;
+}
+
+@keyframes phaseHeadIn{
+  from{opacity:0;transform:translateY(-6px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* laser cut lines + flash where they cross */
+.cutLine{
+  position:absolute;
+  z-index:3;
+  pointer-events:none;
+  background:#fff;
+  box-shadow:0 0 0 1.5px #2563eb, 0 0 14px 2px rgba(37,99,235,.9);
+  opacity:0;
+  transition:opacity .35s;
+}
+
+.cutV{
+  left:50%;
+  top:0;
+  width:3px;
+  height:100%;
+  transform:translateX(-50%) scaleY(0);
+  transform-origin:top;
+}
+
+.cutH{
+  top:50%;
+  left:0;
+  height:3px;
+  width:100%;
+  transform:translateY(-50%) scaleX(0);
+  transform-origin:left;
+}
+
+.cutDot{
+  position:absolute;
+  z-index:4;
+  left:50%;
+  top:50%;
+  width:18px;
+  height:18px;
+  margin:-9px 0 0 -9px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 0 3px #2563eb, 0 0 26px 10px rgba(37,99,235,.8);
+  opacity:0;
+  transform:scale(0);
+  pointer-events:none;
+}
+
+.split1 .cutV{opacity:1;transform:translateX(-50%) scaleY(1);transition:transform .55s ease, opacity .35s;}
+.split1 .cutH{opacity:1;transform:translateY(-50%) scaleX(1);transition:transform .55s ease .5s, opacity .35s .5s;}
+.split1 .cutDot{animation:cutFlash .6s ease 1s both;}
+
+@keyframes cutFlash{
+  0%{opacity:1;transform:scale(0);}
+  60%{opacity:1;transform:scale(1.6);}
+  100%{opacity:0;transform:scale(3.2);}
+}
+
+.split2 .cutV,.split3 .cutV{transform:translateX(-50%) scaleY(1);}
+.split2 .cutH,.split3 .cutH{transform:translateY(-50%) scaleX(1);}
+
+/* the four parts fly apart as separate tiles (quadrant + its overlay move together) */
+.split2 .quad{
+  border-radius:12px;
+  box-shadow:0 14px 28px rgba(15,23,42,.38);
+}
+.split2 .quad1,.split2 .ob1{transform:translate(-24px,-14px) rotate(-3deg) scale(.95);}
+.split2 .quad2,.split2 .ob2{transform:translate(24px,-14px) rotate(3deg) scale(.95);}
+.split2 .quad3,.split2 .ob3{transform:translate(-24px,14px) rotate(3deg) scale(.95);}
+.split2 .quad4,.split2 .ob4{transform:translate(24px,14px) rotate(-3deg) scale(.95);}
+
+/* ---------- Block overlay (labels + selection) ---------- */
+.blockOverlay{
+  transition:opacity .45s;
+}
+.split0 .blockOverlay,
+.split1 .blockOverlay{
+  opacity:0;
+}
+
+.overlayBlock{
+  transform-origin:center;
+  border:2px solid rgba(59,130,246,.9);
+  background:transparent;
+  border-radius:0;
+  animation:none;
+  transition:
+    transform .9s cubic-bezier(.34,1.56,.64,1),
+    border-radius .5s,
+    border-color .3s,
+    background .3s,
+    box-shadow .3s;
+}
+
+.split0 .overlayBlock,
+.split1 .overlayBlock,
+.split2 .overlayBlock{
+  pointer-events:none;
+}
+
+.split2 .overlayBlock{
+  border:3px solid #fff;
+  border-radius:12px;
+  background:rgba(37,99,235,.15);
+}
+
+.blockLabel{
+  pointer-events:none;
+  background:rgba(255,255,255,.92);
+  color:#1d4ed8;
+  padding:2px 12px;
+  border-radius:14px;
+  font-size:16px;
+  font-weight:800;
+  box-shadow:0 2px 8px rgba(0,0,0,.25);
+  transition:font-size .5s, padding .5s, border-radius .5s;
+}
+
+.split2 .blockLabel{
+  font-size:34px;
+  padding:6px 22px;
+  border-radius:24px;
+  animation:labelPop .55s cubic-bezier(.34,1.56,.64,1) both;
+}
+.split2 .ob2 .blockLabel{animation-delay:.15s;}
+.split2 .ob3 .blockLabel{animation-delay:.3s;}
+.split2 .ob4 .blockLabel{animation-delay:.45s;}
+
+@keyframes labelPop{
+  from{transform:scale(0);opacity:0;}
+  to{transform:scale(1);opacity:1;}
+}
+
+/* hover on a block before choosing */
+.split3 .overlayBlock:not(.activeOverlay):hover{
+  background:rgba(37,99,235,.16);
+  border-color:#2563eb;
+}
+
+/* once a block is chosen: the other three fade out, chosen one glows */
+.quad.dim{
+  opacity:.25;
+  filter:grayscale(.85);
+}
+
+.hasSel .overlayBlock:not(.activeOverlay){
+  border-color:transparent;
+}
+
+.hasSel .overlayBlock:not(.activeOverlay) .blockLabel{
+  opacity:.55;
+}
+
+.split3 .activeOverlay{
+  border:3px solid #2563eb;
+  background:rgba(37,99,235,.08);
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.9), 0 0 24px rgba(37,99,235,.75);
+  animation:selGlow 1.4s ease-in-out infinite alternate;
+}
+
+.activeOverlay .blockLabel{
+  background:#2563eb;
+  color:#fff;
+}
+
+@keyframes selGlow{
+  from{box-shadow:inset 0 0 0 3px rgba(255,255,255,.9), 0 0 10px rgba(37,99,235,.5);}
+  to{box-shadow:inset 0 0 0 3px rgba(255,255,255,.9), 0 0 26px rgba(37,99,235,.9);}
 }

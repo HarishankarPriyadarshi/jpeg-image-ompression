@@ -1,6 +1,6 @@
 import "./ImageBlocking.css";
 import { useMatrix } from "../../context/MatrixContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function ImageBlocking() {
 
@@ -11,6 +11,29 @@ const [filledCells, setFilledCells] = useState(blockCreated ? 64 : 0);
 const [status, setStatus] = useState(blockCreated ? "Ready ✓" : "Waiting");
 
 const [scanRow,setScanRow]=useState(-1);
+
+// Entry animation: 0 = whole image, 1 = cut lines drawn, 2 = four parts
+// slide apart (B1-B4 appear), 3 = settled back, ready for interaction.
+// Skipped when the block was already created (e.g. coming back from a later step).
+const [phase,setPhase]=useState(blockCreated?3:0);
+
+useEffect(()=>{
+if(phase===3) return;
+const timers=[
+setTimeout(()=>setPhase(1),400),
+setTimeout(()=>setPhase(2),1750),
+setTimeout(()=>setPhase(3),3950)
+];
+return ()=>timers.forEach(clearTimeout);
+// eslint-disable-next-line react-hooks/exhaustive-deps
+},[]);
+
+const phaseHeadings=[
+"Input Image Matrix (16 × 16)",
+"Dividing the image into 4 parts…",
+"Four 8 × 8 blocks: B1, B2, B3, B4",
+"Input Image Matrix"
+];
 
 
 
@@ -127,81 +150,58 @@ block before applying the transform.
 
 <div className="inputBlock">
 
-<h3>Input Image Matrix</h3>
-<div className="imageWrapper">
+<h3 className="phaseHeading" key={phase}>{phaseHeadings[phase]}</h3>
+<div className={`imageWrapper split${phase}${selectedBlock?" hasSel":""}`} onClick={()=>{ if(phase<3) setPhase(3); }} title={phase<3?"Click to skip animation":undefined}>
+
+<div className="cutLine cutV"></div>
+<div className="cutLine cutH"></div>
+<div className="cutDot"></div>
 
 <div className="matrixPreviewGrid">
 
-    
-{selectedMatrix.data.map((row,rowIndex)=>
-
-row.map((value,colIndex)=>(
-
+{[0,1,2,3].map(b=>{
+const br=Math.floor(b/2);
+const bc=b%2;
+return(
 <div
-key={rowIndex+"-"+colIndex}
-className={`previewPixel
-${
-rowIndex >= rowStart &&
-rowIndex < rowEnd &&
-colIndex >= colStart &&
-colIndex < colEnd
-?
-"selectedPreview"
-:
-""
-}
-${
-rowIndex===scanRow
-?
-" scanningRow"
-:
-""
-}`}
-style={{
-background:`rgb(${value},${value},${value})`
-}}
+key={b}
+className={`quad quad${b+1}${selectedBlock && selectedBlock!==b+1 ? " dim" : ""}`}
+>
+{Array.from({length:64}).map((_,idx)=>{
+const r=Math.floor(idx/8);
+const c=idx%8;
+const rowIndex=br*8+r;
+const colIndex=bc*8+c;
+const value=selectedMatrix.data[rowIndex][colIndex];
+return(
+<div
+key={idx}
+className={rowIndex===scanRow?"previewPixel scanningRow":"previewPixel"}
+style={{background:`rgb(${value},${value},${value})`}}
 ></div>
-
-))
-
-)}
+);
+})}
+</div>
+);
+})}
 
 </div>
 
 <div className="blockOverlay">
 
+{[1,2,3,4].map(id=>(
 <div
-className={selectedBlock===1?"overlayBlock activeOverlay":"overlayBlock"}
-onClick={()=>!blockCreated && setSelectedBlock(1)}
+key={id}
+className={`overlayBlock ob${id}${selectedBlock===id?" activeOverlay":""}`}
+onClick={()=>!blockCreated && setSelectedBlock(id)}
 >
-B1
+<span className="blockLabel">B{id}</span>
 </div>
+))}
 
-<div
-className={selectedBlock===2?"overlayBlock activeOverlay":"overlayBlock"}
-onClick={()=>!blockCreated && setSelectedBlock(2)}
->
-B2
-</div>
-
-<div
-className={selectedBlock===3?"overlayBlock activeOverlay":"overlayBlock"}
-onClick={()=>!blockCreated && setSelectedBlock(3)}
->
-B3
-</div>
-
-<div
-className={selectedBlock===4?"overlayBlock activeOverlay":"overlayBlock"}
-onClick={()=>!blockCreated && setSelectedBlock(4)}
->
-B4
 </div>
 
 </div>
-
- </div>   
-
 
 </div>
 

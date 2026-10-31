@@ -77,11 +77,12 @@ const guidedTutorContent = [
     id: 7,
     title: "Step 7 — Encoding",
     intro:
-      "Run-Length Encoding (RLE) compresses the zig-zag list by describing runs of zeros instead of storing every zero individually.",
+      "Run-Length Encoding (RLE) compresses the zig-zag list by counting how many times each value repeats consecutively and storing it as a (value, count) pair.",
     tips: [
-      "Each non-zero value is stored as a (run-of-zeros, value) pair — e.g. (3, 5) means \"three zeros, then a 5\".",
-      "Once only zeros remain until the end of the block, an End-Of-Block (EOB) marker replaces all of them.",
-      "The more zeros a block has after quantization, the shorter its encoded representation — this is the real compression payoff.",
+      "Classic example: 1,1,1,1,0,0,0,0,1,1,1,1,1,1,0,0 becomes (1,4) (0,4) (1,6) (0,2) — each pair is (value, how many times it repeated in a row).",
+      "This works for any repeated value, not just zero — but after quantization, zeros are by far the most common repeated value.",
+      "A value that never repeats still gets its own pair with count = 1, so no information is lost — the original sequence can always be rebuilt exactly.",
+      "The more zeros a block has after quantization, the fewer pairs it needs — this is the real compression payoff.",
     ],
   },
   {

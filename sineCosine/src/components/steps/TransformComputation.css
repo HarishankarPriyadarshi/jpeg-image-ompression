@@ -1763,13 +1763,12 @@ color:#123b8d;
     width:100%;
   }
   .energyBar{
-    flex-direction:column;
-    height:auto;
-    gap:2px;
+    flex-direction:row;
+    height:34px;
+    gap:0;
   }
   .energyBar > div{
-    width:100% !important;
-    height:32px;
+    height:100%;
     font-size:13px;
   }
   .coefficientCard{
@@ -1963,3 +1962,496 @@ color:#123b8d;
     position:relative;
   }
 }
+
+/* =====================================================================
+   Step 4 (Transform Computation) — simplified redesign
+   ===================================================================== */
+
+.tcRoot{
+  gap:12px !important;
+}
+
+.tcHeading{
+  text-align:center;
+}
+.tcHeading h2{
+  font-size:30px;
+  color:#123b8d;
+  margin:0 0 4px;
+}
+.tcHeading p{
+  margin:0;
+  font-size:16px;
+  color:#555;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.tcFormulaPill{
+  background:#eaf1ff;
+  color:#0f2a6b;
+  font-weight:800;
+  font-size:18px;
+  padding:3px 16px;
+  border-radius:20px;
+  font-family:"Cambria Math",Cambria,serif;
+}
+
+/* ---- C × A × Cᵀ ---- */
+.tcEq{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+.tcMat{
+  flex:1 1 0;
+  min-width:0;
+  background:#fff;
+  border-radius:16px;
+  box-shadow:0 6px 16px rgba(0,0,0,.08);
+  padding:10px 14px 14px;
+}
+.tcMat h3{
+  margin:0 0 8px;
+  text-align:center;
+  font-size:16px;
+  color:#123b8d;
+}
+.tcGrid{
+  display:grid;
+  grid-template-columns:repeat(8,minmax(0,1fr));
+  gap:2px;
+}
+.tcGrid span{
+  height:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  font-weight:700;
+  border-radius:3px;
+  font-variant-numeric:tabular-nums;
+  color:#0f172a;
+}
+.tcPos{background:#e6f0ff;}
+.tcNeg{background:#ffeedd;}
+.tcOp{
+  flex:0 0 auto;
+  font-size:34px;
+  font-weight:800;
+  color:#2563eb;
+}
+
+/* ---- progress chips + button ---- */
+.tcFlow{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:34px;
+  background:#fff;
+  padding:10px 20px;
+  border-radius:16px;
+  box-shadow:0 6px 16px rgba(0,0,0,.08);
+}
+.tcFlowChips{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.tcChip{
+  min-width:44px;
+  height:38px;
+  padding:0 10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+  background:#f1f5f9;
+  color:#94a3b8;
+  font-weight:800;
+  font-size:17px;
+  border:2px solid transparent;
+  transition:.3s;
+}
+.tcChipOn{
+  background:#dbeafe;
+  color:#1d4ed8;
+  border-color:#2563eb;
+  transform:scale(1.06);
+}
+.tcChipResult{
+  background:#16a34a;
+  color:#fff;
+  border-color:#16a34a;
+}
+.tcFlowOp{
+  font-size:20px;
+  font-weight:800;
+  color:#64748b;
+}
+.tcButton{
+  padding:11px 30px;
+  border:none;
+  border-radius:24px;
+  background:linear-gradient(135deg,#7c3aed,#2563eb,#0ea5e9);
+  background-size:200% 200%;
+  animation:basisGradientShift 3s ease infinite;
+  color:#fff;
+  font-size:16px;
+  font-weight:700;
+  letter-spacing:.3px;
+  cursor:pointer;
+  box-shadow:0 4px 14px rgba(37,99,235,.4);
+  transition:.25s;
+}
+.tcButton:hover:not(:disabled){
+  transform:translateY(-2px) scale(1.03);
+  box-shadow:0 8px 20px rgba(37,99,235,.55);
+}
+.tcButton:disabled{
+  cursor:default;
+}
+.tcButton:disabled:not(:empty){
+  opacity:1;
+}
+.tcFlow .tcButton:disabled{
+  animation:none;
+  background:#16a34a;
+  box-shadow:none;
+}
+
+/* ---- results ---- */
+.tcResult{
+  display:grid;
+  grid-template-columns:1.15fr 1fr;
+  gap:14px;
+  align-items:start;
+}
+
+.tcFreq,
+.tcDetail{
+  background:#fff;
+  border-radius:16px;
+  box-shadow:0 6px 16px rgba(0,0,0,.08);
+  padding:10px 16px 14px;
+}
+
+.tcFreqHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
+.tcFreqHead h3,
+.tcDetail h3{
+  margin:0;
+  font-size:16px;
+  color:#123b8d;
+}
+.tcLegend{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  font-size:12px;
+  color:#64748b;
+  font-weight:600;
+}
+.tcLegend i{
+  width:18px;
+  height:12px;
+  border-radius:2px;
+  display:inline-block;
+}
+.tcLegend span:first-child{margin-right:3px;}
+.tcLegend span:last-child{margin-left:3px;}
+
+.tcFreqGrid{
+  display:grid;
+  grid-template-columns:44px repeat(8,minmax(0,1fr));
+  gap:2px;
+}
+.tcHead,
+.tcCorner{
+  height:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#eaf1ff;
+  color:#123b8d;
+  font-weight:700;
+  font-size:12px;
+  border-radius:3px;
+}
+.tcCorner{
+  color:#64748b;
+  font-size:11px;
+}
+.tcCoef,
+.tcBlank{
+  height:34px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13.5px;
+  font-weight:700;
+  border-radius:4px;
+  font-variant-numeric:tabular-nums;
+}
+.tcCoef{
+  cursor:pointer;
+  transition:filter .15s;
+}
+.tcCoef:hover{
+  filter:brightness(.93);
+}
+.tcBlank{
+  background:#f8fafc;
+  border:1px dashed #cbd5e1;
+}
+.tcHeat0{background:#f1f5f9;color:#64748b;}
+.tcHeat1{background:#dbeafe;color:#1e3a8a;}
+.tcHeat2{background:#93c5fd;color:#1e3a8a;}
+.tcHeat3{background:#3b82f6;color:#fff;}
+.tcHeat4{background:#1d4ed8;color:#fff;}
+.tcCoefOn{
+  outline:3px solid #f97316;
+  outline-offset:-3px;
+}
+
+.tcStats{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+.tcStats div{
+  flex:1;
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  border-radius:10px;
+  padding:6px 10px;
+  text-align:center;
+}
+.tcStats b{
+  display:block;
+  font-size:17px;
+  color:#1d4ed8;
+}
+.tcStats span{
+  font-size:12px;
+  color:#64748b;
+  font-weight:600;
+}
+.tcHint{
+  margin-top:10px;
+  text-align:center;
+  color:#7c8aa5;
+  font-weight:600;
+  font-size:14px;
+}
+
+/* selected coefficient */
+.tcDetail h3{
+  text-align:center;
+  margin-bottom:6px;
+}
+.tcSelTop{
+  display:flex;
+  align-items:baseline;
+  justify-content:center;
+  gap:16px;
+}
+.tcSelName{
+  font-size:22px;
+  font-weight:800;
+  color:#123b8d;
+  font-family:"Cambria Math",Cambria,serif;
+}
+.tcSelValue{
+  font-size:34px;
+  font-weight:800;
+  color:#2563eb;
+}
+.tcSelTag{
+  display:table;
+  margin:2px auto 6px;
+  background:#eaf1ff;
+  color:#123b8d;
+  font-weight:700;
+  font-size:13px;
+  padding:4px 14px;
+  border-radius:20px;
+}
+.tcSelText{
+  text-align:center;
+  font-size:14.5px;
+  color:#475569;
+  line-height:1.45;
+  margin:0 0 10px;
+}
+.tcCalcHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-top:1px solid #e5e7eb;
+  padding-top:8px;
+}
+.tcCalcHead h4{
+  margin:0;
+  font-size:14px;
+  color:#123b8d;
+}
+.tcPlay button{
+  margin-left:6px;
+  padding:5px 12px;
+  border:none;
+  border-radius:14px;
+  background:#2563eb;
+  color:#fff;
+  font-weight:700;
+  font-size:12px;
+  cursor:pointer;
+}
+.tcPlay button:last-child{
+  background:#0ea5e9;
+}
+.tcCalc{
+  margin-top:6px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.tcCalcRow{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  background:#f8fafc;
+  border-radius:8px;
+  padding:7px 10px;
+}
+.tcCalcLabel{
+  flex:0 0 104px;
+  font-size:11.5px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.3px;
+  color:#8a9bbf;
+  padding-top:2px;
+}
+.tcCalcExpr{
+  flex:1;
+  min-width:0;
+  font-family:Consolas,monospace;
+  font-size:13.5px;
+  color:#1e293b;
+}
+.tcTerms{
+  display:flex;
+  flex-wrap:wrap;
+  gap:3px 6px;
+}
+.tcTerm i{
+  font-style:normal;
+  color:#2563eb;
+  font-weight:800;
+  margin-right:5px;
+}
+.tcCalcResult{
+  background:#f0fdf4;
+}
+.tcCalcResult .tcCalcLabel{
+  color:#16a34a;
+}
+.tcCalcResult b{
+  color:#16a34a;
+  font-size:16px;
+}
+
+.tcEmpty{
+  margin-top:10px;
+  padding:46px 22px;
+  text-align:center;
+  font-size:15px;
+  font-weight:600;
+  color:#7c8aa5;
+  line-height:1.5;
+  background:#f8fbff;
+  border:2px dashed #c7d7ff;
+  border-radius:14px;
+}
+
+@media(max-width:1100px){
+  .tcEq{flex-wrap:wrap;}
+  .tcMat{flex:1 1 100%;}
+  .tcResult{grid-template-columns:1fr;}
+  .tcFlow{flex-direction:column;gap:12px;}
+}
+@media(max-width:600px){
+  .tcGrid span{font-size:9px;height:22px;}
+  .tcCoef,.tcBlank{height:26px;font-size:9.5px;}
+  .tcFreqGrid{grid-template-columns:30px repeat(8,minmax(0,1fr));}
+  .tcStats{flex-wrap:wrap;}
+}
+
+
+/* ---- simple look: no green / ticks, 4-decimal basis, foldable matrices ---- */
+.tcEq .tcMat:nth-child(1),
+.tcEq .tcMat:nth-child(5){flex:1.35 1 0;}
+.tcEq .tcMat:nth-child(3){flex:.8 1 0;}
+.tcEq .tcMat:nth-child(1) .tcGrid span,
+.tcEq .tcMat:nth-child(5) .tcGrid span{font-size:12px;letter-spacing:-.2px;}
+.tcChipResult{
+  background:#2563eb;
+  color:#fff;
+  border-color:#2563eb;
+}
+.tcFlowBtns{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.tcToggle{
+  padding:9px 16px;
+  border:1.5px solid #cbd5e1;
+  border-radius:8px;
+  background:#fff;
+  color:#0d2c72;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+}
+.tcToggle:hover{background:#f1f5f9;}
+.tcCalcResult{background:#eff6ff;}
+.tcCalcResult .tcCalcLabel,
+.tcCalcResult b{color:#1d4ed8;}
+
+/* ---- mobile ---- */
+.tcToggle{white-space:nowrap;}
+@media (max-width:768px){
+  .tcMat{padding:8px 8px 10px;}
+  .tcGrid{gap:1px;}
+  .tcEq .tcMat:nth-child(1) .tcGrid span,
+  .tcEq .tcMat:nth-child(5) .tcGrid span{font-size:10.5px;letter-spacing:-.3px;}
+  .tcGrid span{height:26px;font-size:11px;}
+  .tcFlowBtns{flex-wrap:wrap;justify-content:center;}
+  .tcFlowChips{flex-wrap:wrap;justify-content:center;}
+  .tcFlow .actionBtn{min-width:0;}
+}
+
+@media (max-width:1100px){
+  .tcEq .tcMat:nth-child(n){flex:1 1 100%;}
+  .tcOp{flex:1 1 100%;text-align:center;font-size:26px;line-height:1;}
+}
+@media (max-width:768px){
+  .tcChip{min-width:38px;height:38px;font-size:15px;padding:0 6px;}
+  .tcFlowOp{font-size:16px;}
+}
+
+.tcExtra{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+

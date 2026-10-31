@@ -120,12 +120,12 @@ const guidedTourSteps = {
       title: "Transform Formula",
       target: ".miniFormulaText",
       body:
-        "This box shows the exact formula for the transform you picked — C(u,x) with cosine for DCT, or S(u,x) with sine for DST — laid out with its numerator and denominator just like in the textbook.",
+        "This box shows the exact formula of the transform you picked — C(u,x) with cosine for DCT, or S(u,x) with sine for DST — with N = 8, u as the frequency index and x as the pixel position.",
     },
     {
       title: "Generate the Basis Matrix",
       target: ".orthoMatrixCard",
-      waitingTarget: ".generateButton",
+      waitingTarget: ".bmGenBtn",
       body:
         "The orthogonal basis matrix C is now fully generated. Each row u represents one frequency, computed across all 8 pixel positions x.",
       waitingBody: "Click 'Generate Basis Matrix' to compute all 64 basis values for the transform you chose.",
@@ -142,79 +142,84 @@ const guidedTourSteps = {
       title: "Basis Function Wave",
       target: ".waveCard",
       body:
-        "This graph plots the selected basis vector as a wave. Row u = 0 is a flat line — the DC component, or average brightness — while higher rows oscillate faster, capturing finer and finer detail.",
+        "Click a cell (or a row label u = 0…7) and this graph plots that row of the matrix as a wave sampled at the 8 pixel positions. For DCT, row u = 0 is a flat line — the DC component, or average brightness; higher rows oscillate faster, capturing finer and finer detail.",
     },
   ],
   4: [
     {
       title: "Matrix Multiplication",
-      target: ".transformLayout",
+      target: ".tcEq",
       body:
-        "The frequency matrix F is computed as F = C × A × Cᵀ — the basis matrix, multiplied by your selected 8 × 8 block, multiplied by the basis matrix's transpose.",
+        "The frequency matrix F is computed as F = C × A × Cᵀ — the basis matrix, multiplied by your selected 8 × 8 block, multiplied by the basis matrix's transpose. Blue cells are positive values, orange cells are negative.",
     },
     {
       title: "Perform Transform",
-      target: ".frequencyCard",
-      waitingTarget: ".transformButton",
+      target: ".tcFreq",
+      waitingTarget: ".tcRunBtn",
       body:
-        "The frequency matrix F is now fully computed. Each cell F(u, v) is one frequency coefficient — brighter cells below carry more image energy.",
+        "The frequency matrix F is now fully computed. Each cell F(u, v) is one frequency coefficient — darker cells are larger in magnitude.",
       waitingBody: "Click 'Perform Transform' to multiply the matrices and compute the frequency coefficients.",
       requireAction: true,
-      check: (ctx) => !!(ctx.frequencyMatrix && ctx.frequencyMatrix.length),
+      check: (ctx) =>
+        !!(
+          ctx.frequencyMatrix &&
+          ctx.frequencyMatrix.length === 8 &&
+          ctx.frequencyMatrix.every((row) => row.every((v) => v !== null))
+        ),
     },
     {
-      title: "Selected Frequency Coefficient",
-      target: ".coefficientCard",
+      title: "Summary Numbers",
+      target: ".tcStats",
       body:
-        "Whichever cell you click in the matrix above is shown enlarged here, labeled as either the DC coefficient (the block's average brightness) or an AC coefficient (a specific spatial frequency).",
+        "A quick summary: the F(0,0) value, the largest coefficient, and how many of the 64 coefficients are almost zero. The more near-zero values, the easier the block is to compress later.",
     },
     {
-      title: "Explore Coefficients",
-      target: ".calculationPanel",
+      title: "Selected Coefficient",
+      target: ".tcDetail",
       body:
-        "Click any cell in the frequency matrix above to see exactly how that coefficient was derived, step by step, from the basis and block values.",
-    },
-    {
-      title: "DC vs AC & Largest Coefficient",
-      target: ".largestCoeffCard",
-      body:
-        "These cards highlight two key numbers: the single largest-magnitude coefficient in the block (usually near the DC term), and how the 64 coefficients split into exactly 1 DC value versus 63 AC values.",
+        "Click any coefficient in the matrix. Here you see its value, what kind of coefficient it is (for the DCT, F(0,0) is the DC term and all others are AC terms), and exactly how it was calculated.",
     },
     {
       title: "Energy Compaction",
       target: ".energyDistribution",
       body:
-        "This bar shows how the image's total energy is distributed across DC, Low, Medium and High frequency coefficients — most of it usually concentrates in the DC and Low bands.",
+        "This bar shows how the block's energy (the sum of squared coefficients) is shared between the first coefficient, the low, the medium and the high frequencies. Most of it sits in the first and low-frequency coefficients — that is why the rest can be thrown away.",
     },
     {
-      title: "Compression Insight",
-      target: ".compressionInsight",
+      title: "Research Interpretation",
+      target: ".researchNote",
       body:
-        "This is the key idea behind JPEG-style compression: low-frequency coefficients preserve visible quality, while high-frequency ones — carrying fine edge detail — can be discarded with little visual loss.",
+        "A short summary of what each coefficient means: one number F(u, v) is the contribution of one particular spatial frequency inside the block.",
     },
   ],
   5: [
     {
       title: "Quality Factor",
-      target: ".qualityCard",
+      target: ".qzQuality",
       body:
-        "Drag this slider to set the Quality Factor (Q). A lower Q uses larger quantization steps — more compression, lower quality; a higher Q keeps finer steps, preserving more detail.",
+        "Drag this slider to set the Quality Factor (Q). A lower Q uses larger quantization steps — more compression, lower quality; a higher Q keeps finer steps, preserving more detail. Changing Q after quantizing clears the result so you can run it again.",
     },
     {
       title: "Perform Quantization",
-      target: ".currentCalculation",
-      waitingTarget: ".quantButton",
+      target: ".qzMatrices",
+      waitingTarget: ".qzRunBtn",
       body:
-        "Quantization is complete — every frequency coefficient F(u,v) has been divided by its quantization step T(u,v) and rounded to the nearest integer.",
-      waitingBody: "Click 'Perform Quantization' to divide every frequency coefficient by its quantization step and round it.",
+        "Quantization is complete — every frequency coefficient F(u,v) was divided by its step size T(u,v) and rounded to the nearest integer. Grey cells are now exactly zero.",
+      waitingBody: "Click 'Perform Quantization' to divide every frequency coefficient by its step size and round it.",
       requireAction: true,
-      check: (ctx) => !!(ctx.quantizedMatrix && ctx.quantizedMatrix.length),
+      check: (ctx) => !!(ctx.quantizedMatrix && ctx.quantizedMatrix.length === 8 && ctx.quantizedMatrix.every((r) => r.every((v) => v !== null))),
+    },
+    {
+      title: "Zero Count",
+      target: ".qzBar",
+      body:
+        "Many small coefficients round down to exactly zero — this count is the real source of compression, because long runs of zeros are cheap to store in the next steps.",
     },
     {
       title: "Explore the Calculation",
-      target: ".currentCalculation",
+      target: ".qzCalc",
       body:
-        "Click any cell in the Quantized Matrix above to see exactly how that value was derived — the division by the quantization step, then the rounding — or press Play to animate through it.",
+        "Click any cell in any of the three matrices to see exactly how that value was derived — the division by the step size, then the rounding — or press Play to animate through it.",
     },
     {
       title: "Zero Coefficients",
@@ -270,35 +275,29 @@ const guidedTourSteps = {
       title: "Source Sequence",
       target: ".encSequenceCard",
       body:
-        "This is the same 1-D sequence from the Zig-Zag step. The pink cells are zeros — notice how they cluster toward the end, which is exactly what Run-Length Encoding exploits.",
+        "This is the same 1-D sequence from the Zig-Zag step. The pink cells are zeros — notice how they cluster toward the end, which is exactly what run-length coding exploits.",
     },
     {
       title: "Run the Encoding",
       target: ".encStreamCard",
       waitingTarget: ".encButton",
       body:
-        "The sequence is now compressed into compact (run, value) pairs — each pair means 'skip this many zeros, then place this value' — ending in a single EOB symbol if trailing zeros remain.",
-      waitingBody: "Click 'Start Run-Length Encoding' to compress the sequence into (run, value) pairs.",
+        "The sequence is now compressed into (value, count) pairs — each pair means 'this value repeated this many times in a row'.",
+      waitingBody: "Click 'Start Run-Length Encoding' to compress the sequence into (value, count) pairs.",
       requireAction: true,
-      check: (ctx) => !!(ctx.encodedRuns && ctx.encodedRuns.pairs && ctx.encodedRuns.pairs.length > 0),
-    },
-    {
-      title: "What is EOB?",
-      target: ".eobExplainCard",
-      body:
-        "EOB (End Of Block) is a single symbol that replaces every remaining zero once the last non-zero coefficient has passed — this is the single biggest source of compression in RLE.",
+      check: (ctx) => !!(ctx.encodedRuns && ctx.encodedRuns.done),
     },
     {
       title: "Compression Statistics",
       target: ".compressionSection",
       body:
-        "This compares how many symbols were needed before RLE (always 64) against how many are needed after — fewer symbols after encoding means a smaller file.",
+        "This compares the 64 raw values against the number of runs found — fewer, longer runs mean better compression. Since values rarely repeat except for zeros, most of the saving here comes from the zero runs.",
     },
     {
       title: "Educational Explanation",
       target: ".observationCard",
       body:
-        "This section explains what each (run, value) pair means, and notes that real codecs like JPEG add Huffman or arithmetic entropy coding on top of RLE — RLE removes structural redundancy, entropy coding removes statistical redundancy.",
+        "This section explains that RLE works for any repeated value, always preserves the original data exactly, and only compresses well when there are long repeated runs — which is why real image codecs like JPEG apply it mainly to the zero-heavy tail of quantized coefficients.",
     },
   ],
   8: [

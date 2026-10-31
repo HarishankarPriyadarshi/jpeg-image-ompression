@@ -7,15 +7,15 @@ function Encoding() {
   const { zigzagArray, encodedRuns, setEncodedRuns, selectedBlock, transform } = useMatrix();
 
   const [scanIndex, setScanIndex] = useState(-1);
-  const [status, setStatus] = useState(encodedRuns?.pairs?.length ? "Completed \u2713" : "Waiting");
+  const [status, setStatus] = useState(encodedRuns?.done ? "Completed ✓" : "Waiting");
   const intervalRef = useRef(null);
-  const prevKey = useRef(JSON.stringify(zigzagArray)+selectedBlock+transform);
+  const prevKey = useRef(JSON.stringify(zigzagArray) + selectedBlock + transform);
 
   const hasZigzag = zigzagArray.length === 64;
-  const fullResult = hasZigzag ? runLengthEncode(zigzagArray) : { pairs: [], hasEOB: false, lastNonZero: -1 };
+  const fullPairs = hasZigzag ? runLengthEncode(zigzagArray) : [];
 
   useEffect(() => {
-    const key = JSON.stringify(zigzagArray)+selectedBlock+transform;
+    const key = JSON.stringify(zigzagArray) + selectedBlock + transform;
     if (prevKey.current === key) return;
     prevKey.current = key;
     setEncodedRuns(null);
@@ -32,41 +32,44 @@ function Encoding() {
     if (intervalRef.current) clearInterval(intervalRef.current);
 
     setStatus("Encoding...");
-    setEncodedRuns({ pairs: [], hasEOB: fullResult.hasEOB, lastNonZero: fullResult.lastNonZero });
+    setEncodedRuns({ pairs: [], done: false });
 
     let i = 0;
     const built = [];
 
     intervalRef.current = setInterval(() => {
       setScanIndex(i);
-      if (i <= fullResult.lastNonZero) {
-        const matching = fullResult.pairs.find((p) => p.index === i);
-        if (matching) {
-          built.push(matching);
-          setEncodedRuns({ pairs: [...built], hasEOB: fullResult.hasEOB, lastNonZero: fullResult.lastNonZero });
-        }
+      const matching = fullPairs.find((p) => p.endIndex === i);
+      if (matching) {
+        built.push(matching);
+        setEncodedRuns({ pairs: [...built], done: false });
       }
       i++;
       if (i >= 64) {
         clearInterval(intervalRef.current);
-        setStatus("Completed \u2713");
+        setStatus("Completed ✓");
         setScanIndex(-1);
+        setEncodedRuns({ pairs: [...built], done: true });
       }
     }, 45);
   };
 
   const pairs = encodedRuns?.pairs ?? [];
-  const symbolsAfter = pairs.length + (fullResult.hasEOB ? 1 : 0);
-  const symbolsBefore = 64;
-  const ratio = symbolsAfter ? (symbolsBefore / symbolsAfter).toFixed(2) : "1.00";
+  const runsAfter = pairs.length;
+  const numbersAfter = runsAfter * 2; // each pair stores 2 numbers: value + count
+  const ratio = numbersAfter ? (64 / numbersAfter).toFixed(2) : "1.00";
+
+  // Which run is currently highlighted in the source sequence, based on scan position
+  const activeRunStart = scanIndex >= 0 ? fullPairs.find((p) => scanIndex >= p.startIndex && scanIndex <= p.endIndex)?.startIndex : -1;
 
   return (
     <div className="encContainer">
       <div className="encHeading">
         <h2>Encoding (Run-Length Encoding)</h2>
         <p>
-          Long runs of zero coefficients in the zig-zag sequence are compressed into
-          compact (run, value) pairs, with a single EOB symbol replacing trailing zeros.
+          Run-Length Encoding scans a sequence and counts how many times each value repeats
+          <b> consecutively</b>. Every run of the same value — whatever that value is — is stored as a
+          single <b>(value, count)</b> pair instead of writing the value out every time.
         </p>
       </div>
 
@@ -77,7 +80,7 @@ function Encoding() {
       )}
 
       <div className="encSequenceCard">
-        <h3>Source Sequence (Zig-Zag Output)</h3>
+        <h3>Now Apply It: Source Sequence (Zig-Zag Output)</h3>
         <div className="encSequence">
           {Array.from({ length: 64 }).map((_, i) => (
             <span
@@ -86,93 +89,68 @@ function Encoding() {
                 "encChip" +
                 (hasZigzag && zigzagArray[i] === 0 ? " encChipZero" : "") +
                 (i === scanIndex ? " encChipCurrent" : "") +
-                (i > fullResult.lastNonZero && hasZigzag ? " encChipEOBRegion" : "")
+                (activeRunStart >= 0 && i >= activeRunStart && i <= scanIndex ? " encChipInRun" : "")
               }
             >
               {hasZigzag ? zigzagArray[i] : 0}
             </span>
           ))}
         </div>
-        <button className="encButton" onClick={runEncode} disabled={!hasZigzag || pairs.length>0}>
+        <button className="encButton" onClick={runEncode} disabled={!hasZigzag || encodedRuns?.done}>
           Start Run-Length Encoding
         </button>
+        <p className="encStatus">Status: {status}</p>
       </div>
-
-      {hasZigzag && (
-        <div className="eobExplainCard">
-          <h3>What is EOB? (End Of Block)</h3>
-          {fullResult.hasEOB ? (
-            <>
-              <p>
-                After Quantization, most of the <b>high-frequency values at the end</b> of the
-                sequence become <b>0</b> (highlighted pink above). Once we cross the
-                <b> last non-zero value</b> (position {fullResult.lastNonZero}), everything after
-                it is guaranteed to be zero — all the way to position 63.
-              </p>
-              <p>
-                Instead of writing out all <b>{63 - fullResult.lastNonZero}</b> of those trailing
-                zeros one-by-one, we simply write <b>one symbol: EOB</b>. It means:
-                <i> "Stop here — every remaining coefficient in this block is zero."</i>
-              </p>
-              <div className="eobExample">
-                <span className="eobBefore">... , 1, -1&nbsp;</span>
-                <span className="eobArrow">→ instead of writing {63 - fullResult.lastNonZero} zeros →</span>
-                <span className="eobAfter">EOB</span>
-              </div>
-              <p className="eobNote">
-                This is the biggest source of compression in RLE: dozens of zero symbols
-                collapse into a single tag.
-              </p>
-            </>
-          ) : (
-            <p>
-              This particular block has a <b>non-zero value at the very last position (63)</b>,
-              so there are no trailing zeros left to compress — no EOB is needed here.
-              EOB only appears when the block ends with one or more zeros.
-            </p>
-          )}
-        </div>
-      )}
 
       <div className="encStreamCard">
         <h3>Encoded Stream</h3>
         <div className="encStream">
           {pairs.length === 0 && <span className="encEmpty">Run encoding to generate the stream…</span>}
           {pairs.map((p, i) => (
-            <div key={i} className="encPair">
-              <span className="encPairRun">({p.run},</span>
-              <span className="encPairVal">{p.value})</span>
+            <div key={i} className="encPair" title={`value ${p.value} repeats ${p.count} time(s)`}>
+              <span className="encPairRun">({p.value},</span>
+              <span className="encPairVal">{p.count})</span>
             </div>
           ))}
-          {pairs.length > 0 && fullResult.hasEOB && <div className="encEOB">EOB</div>}
         </div>
+        {pairs.length > 0 && (
+          <p className="encStreamLegend">
+            Each pair means <b>(value, count)</b> — "this value repeated this many times in a row".
+          </p>
+        )}
       </div>
 
       <div className="compressionSection">
         <h3>Compression Statistics</h3>
         <div className="compressionGrid">
           <div className="compressionCard">
-            <span className="statLabel">Symbols Before RLE</span>
-            <span className="statValue">{symbolsBefore}</span>
+            <span className="statLabel">Values Before RLE</span>
+            <span className="statValue">64</span>
           </div>
           <div className="compressionCard">
-            <span className="statLabel">Symbols After RLE</span>
-            <span className="statValue">{symbolsAfter || "\u2014"}</span>
+            <span className="statLabel">Runs After RLE</span>
+            <span className="statValue">{runsAfter || "—"}</span>
           </div>
           <div className="compressionCard">
-            <span className="statLabel">Symbol Compression Ratio</span>
-            <span className="statValue">{pairs.length ? `${ratio} : 1` : "\u2014"}</span>
+            <span className="statLabel">Compression Ratio</span>
+            <span className="statValue">{runsAfter ? `${ratio} : 1` : "—"}</span>
           </div>
         </div>
+        <p className="compressionNote">
+          {runsAfter
+            ? `64 values were grouped into ${runsAfter} run(s), stored as ${numbersAfter} numbers (value + count for each run) instead of 64 — a ${ratio}:1 reduction.`
+            : "Run the encoding above to see the statistics."}
+        </p>
       </div>
 
       <div className="observationCard">
         <h3>Educational Explanation</h3>
         <ul>
-          <li>Each pair (run, value) means: "skip <b>run</b> zeros, then place <b>value</b>".</li>
-          <li>The EOB symbol is a research-standard convention for terminating a block once no further non-zero coefficients remain, avoiding the need to transmit trailing zeros at all.</li>
-          <li>In production entropy coders (Huffman or arithmetic coding), these (run, value) symbols are further compressed using variable-length codes based on their statistical frequency — RLE only removes structural redundancy, entropy coding removes statistical redundancy.</li>
-          <li>Reference: this staged design (transform → quantize → zig-zag → RLE → entropy code) is the canonical transform-coding pipeline described in Rao & Yip, "Discrete Cosine Transform: Algorithms, Advantages, Applications" (1990), and Gonzalez & Woods, "Digital Image Processing".</li>
+          <li>RLE looks at consecutive values and, whenever the same value repeats, replaces the whole run with one <b>(value, count)</b> pair.</li>
+          <li>It works for ANY value, not only zero — a run of five 3's becomes (3, 5) exactly the same way a run of five 0's becomes (0, 5).</li>
+          <li>A value that does not repeat still gets its own pair with count = 1, so RLE never loses information — the original sequence can always be rebuilt exactly from the pairs.</li>
+          <li>RLE compresses well when data has long repeated runs (like the trailing zeros after quantization here); it barely helps — or can even grow the data — when values rarely repeat.</li>
+          <li>In real image codecs like JPEG, this same idea is applied to the quantized coefficients, where zeros are by far the most common repeated value after quantization.</li>
         </ul>
       </div>
 
