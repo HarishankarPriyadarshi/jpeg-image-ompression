@@ -84,10 +84,10 @@ const steps = [
     id: 9,
     title: "Run-Length Encoding",
     input: "AC coefficients from the zig-zag sequence",
-    process: "Encode consecutive zero values using run-length coding.",
-    output: "Run-length encoded AC data",
+    process: "Count consecutive repeated values and write each run as (value, number of repetitions).",
+    output: "Run-length encoded AC data as (value, count) pairs",
     description:
-      "After zig-zag scanning, many high-frequency AC coefficients become zero and appear together near the end of the sequence. Run-Length Encoding represents repeated zeros in compact form instead of storing every zero separately."
+      "Run-Length Encoding (RLE) counts consecutive repeated values and stores each run as (value, number of repetitions). Example: 1111000011111100 → 1 repeats 4 times, 0 repeats 4 times, 1 repeats 6 times, 0 repeats 2 times → (1,4) (0,4) (1,6) (0,2). After zig-zag scanning many zeros come together at the end, so they become a single pair like (0,61)."
   },
   {
     id: 10,

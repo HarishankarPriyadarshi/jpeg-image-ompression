@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -55,6 +55,58 @@ function Step8ZigZagScanning({
   setIsAutoScanning,
 }) {
   const runRef = useRef(0);
+  const matrixWrapRef = useRef(null);
+
+  // Measure the real centre of every cell so the zig-zag line passes exactly
+  // through the cells (grid padding + gaps make a fixed 50-unit grid drift).
+  const [cellLayout, setCellLayout] = useState(null);
+
+  useLayoutEffect(() => {
+    const wrap = matrixWrapRef.current;
+    if (!wrap) return undefined;
+
+    function measure() {
+      // offsetLeft/offsetTop are layout positions (not affected by CSS
+      // entrance animations/transforms). The wrap is position:relative, so it
+      // is the offsetParent of every cell.
+      const cells = wrap.querySelectorAll(".step8MatrixCell");
+      if (cells.length !== 64 || wrap.offsetWidth === 0) return;
+
+      const centers = Array.from(cells, (cell) => [
+        cell.offsetLeft + cell.offsetWidth / 2,
+        cell.offsetTop + cell.offsetHeight / 2,
+      ]);
+
+      setCellLayout({
+        width: wrap.offsetWidth,
+        height: wrap.offsetHeight,
+        centers,
+      });
+    }
+
+    measure();
+    const observer =
+      typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
+    observer?.observe(wrap);
+    window.addEventListener("resize", measure);
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
+  // Yellow dot sits in the top-left corner of the current cell so it never hides the value or the #order label.
+  const cellPitch = cellLayout
+    ? Math.abs(cellLayout.centers[1][0] - cellLayout.centers[0][0]) || 50
+    : 50;
+  const dotOffset = cellPitch * 0.33;
+  const dotRadius = Math.min(6, Math.max(3.5, cellPitch * 0.11));
+
+  function cellCenter(row, col) {
+    if (cellLayout) return cellLayout.centers[row * 8 + col];
+    return [col * 50 + 25, row * 50 + 25];
+  }
 
   const quantizedMatrix = useMemo(
     () => normalize8x8Block(quantizationData?.values),
@@ -76,10 +128,7 @@ function Step8ZigZagScanning({
       ? quantizationData.blockIndex
       : 0;
 
-  const blockNumber = blockIndex + 1;
-
   const scannedCount = scannedIndexes.length;
-  const progressPercent = Math.round((scannedCount / 64) * 100);
   const currentCell = ZIG_ZAG_ORDER[scanIndex] || [0, 0];
   const cellFlatIndex = currentCell[0] * 8 + currentCell[1];
 
@@ -154,76 +203,39 @@ function Step8ZigZagScanning({
   return (
     <div className="step8SimplePage">
 
-      <div className="step8SummaryGrid">
-        <div>
-          <span>Input From Step 7</span>
-          <strong>
-            {componentName} Block B{blockNumber}
-          </strong>
-          <small>Quantized 8×8 coefficient matrix</small>
-        </div>
-
-        <div>
-          <span>Operation</span>
-          <strong>Zig-Zag Traversal</strong>
-          <small>Low frequency → high frequency order</small>
-        </div>
-
-        <div>
-          <span>Output To Step 9</span>
-          <strong>63 AC Values</strong>
-          <small>DC value already handled automatically</small>
-        </div>
-      </div>
-
-      <div className="step8ControlBar">
-        <button
-          type="button"
-          onClick={autoZigZagScan}
-          disabled={isAutoScanning}
-        >
-          {isAutoScanning ? "Scanning..." : "Run Zig-Zag Scan"}
-        </button>
-      </div>
-
-      <div className="step8ProgressBox">
-        <div className="step8ProgressTop">
-          <span>Scanned Positions: {scannedCount} / 64</span>
-          <strong>{progressPercent}%</strong>
-        </div>
-
-        <div className="step8ProgressTrack">
-          <div
-            className="step8ProgressFill"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-      </div>
-
       <div className="step8MainGrid">
         <div className="step8Card">
           <h3>Input: Quantized 8×8 Matrix With Zig-Zag Path</h3>
 
-          <div className="step8MatrixWrap">
+          <div className="step8MatrixWrap" ref={matrixWrapRef}>
             <svg
               className="step8PathOverlay"
-              viewBox="0 0 400 400"
+              viewBox={
+                cellLayout
+                  ? `0 0 ${cellLayout.width} ${cellLayout.height}`
+                  : "0 0 400 400"
+              }
               preserveAspectRatio="none"
+              style={
+                cellLayout
+                  ? { top: 0, left: 0, width: "100%", height: "100%" }
+                  : undefined
+              }
             >
               <polyline
                 className={`step8PathLine ${
                   isAutoScanning ? "step8PathAnimating" : ""
                 }`}
                 points={ZIG_ZAG_ORDER.slice(0, scannedCount || 1)
-                  .map(([r, c]) => `${c * 50 + 25},${r * 50 + 25}`)
+                  .map(([r, c]) => cellCenter(r, c).join(","))
                   .join(" ")}
               />
 
               <circle
                 className="step8PathDot"
-                cx={currentCell[1] * 50 + 25}
-                cy={currentCell[0] * 50 + 25}
-                r="7"
+                cx={cellCenter(currentCell[0], currentCell[1])[0] - dotOffset}
+                cy={cellCenter(currentCell[0], currentCell[1])[1] - dotOffset}
+                r={dotRadius}
               />
             </svg>
 
@@ -290,7 +302,9 @@ function Step8ZigZagScanning({
           </div>
 
           <p className="step8PreviousNote">
-            Click Run Zig-Zag Scan to reveal the entire path.
+            {scannedCount >= 64
+              ? "Scan complete — all 64 positions read in zig-zag order."
+              : "Click Run Zig-Zag Scan to reveal the entire path."}
           </p>
         </div>
 
@@ -327,6 +341,17 @@ function Step8ZigZagScanning({
               <small>Sent forward as a string to Run-Length Encoding in Step 9</small>
             </div>
           </div>
+        </div>
+
+
+        <div className="step8ControlBar">
+          <button
+            type="button"
+            onClick={autoZigZagScan}
+            disabled={isAutoScanning}
+          >
+            {isAutoScanning ? "Scanning..." : "Run Zig-Zag Scan"}
+          </button>
         </div>
       </div>
 

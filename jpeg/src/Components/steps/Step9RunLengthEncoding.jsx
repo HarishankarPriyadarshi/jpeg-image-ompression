@@ -24,17 +24,18 @@ function getAmplitudeBits(value) {
     .join("");
 }
 
-function rsByteHex(run, size) {
-  const byte = ((run & 0x0f) << 4) | (size & 0x0f);
-  return `0x${byte.toString(16).toUpperCase().padStart(2, "0")}`;
-}
-
-
+// JPEG AC RLE (ITU-T T.81, F.1.2.2): trailing zeros are covered by a single
+// EOB (never split into ZRLs); EOB is omitted if the last coefficient is non-zero.
 function encodeRLE(acSequence) {
   const symbols = [];
   let zeroRun = 0;
 
+  let lastNonZeroIndex = -1;
   for (let i = 0; i < acSequence.length; i += 1) {
+    if (acSequence[i] !== 0) lastNonZeroIndex = i;
+  }
+
+  for (let i = 0; i <= lastNonZeroIndex; i += 1) {
     const value = acSequence[i];
 
     if (value === 0) {
@@ -59,7 +60,9 @@ function encodeRLE(acSequence) {
     zeroRun = 0;
   }
 
-  symbols.push({ type: "EOB", run: 0, size: 0 });
+  if (lastNonZeroIndex < acSequence.length - 1) {
+    symbols.push({ type: "EOB", run: 0, size: 0 });
+  }
 
   return symbols;
 }
@@ -72,29 +75,6 @@ function normalizeAcSequence(sequence) {
   return Array.from({ length: 63 }, (_, index) =>
     typeof sequence[index] === "number" ? sequence[index] : 0
   );
-}
-
-function findSymbolIndexUpTo(rleSymbols, acIndex) {
-  let counted = 0;
-  for (let s = 0; s < rleSymbols.length; s += 1) {
-    const symbol = rleSymbols[s];
-    if (symbol.type === "EOB") continue;
-    counted += (symbol.run || 0) + 1;
-    if (counted > acIndex) {
-      return s;
-    }
-  }
-  return rleSymbols.length - 1;
-}
-
-function acPositionAtSymbol(rleSymbols, acSequence, symbolIndex) {
-  let counted = 0;
-  for (let s = 0; s <= symbolIndex; s += 1) {
-    const symbol = rleSymbols[s];
-    if (!symbol || symbol.type === "EOB") continue;
-    counted += (symbol.run || 0) + 1;
-  }
-  return Math.min(counted, acSequence.length) - 1;
 }
 
 function Step9RunLengthEncoding({
@@ -123,23 +103,27 @@ function Step9RunLengthEncoding({
   const blockIndex =
     typeof zigZagData?.blockIndex === "number" ? zigZagData.blockIndex : 0;
 
-  const acSymbolCount = rleSymbols.length; // includes the final EOB
+  // ---- Run-Length Encoding: count consecutive repeated values ----
+  // Example: 1111000011111100 → (1,4) (0,4) (1,6) (0,2)
+  const runs = useMemo(() => {
+    const result = [];
+    acSequence.forEach((value, index) => {
+      const last = result[result.length - 1];
+      if (last && last.value === value) {
+        last.count += 1;
+        last.end = index;
+      } else {
+        result.push({ value, count: 1, start: index, end: index });
+      }
+    });
+    return result;
+  }, [acSequence]);
 
-  let runningZeroCount = 0;
-
-  for (let i = 0; i < selectedIndex; i += 1) {
-    if (acSequence[i] === 0) {
-      runningZeroCount += 1;
-    } else {
-      runningZeroCount = 0;
-    }
-  }
-
-  const selectedValue = acSequence[selectedIndex];
-  const isSelectedZero = selectedValue === 0;
-
-  // Which symbol (in rleSymbols) does the currently revealed AC index belong to?
-  const activeSymbolIndex = findSymbolIndexUpTo(rleSymbols, selectedIndex);
+  const selectedRunIndex = runs.findIndex(
+    (run) => selectedIndex >= run.start && selectedIndex <= run.end
+  );
+  const selectedRun = runs[selectedRunIndex] || runs[0];
+  const isComplete = encodedUpTo >= runs.length - 1;
 
   function emitRleData(symbols) {
     if (typeof onRleChange !== "function") return;
@@ -149,6 +133,7 @@ function Step9RunLengthEncoding({
       blockIndex,
       acSequence,
       rleSymbols: symbols,
+      runs,
       dcValue: zigZagData?.dcValue,
       dcDifferenceData: dcCodingData,
     });
@@ -169,134 +154,120 @@ function Step9RunLengthEncoding({
     setEncodedUpTo(-1);
     setSelectedIndex(0);
 
-    for (let i = 0; i < rleSymbols.length; i += 1) {
+    for (let i = 0; i < runs.length; i += 1) {
       if (runRef.current !== runId) return;
+      setSelectedIndex(runs[i].end);
       setEncodedUpTo(i);
-
-      const pos = acPositionAtSymbol(rleSymbols, acSequence, i);
-      if (pos >= 0) setSelectedIndex(pos);
-
-      await wait(280);
+      await wait(450);
     }
 
-    setSelectedIndex(acSequence.length - 1);
     setIsAutoEncoding(false);
     if (typeof setComplete === "function") setComplete(true);
     emitRleData(rleSymbols);
   }
 
-  function resetRLE() {
-    runRef.current += 1;
-    setSelectedIndex(0);
-    setEncodedUpTo(-1);
-    setIsAutoEncoding(false);
-  }
-  void resetRLE;
-
   return (
     <div className="step9SimplePage">
-      <div className="step9ControlBar">
-        <button type="button" onClick={autoRLE} disabled={isAutoEncoding}>
-          {isAutoEncoding ? "Encoding..." : "Run AC Run-Length Coding"}
-        </button>
-        <span className="step9ProgressTop">
-          Position {selectedIndex + 1} / {acSequence.length}
-        </span>
-      </div>
-
-      <div className="step9MainGrid">
+      <div
+        className="step9MainGrid"
+        style={{ gridTemplateColumns: "minmax(0, 1fr)", justifyContent: "stretch" }}
+      >
         <div className="step9Card">
-          <h3>AC Values From Step 9</h3>
+          <h3>AC Values From Step 8</h3>
 
           <div className="step9SequenceStrip">
-            {acSequence.map((value, index) => (
-              <button
-                key={`step9-ac-${index}`}
-                type="button"
-                className={`step9SeqCell ${
-                  index === selectedIndex ? "step9ActiveSeqCell" : ""
-                } ${value === 0 ? "step9ZeroSeqCell" : "step9NonZeroSeqCell"}`}
-                onClick={() => setSelectedIndex(index)}
-                title={`Position ${index + 1}: value = ${value}`}
-              >
-                <b>{value}</b>
-                <small>#{index + 1}</small>
-              </button>
-            ))}
-          </div>
-
-          <p className="step9SmallNote">
-            Grey = zero (just gets counted). Blue = non-zero (this is what
-            actually gets coded).
-          </p>
-        </div>
-
-        <div className="step9CalculationCard">
-          <h3>Selected Value</h3>
-
-          <div className="step9InfoRow">
-            <span>Value at position #{selectedIndex + 1}</span>
-            <strong>{selectedValue}</strong>
-          </div>
-
-          <div className="step9InfoRow">
-            <span>Zeros before it (Run)</span>
-            <strong>{runningZeroCount}</strong>
-          </div>
-
-          <div className="step9MiniFormula">
-            {isSelectedZero
-              ? "This is 0 — it just adds to the zero count, no pair yet"
-              : `This becomes the pair: (${runningZeroCount}, ${selectedValue})`}
-          </div>
-        </div>
-
-        <div className="step9OutputCard">
-          <h3>Final Codes (sent to Step 11)</h3>
-
-          <div className="step9CompressedRow">
-            {rleSymbols.map((symbol, index) => {
-              const isRevealed = index <= encodedUpTo;
-              const isActive = index === activeSymbolIndex;
+            {acSequence.map((value, index) => {
+              const inSelectedRun =
+                selectedRun && index >= selectedRun.start && index <= selectedRun.end;
 
               return (
-                <span
-                  key={`step9-chip-${index}`}
-                  className={`step9CompressChip ${
-                    symbol.type === "EOB"
-                      ? "step9EobChip"
-                      : symbol.type === "ZRL"
-                      ? "step9ZrlChip"
-                      : "step9ValueChip"
-                  } ${isRevealed ? "" : "step9ChipHidden"} ${
-                    isActive ? "step9ChipActive" : ""
+                <button
+                  key={`step9-ac-${index}`}
+                  type="button"
+                  className={`step9SeqCell ${
+                    value === 0 ? "step9ZeroSeqCell" : "step9NonZeroSeqCell"
                   }`}
-                  title={
-                    symbol.type === "EOB"
-                      ? "EOB: everything left is zero"
-                      : symbol.type === "ZRL"
-                      ? "ZRL: 16 zeros in a row, more values still ahead"
-                      : `${symbol.run} zeros, then value ${symbol.value} (stored as RS byte ${rsByteHex(
-                          symbol.run,
-                          symbol.size
-                        )})`
+                  style={
+                    inSelectedRun
+                      ? {
+                          background: "#fef9c3",
+                          borderColor: index === selectedIndex ? "#eab308" : "#fde68a",
+                          color: "#713f12",
+                        }
+                      : undefined
                   }
+                  onClick={() => setSelectedIndex(index)}
+                  title={`Position ${index + 1}: value = ${value}`}
                 >
-                  {!isRevealed
-                    ? "?"
-                    : symbol.type === "EOB"
-                    ? "EOB"
-                    : symbol.type === "ZRL"
-                    ? "ZRL"
-                    : `(${symbol.run}, ${symbol.value})`}
-                </span>
+                  <b>{value}</b>
+                  <small>#{index + 1}</small>
+                </button>
               );
             })}
           </div>
 
           <p className="step9SmallNote">
-            EOB = everything after this is zero, stop here. ZRL = 16 zeros in
-            a row, but more non-zero values are still coming.
+            Same values next to each other form one run. Click any value to
+            highlight its run.
+          </p>
+        </div>
+
+        <div className="step9ControlBar">
+          <button type="button" onClick={autoRLE} disabled={isAutoEncoding}>
+            {isAutoEncoding ? "Counting..." : "Run Run-Length Encoding"}
+          </button>
+          <span className="step9ProgressTop">
+            Position {selectedIndex + 1} / {acSequence.length}
+          </span>
+        </div>
+
+        <div className="step9OutputCard">
+          <h3>Encoded Stream</h3>
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              gap: 10,
+              margin: "8px 0 4px",
+            }}
+          >
+            {runs.map((run, index) => {
+              const isRevealed = index <= encodedUpTo;
+              const isActive = index === selectedRunIndex;
+
+              return (
+                <button
+                  key={`step9-run-${index}`}
+                  type="button"
+                  onClick={() => setSelectedIndex(run.start)}
+                  title={`Value ${run.value} repeats ${run.count} time(s) in a row (#${
+                    run.start + 1
+                  }${run.count > 1 ? `–#${run.end + 1}` : ""})`}
+                  style={{
+                    fontFamily: "Consolas, 'Courier New', monospace",
+                    fontSize: 15,
+                    fontWeight: 700,
+                    padding: "8px 16px",
+                    borderRadius: 12,
+                    cursor: "pointer",
+                    background: isActive && isRevealed ? "#fef9c3" : "#eef4ff",
+                    border: `1px solid ${
+                      isActive && isRevealed ? "#eab308" : "#c7d7fe"
+                    }`,
+                    color: isRevealed ? "#1d4ed8" : "#94a3b8",
+                  }}
+                >
+                  {isRevealed ? `(${run.value},${run.count})` : "( ? )"}
+                </button>
+              );
+            })}
+          </div>
+
+          <p className="step9SmallNote">
+            Each pair means <b>(value, count)</b> — &quot;this value repeated this
+            many times in a row&quot;.
           </p>
 
           <div className="step9CompareRow">
@@ -307,12 +278,26 @@ function Step9RunLengthEncoding({
             <div className="step9CompareArrow">→</div>
             <div>
               <span>After</span>
-              <strong>{acSymbolCount} codes</strong>
+              <strong>{runs.length} pairs</strong>
             </div>
-            <div className="step9CompareResult">
-              goes to Huffman coding next
-            </div>
+            <div className="step9CompareResult">goes to Huffman coding next</div>
           </div>
+
+          {isComplete && (
+            <p className="step9SmallNote">
+              For Huffman (Step 10), JPEG writes these same runs as{" "}
+              <b>
+                {rleSymbols
+                  .map((symbol) =>
+                    symbol.type === "AC"
+                      ? `(${symbol.run},${symbol.value})`
+                      : symbol.type
+                  )
+                  .join(" ")}
+              </b>{" "}
+              — zeros before each value, and EOB for the last run of zeros.
+            </p>
+          )}
         </div>
       </div>
     </div>

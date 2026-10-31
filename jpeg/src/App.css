@@ -4871,8 +4871,9 @@ button.chromaCell:hover {
   }
 
   .step1SimplePixel {
-    font-size: clamp(10px, 4.6vw, 13px);
-    font-weight: 800;
+    font-size: clamp(9px, 4vw, 11px);
+    font-weight: 700;
+    font-family: Arial, Helvetica, sans-serif;
   }
 
   .matrixNote {
@@ -4882,15 +4883,13 @@ button.chromaCell:hover {
 }
 
 @media (max-width: 560px) {
-  .pixelPrefix {
-    display: none;
-  }
-
   .step1SimplePixel {
     border-width: 0.5px;
-    font-size: clamp(8.5px, 4.4vw, 11px);
-    letter-spacing: -0.4px;
+    font-size: clamp(6px, 3vw, 8.5px);
+    font-weight: 700;
+    letter-spacing: -0.6px;
     font-variant-numeric: tabular-nums;
+    font-family: Arial, Helvetica, sans-serif;
   }
 
   .step1SimplePixelActive {
@@ -4904,15 +4903,15 @@ button.chromaCell:hover {
 
 @media (max-width: 400px) {
   .step1SimplePixel {
-    font-size: clamp(7.5px, 4.2vw, 9.5px);
-    letter-spacing: -0.5px;
+    font-size: clamp(5px, 2.6vw, 7px);
+    letter-spacing: -0.7px;
   }
 }
 
 @media (max-width: 340px) {
   .step1SimplePixel {
-    font-size: clamp(6.5px, 4vw, 8px);
-    letter-spacing: -0.6px;
+    font-size: clamp(4.2px, 2.4vw, 6px);
+    letter-spacing: -0.8px;
   }
 }
 
@@ -5953,11 +5952,13 @@ button.chromaCell:hover {
   }
 
   .step2RgbPixel {
-    font-size: clamp(9px, 4.6vw, 12px) !important;
-    letter-spacing: -0.3px;
+    font-size: clamp(9px, 4vw, 11px) !important;
+    font-weight: 700;
+    letter-spacing: -0.4px;
     padding: 0 !important;
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
+    font-family: Arial, Helvetica, sans-serif;
   }
 
   .step2OutputGrid span {
@@ -5972,13 +5973,11 @@ button.chromaCell:hover {
 }
 
 @media (max-width: 560px) {
-  .step2PixelPrefix {
-    display: none;
-  }
-
   .step2RgbPixel {
-    font-size: clamp(9.5px, 4.6vw, 12.5px) !important;
-    letter-spacing: -0.3px;
+    font-size: clamp(6px, 3vw, 8.5px) !important;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+    font-family: Arial, Helvetica, sans-serif;
   }
 
   .step2OutputGrid span {
@@ -5988,7 +5987,8 @@ button.chromaCell:hover {
 
 @media (max-width: 400px) {
   .step2RgbPixel {
-    font-size: clamp(8.5px, 4.4vw, 11px) !important;
+    font-size: clamp(5px, 2.6vw, 7px) !important;
+    letter-spacing: -0.7px;
   }
 
   .step2OutputGrid span {
@@ -5998,7 +5998,8 @@ button.chromaCell:hover {
 
 @media (max-width: 340px) {
   .step2RgbPixel {
-    font-size: clamp(7.5px, 4.2vw, 9.5px) !important;
+    font-size: clamp(4.2px, 2.4vw, 6px) !important;
+    letter-spacing: -0.8px;
   }
 
   .step2OutputGrid span {
@@ -6182,9 +6183,14 @@ button.chromaCell:hover {
   grid-template-columns: 1fr 1fr;
   grid-template-areas:
     "input output"
+    "controls controls"
     "calc calc";
   gap: 14px;
   align-items: start;
+}
+
+.step3MainGrid > *:nth-child(4) {
+  grid-area: controls;
 }
 
 .step3MainGrid > *:nth-child(1) {
@@ -6446,6 +6452,7 @@ button.chromaCell:hover {
     grid-template-columns: 1fr;
     grid-template-areas:
       "input"
+      "controls"
       "output"
       "calc";
   }
@@ -11090,3 +11097,776 @@ button.chromaCell:hover {
 .step1SimplePage .greenItem { background: #ecfdf5; }
 .step1SimplePage .blueItem { background: #eff6ff; }
 
+
+
+/* ================================
+   Step 2 — Show/Hide Formula + heading gap
+   ================================ */
+
+.step2SimplePage {
+  padding-top: 16px;
+}
+
+.step2FormulaHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step2FormulaBox .step2FormulaHeader h3 {
+  margin: 0;
+  flex: 1 1 auto;
+  text-align: left;
+}
+
+.step2FormulaBox .step2FormulaGrid {
+  margin-top: 12px;
+}
+
+.step2ShowFormulaBtn {
+  flex-shrink: 0;
+  border: 1.5px solid #1743c9;
+  background: #ffffff;
+  color: #0d2c72;
+  font-size: 12.5px;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease,
+    color 0.18s ease, border-color 0.18s ease;
+  box-shadow: 0 4px 10px rgba(13, 44, 114, 0.14);
+}
+
+.step2ShowFormulaBtn::after {
+  content: "▾";
+  font-size: 10px;
+  transition: transform 0.18s ease;
+}
+
+.step2ShowFormulaBtnOpen::after {
+  transform: rotate(180deg);
+}
+
+.step2ShowFormulaBtn:hover {
+  background: linear-gradient(135deg, #0d2c72 0%, #1743c9 100%);
+  border-color: #1743c9;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(13, 44, 114, 0.34);
+}
+
+.step2ShowFormulaBtn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(13, 44, 114, 0.24);
+}
+
+@media (max-width: 760px) {
+  .step2SimplePage {
+    padding-top: 12px;
+  }
+
+  .step2FormulaBox {
+    padding: 12px 12px !important;
+  }
+
+  .step2FormulaBox .step2FormulaHeader h3 {
+    font-size: 15px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .step2FormulaHeader {
+    gap: 8px;
+  }
+
+  .step2ShowFormulaBtn {
+    padding: 8px 14px;
+    font-size: 11.5px;
+  }
+}
+
+
+/* ================================
+   Step 3 — Run button + Cb/Cr tabs inside the input card
+   ================================ */
+
+.step3SimplePage {
+  padding-top: 16px;
+}
+
+.step3Controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+
+@media (max-width: 760px) {
+  .step3SimplePage {
+    padding-top: 12px;
+  }
+
+  .step3Controls {
+    gap: 10px;
+  }
+
+  .step3Controls .step3ControlBar {
+    width: 100%;
+  }
+
+  .step3Controls .step3ControlBar button {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+
+  .step3Controls .step3Tabs {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .step3Controls .step3Tabs button {
+    flex: 1 1 0;
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+}
+
+
+/* ================================
+   Step 3 — more compact "Selected 2x2 Group" card
+   ================================ */
+
+@media (min-width: 761px) {
+  .step3MainGrid > .step3CalculationCard {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 10px 14px 12px;
+    gap: 8px;
+  }
+
+  .step3CalculationCard h3 {
+    margin: 0 0 2px;
+    font-size: 15px;
+  }
+
+  .step3CalculationCard .step3PositionLine {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .step3CalculationCard .step3MiniGroupGrid {
+    width: 104px;
+  }
+
+  .step3CalculationCard .step3MiniGroupGrid div {
+    font-size: 14px;
+  }
+
+  .step3CalculationCard .step3FormulaBox {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .step3CalculationCard .step3CalculationResult {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .step3CalculationCard .step3CalculationResult b {
+    font-size: 15px;
+  }
+
+  .step3CalculationCard .step3PendingBox {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
+
+
+/* ================================
+   Step 4 — Selected Block Details as plain text rows (no inner boxes)
+   ================================ */
+
+.step4SelectedInfoCard {
+  gap: 2px;
+}
+
+.step4SelectedInfoCard h3 {
+  margin-bottom: 8px;
+}
+
+.step4SelectedInfoCard .step4InfoRow {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 4px 6px;
+  font-size: 13px;
+}
+
+.step4SelectedInfoCard .step4MiniFormula {
+  background: transparent;
+  color: #0d2c72;
+  border-radius: 0;
+  padding: 8px 6px 2px;
+  font-size: 13px;
+  text-align: center;
+}
+
+
+/* Step 4 — Selected Block Details: centered compact "Label: Value" layout */
+
+.step4SelectedInfoCard {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 12px;
+  row-gap: 6px;
+  align-items: center;
+}
+
+.step4SelectedInfoCard h3,
+.step4SelectedInfoCard .step4MiniFormula {
+  grid-column: 1 / -1;
+}
+
+.step4SelectedInfoCard .step4InfoRow {
+  justify-content: center;
+  align-items: baseline;
+  gap: 6px;
+  padding: 6px 4px;
+  text-align: center;
+}
+
+.step4SelectedInfoCard .step4InfoRow span::after {
+  content: ":";
+}
+
+.step4SelectedInfoCard .step4MiniFormula {
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid #e2e8f0;
+  border-radius: 0;
+}
+
+@media (max-width: 900px) {
+  .step4SelectedInfoCard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .step4SelectedInfoCard {
+    grid-template-columns: 1fr;
+    row-gap: 2px;
+  }
+}
+
+
+/* Step 4 — Selected Block Details: separate compact highlighted tiles */
+
+.step4SelectedInfoCard {
+  row-gap: 10px;
+  column-gap: 10px;
+}
+
+.step4SelectedInfoCard .step4InfoRow {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 10px;
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.step4SelectedInfoCard .step4InfoRow span {
+  color: #64748b;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.step4SelectedInfoCard .step4InfoRow span::after {
+  content: none;
+}
+
+.step4SelectedInfoCard .step4InfoRow strong {
+  color: #0d2c72;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.step4SelectedInfoCard .step4InfoRow:nth-of-type(2) {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.step4SelectedInfoCard .step4MiniFormula {
+  margin-top: 0;
+  padding: 9px 12px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  color: #0d2c72;
+}
+
+@media (max-width: 560px) {
+  .step4SelectedInfoCard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 8px;
+    column-gap: 8px;
+  }
+
+  .step4SelectedInfoCard .step4InfoRow {
+    padding: 7px 6px;
+  }
+
+  .step4SelectedInfoCard .step4InfoRow strong {
+    font-size: 14px;
+  }
+}
+
+
+
+/* ================================
+   Step 5 — Run button centered below input/output matrices
+   ================================ */
+
+.step5MainGrid > .step5Controls {
+  order: 3;
+  flex: 1 1 100%;
+  min-width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.step5MainGrid > .step5CalculationCard {
+  order: 4;
+}
+
+@media (max-width: 760px) {
+  .step5Controls .step5ControlBar {
+    width: 100%;
+  }
+
+  .step5Controls .step5ControlBar button {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+}
+
+
+/* ================================
+   Step 6 — heading gap, centered Run button, formula at the bottom
+   ================================ */
+
+.step6SimplePage {
+  padding-top: 16px;
+}
+
+.step6MainGrid > .step6Controls {
+  order: 3;
+  flex: 1 1 100%;
+  min-width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.step6MainGrid > .step6CalculationCard {
+  order: 4;
+}
+
+@media (max-width: 760px) {
+  .step6SimplePage {
+    padding-top: 12px;
+  }
+
+  .step6Controls .step6ControlBar {
+    width: 100%;
+  }
+
+  .step6Controls .step6ControlBar button {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+}
+
+
+/* ================================
+   Step 7 — wide quality box with scale digits
+   ================================ */
+
+.step7QualityBox {
+  max-width: none;
+  margin: 0;
+}
+
+.step7QualityScale {
+  position: relative;
+  height: 26px;
+  margin-top: -2px;
+}
+
+.step7QualityScale span {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  padding-top: 8px;
+  color: #64748b;
+  font-size: 11.5px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.step7QualityScale span::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 6px;
+  background: #94a3b8;
+  border-radius: 2px;
+  transform: translateX(-50%);
+}
+
+.step7QualityScale .step7QualityScaleActive {
+  color: #0d2c72;
+  font-weight: 900;
+}
+
+.step7QualityScale .step7QualityScaleActive::before {
+  background: #0d2c72;
+}
+
+@media (max-width: 560px) {
+  .step7QualityScale span {
+    font-size: 10px;
+  }
+}
+/* Step 8: Run button placed in the grid (empty cell on tablet/laptop widths) */
+.step8MainGrid > .step8ControlBar {
+  grid-column: 1 / -1;
+  justify-self: center;
+  align-self: center;
+}
+@media (max-width: 1500px) {
+  .step8MainGrid > .step8ControlBar {
+    grid-column: auto;
+  }
+}
+@media (max-width: 900px) {
+  .step8MainGrid > .step8ControlBar {
+    grid-column: 1;
+  }
+}
+
+/* Step 8: gap between main heading and first box */
+.step8SimplePage {
+  padding-top: 16px;
+}
+
+/* Step 9: more space above the Explanation box */
+.stepWorkspace:has(.step9SimplePage) .explanationBox {
+  margin-top: 26px !important;
+}
+
+@media (max-width: 760px) {
+  .stepWorkspace:has(.step9SimplePage) .explanationBox {
+    margin-top: 20px !important;
+  }
+}
+
+/* Step 10: Run button centered below the DC Encoding box (outside it) */
+.step10DcColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: stretch;
+  min-width: 0;
+}
+.step10DcColumn > .step10ControlBar {
+  justify-content: center;
+}
+/* Step 9: Run button centered between the AC values box and the Encoded Stream box */
+.step9MainGrid > .step9Card {
+  order: 1;
+  flex: 1 1 100%;
+}
+.step9MainGrid > .step9ControlBar {
+  order: 2;
+  flex: 1 1 100%;
+  min-width: 100%;
+  justify-content: center;
+}
+.step9MainGrid > .step9OutputCard {
+  order: 3;
+  flex: 1 1 100%;
+  min-width: 100%;
+}
+
+/* ---- Very small phones (<=400px): let cards shrink instead of forcing 340px ---- */
+@media (max-width: 400px) {
+  .step4MainGrid > *,
+  .step5MainGrid > *,
+  .step6MainGrid > *,
+  .step7MainGrid > *,
+  .step9MainGrid > *,
+  .step10MainGrid > *,
+  .step4MainGrid > *:nth-child(n),
+  .step5MainGrid > *:nth-child(n),
+  .step6MainGrid > *:nth-child(n),
+  .step7MainGrid > *:nth-child(n),
+  .step9MainGrid > *:nth-child(n),
+  .step10MainGrid > *:nth-child(n) {
+    min-width: 0;
+    max-width: 100%;
+    flex: 1 1 100%;
+    box-sizing: border-box;
+  }
+
+  .step9MainGrid > .step9ControlBar,
+  .step9MainGrid > .step9OutputCard {
+    min-width: 0;
+  }
+}
+
+/* Step 9: on mobile show the position text under the button so the button stays centered */
+@media (max-width: 760px) {
+  .step9ControlBar {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+/* Step 3 input matrix: remove double line on the outer edge (grid border is the only outer line) */
+.step3SourceCell.step3EdgeLeft { border-left-width: 0; }
+.step3SourceCell.step3EdgeRight { border-right-width: 0; }
+.step3SourceCell.step3EdgeTop { border-top-width: 0; }
+.step3SourceCell.step3EdgeBottom { border-bottom-width: 0; }
+
+/* ================= Step 4: block split animation + select-block popup ================= */
+.step4SourceWrap {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.step4SourceWrap .step4SourceGrid {
+  padding: 9px;
+}
+
+/* Blocks sit slightly apart (final state of the animation) */
+.step4SourceCell.step4Q0 { --tx: -8px; --ty: -8px; }
+.step4SourceCell.step4Q1 { --tx: 8px; --ty: -8px; }
+.step4SourceCell.step4Q2 { --tx: -8px; --ty: 8px; }
+.step4SourceCell.step4Q3 { --tx: 8px; --ty: 8px; }
+
+.step4SourceWrap .step4SourceCell {
+  transform: translate(var(--tx, 0), var(--ty, 0));
+}
+
+.step4SplitAnim .step4SourceCell {
+  animation: step4Split 1s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
+}
+
+@keyframes step4Split {
+  from { transform: translate(0, 0); }
+  to { transform: translate(var(--tx), var(--ty)); }
+}
+
+.step4SplitLabels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.step4SplitLabel {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #0d2c72;
+  color: #ffffff;
+  font-size: clamp(12px, 3.4vw, 18px);
+  font-weight: 900;
+  box-shadow: 0 6px 16px rgba(13, 44, 114, 0.35);
+  opacity: 0;
+  animation: step4LabelPop 3.4s ease 1.5s both;
+}
+
+.step4SplitLabel0 { left: 25%; top: 25%; }
+.step4SplitLabel1 { left: 75%; top: 25%; }
+.step4SplitLabel2 { left: 25%; top: 75%; }
+.step4SplitLabel3 { left: 75%; top: 75%; }
+
+@keyframes step4LabelPop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+  12% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+  20% { transform: translate(-50%, -50%) scale(1); }
+  80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+}
+
+.step4ReplayBtn {
+  display: block;
+  margin: 8px auto 0;
+  padding: 6px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #0d2c72;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.step4ReplayBtn:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+/* Selector cards pulse when user closes the popup without choosing */
+.step4NudgeSelector .step4BlockSelectCard {
+  animation: step4Nudge 0.6s ease 2;
+  border-color: #2563eb;
+}
+
+@keyframes step4Nudge {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.step4PopupOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+  animation: step4PopupFade 0.18s ease both;
+}
+
+.step4Popup {
+  width: 100%;
+  max-width: 380px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 22px 20px 18px;
+  box-sizing: border-box;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+  animation: step4PopupPop 0.22s ease both;
+}
+
+.step4PopupIcon {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  background: #fef3c7;
+  color: #b45309;
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 44px;
+}
+
+.step4Popup h3 {
+  margin: 0 0 6px;
+  color: #0d2c72;
+  font-size: 20px;
+}
+
+.step4Popup p {
+  margin: 0 0 14px;
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.step4PopupChoices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.step4PopupChoices button {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 8px;
+  border: 1.5px solid #bfdbfe;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #0d2c72;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.step4PopupChoices button:hover,
+.step4PopupChoices button:focus-visible {
+  background: #dbeafe;
+  border-color: #2563eb;
+  outline: none;
+}
+
+.step4PopupChoices strong { font-size: 18px; }
+.step4PopupChoices span { font-size: 12px; font-weight: 700; color: #475569; }
+
+.step4PopupClose {
+  padding: 8px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: #0d2c72;
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@keyframes step4PopupFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes step4PopupPop {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step4SplitAnim .step4SourceCell,
+  .step4SplitLabel,
+  .step4NudgeSelector .step4BlockSelectCard,
+  .step4Popup,
+  .step4PopupOverlay {
+    animation: none;
+  }
+  .step4SplitLabels { display: none; }
+}
+
+.step7ExactNote {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  line-height: 1.35;
+}

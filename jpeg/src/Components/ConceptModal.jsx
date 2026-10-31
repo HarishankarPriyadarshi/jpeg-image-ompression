@@ -26,9 +26,6 @@ const luminanceQuantizationMatrix = [
 
 const MATRIX_SIZE = 16;
 
-// Real photo used for Step 1 "Real Photo Patch" and Step 12 real compression demo.
-// Served from /public/jpeg-samples/ so it can be loaded with a normal <img> + canvas.
-const REAL_PHOTO_URL = "/jpeg-samples/original.png";
 const REAL_PHOTO_CROP = { row: 32, col: 272 }; // fixed 16x16 crop with real visual detail
 
 function extractRealPixelMatrix(imageEl) {
@@ -396,7 +393,10 @@ const [step11IsAutoEncoding, setStep11IsAutoEncoding] = useState(false);
 const [step11Complete, setStep11Complete] = useState(false);
 const [showHuffmanRequiredPopup, setShowHuffmanRequiredPopup] = useState(false);
 const [step12IsGenerated, setStep12IsGenerated] = useState(false);
+const [step11SelectedCellIndex, setStep11SelectedCellIndex] = useState(0);
+const [step11ShowHeatmap, setStep11ShowHeatmap] = useState(false);
 const [selectedPixelIndex, setSelectedPixelIndex] = useState(0);
+const [step1ShowChannels, setStep1ShowChannels] = useState(false);
 const conversionRunRef = useRef(0);
 
 const [convertedPixelIndexes, setConvertedPixelIndexes] = useState([]);
@@ -450,6 +450,8 @@ function handleMatrixPresetChange(type) {
   setActiveRgbMatrix(rgbMatrixPresets[type].matrix);
   setRandomPatternName(null);
   resetStep2Conversion();
+  // All later steps were reset, so they must be unlocked again one by one.
+  setMaxUnlockedStep(1);
 }
 
 function handleRandomMatrix() {
@@ -458,6 +460,34 @@ function handleRandomMatrix() {
   setActiveRgbMatrix(matrix);
   setRandomPatternName(name);
   resetStep2Conversion();
+  setMaxUnlockedStep(1);
+}
+
+// When the JPEG quality changes in Step 7, everything after Step 7 (zig-zag,
+// RLE, Huffman, final output) was built from the old quantized matrix, so it
+// is cleared and Steps 8-11 are locked again until Step 7 is re-run.
+function handleStep7QualityChange(newQuality) {
+  setStep7Quality(newQuality);
+
+  setZigZagData(null);
+  setRleData(null);
+  setHuffmanData(null);
+
+  setStep9ScanIndex(0);
+  setStep9ScannedIndexes([]);
+  setStep9IsAutoScanning(false);
+  setStep10SelectedIndex(0);
+  setStep10EncodedUpTo(-1);
+  setStep10IsAutoEncoding(false);
+  setStep10Complete(false);
+  setStep11IsDcEncoded(false);
+  setStep11AcEncodedUpTo(-1);
+  setStep11IsAutoEncoding(false);
+  setStep11Complete(false);
+  setStep12IsGenerated(false);
+  setStep11SelectedCellIndex(0);
+
+  setMaxUnlockedStep((prevMax) => Math.min(prevMax, 7));
 }
   const isFirstStep = activeStep === 1;
   const isLastStep = activeStep === steps.length;
@@ -542,6 +572,8 @@ function resetStep2Conversion() {
   setStep11IsAutoEncoding(false);
   setStep11Complete(false);
   setStep12IsGenerated(false);
+  setStep11SelectedCellIndex(0);
+  setStep11ShowHeatmap(false);
 }
 async function autoConvertFullMatrix() {
   if (isAutoConverting) return;
@@ -884,19 +916,6 @@ function goToStep(stepId) {
               </button>
             </div>
 
-            <p className="stepsSubtitle">
-              11-step JPEG encoding workflow
-            </p>
-
-            <div className="stepsProgressTrack">
-              <div
-                className="stepsProgressFill"
-                style={{
-                  width: `${Math.round((activeStep / steps.length) * 100)}%`,
-                }}
-              />
-            </div>
-
             <ul className="stepsList">
   {steps.map((step, index) => {
     const isLocked = !started || step.id > maxUnlockedStep;
@@ -967,6 +986,8 @@ function goToStep(stepId) {
     redMatrix={redMatrix}
     greenMatrix={greenMatrix}
     blueMatrix={blueMatrix}
+    showChannels={step1ShowChannels}
+    setShowChannels={setStep1ShowChannels}
     RGBPixelMatrix={RGBPixelMatrix}
     RGBTupleMatrix={RGBTupleMatrix}
     ChannelMatrix={ChannelMatrix}
@@ -1041,7 +1062,7 @@ function goToStep(stepId) {
     isAutoQuantizing={step7IsAutoQuantizing}
     setIsAutoQuantizing={setStep7IsAutoQuantizing}
     quality={step7Quality}
-    setQuality={setStep7Quality}
+    setQuality={handleStep7QualityChange}
   />
 ) : activeStep === 8 ? (
   <Step8ZigZagScanning
@@ -1090,6 +1111,10 @@ function goToStep(stepId) {
     originalBlockData={selectedBlockData}
     isGenerated={step12IsGenerated}
     setIsGenerated={setStep12IsGenerated}
+    selectedCellIndex={step11SelectedCellIndex}
+    setSelectedCellIndex={setStep11SelectedCellIndex}
+    showHeatmap={step11ShowHeatmap}
+    setShowHeatmap={setStep11ShowHeatmap}
   />
 ) : (
                 <div className="ioContainer">
@@ -1114,17 +1139,23 @@ function goToStep(stepId) {
                 </div>
               )}
 
-              {activeStep !== 1 && activeStep !== 11 && (
+              {activeStep !== 1 && (
               <div className="explanationBox">
   <h3>Explanation</h3>
 
   <p>
     {activeStep === 2
-      ? "In this step, the same 16×16 RGB sample patch from Step 1 is converted into 16×16 Y, Cb and Cr matrices. Y stores luminance or brightness information, while Cb and Cr store chrominance or color-difference information. This separation is useful in JPEG because the human eye is more sensitive to luminance than chrominance, so Cb and Cr color information can be reduced in the next step."
+      ? "In this step, the same 16×16 RGB sample patch from Step 1 is converted into 16×16 Y, Cb and Cr matrices. Y stores luminance or brightness information, while Cb and Cr store chrominance or color-difference information. This separation is useful in JPEG because the human eye is more sensitive to luminance than chrominance, so Cb and Cr color information can be reduced in the next step. Step 2 Concept: The same 16×16 RGB patch from Step 1 is converted into Y, Cb and Cr matrices — Y stores brightness, Cb and Cr store color-difference information."
       : activeStep === 3
-      ? "In this step, chroma subsampling is applied to the Y, Cb and Cr matrices from Step 2. The Y matrix remains unchanged at 16×16 because it stores brightness information. The Cb and Cr matrices are downsampled from 16×16 to 8×8 by replacing every 2×2 group with one average value. This reduces color data while keeping the visually important brightness data."
+      ? "In this step, chroma subsampling is applied to the Y, Cb and Cr matrices from Step 2. The Y matrix remains unchanged at 16×16 because it stores brightness information. The Cb and Cr matrices are downsampled from 16×16 to 8×8 by replacing every 2×2 group with one average value. This reduces color data while keeping the visually important brightness data. Step 3 Concept: Human vision is more sensitive to brightness than color, so JPEG keeps Y unchanged at 16×16 and reduces Cb/Cr from 16×16 to 8×8 by averaging every 2×2 chroma group into one value."
       : activeStep === 4
       ? "In actual JPEG compression, image component samples are divided into non-overlapping 8×8 blocks before level shifting and DCT. In this simulation, the 16×16 Y matrix is divided into four 8×8 blocks: B1, B2, B3 and B4. The selected 8×8 block contains 64 luminance values and becomes the input for Level Shifting."
+      : activeStep === 8
+      ? "Zig-zag scanning converts the 8×8 quantized coefficient matrix into a one-dimensional sequence. It starts from low-frequency coefficients near the top-left and moves toward high-frequency coefficients near the bottom-right. This ordering places many zero values near the end of the sequence, which makes Run-Length Encoding more effective. Input from Step 7: the quantized 8×8 coefficient matrix of the selected block. Operation: zig-zag traversal, in low frequency → high frequency order. Output to Step 9: 63 AC values (the DC value is already handled automatically)."
+      : activeStep === 10
+      ? "Huffman encoding compresses the DC difference and run-length encoded AC data further. It assigns shorter binary codes to frequently occurring symbols and longer binary codes to less frequent symbols, producing the final compressed bitstream. Input: the DC difference (automatic) plus the RLE symbols from Step 9. Operation: Huffman code + extra bits, using the standard JPEG luminance tables (ITU-T T.81, Annex K). Output to Step 11: the entropy bitstream, i.e. the final compressed scan data."
+      : activeStep === 11
+      ? "This is the final result. Press Generate to see the compressed bits (DC bits and AC bits in different colors) and how much smaller the block became: 64 pixels × 8 bits = 512 bits at the start, and only a few bits at the end. Compression Ratio = Original Bits ÷ Compressed Bits. To check what compression did, the quantized values are brought back (dequantize → Inverse DCT → +128) and compared with the original block. The difference is small, but not zero, because JPEG throws away some detail, so this is called lossy compression. Click any pixel to see Before, After and Diff."
       : currentStep?.description}
   </p>
 </div>

@@ -1,8 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+import { createPortal } from "react-dom";
 
 function createFallback16x16Matrix() {
   return Array.from({ length: 16 }, () =>
@@ -71,7 +68,7 @@ function YSourceMatrixGrid({
           <button
             key={`step4-source-${index}`}
             type="button"
-            className={`step4SourceCell ${
+            className={`step4SourceCell step4Q${cellBlockIndex} ${
               isSelectedBlock ? "step4SelectedSourceBlockCell" : ""
             } ${isLocked && !isSelectedBlock ? "step4LockedSourceCell" : ""}`}
             disabled={isLocked && !isSelectedBlock}
@@ -85,6 +82,82 @@ function YSourceMatrixGrid({
         );
       })}
     </div>
+  );
+}
+
+function SplitLabels() {
+  return (
+    <div className="step4SplitLabels" aria-hidden="true">
+      {[0, 1, 2, 3].map((blockIndex) => (
+        <span
+          key={blockIndex}
+          className={`step4SplitLabel step4SplitLabel${blockIndex}`}
+        >
+          {getBlockLabel(blockIndex)}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function SelectBlockPopup({ onPick, onClose }) {
+  const firstButtonRef = useRef(null);
+
+  useEffect(() => {
+    firstButtonRef.current?.focus();
+
+    function onKeyDown(event) {
+      if (event.key === "Escape") onClose();
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
+
+  const options = [
+    { blockIndex: 0, position: "Top-left" },
+    { blockIndex: 1, position: "Top-right" },
+    { blockIndex: 2, position: "Bottom-left" },
+    { blockIndex: 3, position: "Bottom-right" },
+  ];
+
+  return createPortal(
+    <div className="step4PopupOverlay" onClick={onClose}>
+      <div
+        className="step4Popup"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="step4PopupTitle"
+        aria-describedby="step4PopupText"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="step4PopupIcon" aria-hidden="true">!</div>
+        <h3 id="step4PopupTitle">Select a block first</h3>
+        <p id="step4PopupText">
+          Please choose one 8×8 block (B1, B2, B3 or B4) before extracting. You
+          can pick it right here:
+        </p>
+
+        <div className="step4PopupChoices">
+          {options.map((option, position) => (
+            <button
+              key={option.blockIndex}
+              type="button"
+              ref={position === 0 ? firstButtonRef : null}
+              onClick={() => onPick(option.blockIndex)}
+            >
+              <strong>{getBlockLabel(option.blockIndex)}</strong>
+              <span>{option.position}</span>
+            </button>
+          ))}
+        </div>
+
+        <button type="button" className="step4PopupClose" onClick={onClose}>
+          Close
+        </button>
+      </div>
+    </div>,
+    document.body
   );
 }
 
@@ -120,6 +193,24 @@ function Step4DivideBlocks({
   const normalizedYMatrix = useMemo(() => normalize16x16Matrix(yMatrix), [yMatrix]);
 
   const hasSelection = selectedBlockIndex !== null;
+
+  // Intro animation (16×16 matrix splitting into four 8×8 blocks).
+  // Plays when Step 4 opens, unless the block was already extracted.
+  const [playSplit, setPlaySplit] = useState(() => revealedIndexes.length === 0);
+  const [splitKey, setSplitKey] = useState(0);
+  const [showPickPopup, setShowPickPopup] = useState(false);
+  const [nudgeSelector, setNudgeSelector] = useState(false);
+
+  function replaySplit() {
+    setPlaySplit(true);
+    setSplitKey((key) => key + 1);
+  }
+
+  useEffect(() => {
+    if (!nudgeSelector) return undefined;
+    const timer = setTimeout(() => setNudgeSelector(false), 1200);
+    return () => clearTimeout(timer);
+  }, [nudgeSelector]);
   const effectiveBlockIndex = selectedBlockIndex ?? 0;
 
   const selectedBlock = useMemo(
@@ -189,10 +280,35 @@ useEffect(() => {
     sendSelectedBlockToParent(effectiveBlockIndex);
   }
 
+  function handleExtractClick() {
+    if (isExtracted) return;
+
+    if (!hasSelection) {
+      setShowPickPopup(true);
+      return;
+    }
+
+    createSelectedBlock();
+  }
+
+  function closePickPopup() {
+    setShowPickPopup(false);
+    if (selectedBlockIndex === null) setNudgeSelector(true);
+  }
+
+  function pickFromPopup(blockIndex) {
+    setShowPickPopup(false);
+    handleBlockSelect(blockIndex);
+  }
+
   return (
     <div className="step4SimplePage">
 
-      <div className="step4BlockSelectorGrid">
+      <div
+        className={`step4BlockSelectorGrid ${
+          nudgeSelector ? "step4NudgeSelector" : ""
+        }`}
+      >
         {blockCards.map((block) => (
           <button
             key={block.blockIndex}
@@ -213,7 +329,7 @@ useEffect(() => {
       </div>
 
       <div className="step4ControlBar">
-        <button type="button" onClick={createSelectedBlock} disabled={!hasSelection || isExtracted}>
+        <button type="button" onClick={handleExtractClick} disabled={isExtracted}>
           {isExtracted ? "Block Extracted" : "Extract Selected 8×8 Block"}
         </button>
       </div>
@@ -222,12 +338,26 @@ useEffect(() => {
         <div className="step4Card">
           <h3>Input: 16×16 Y Matrix from Step 3</h3>
 
-          <YSourceMatrixGrid
-            values={normalizedYMatrix}
-            selectedBlockIndex={selectedBlockIndex}
-            onBlockSelect={handleBlockSelect}
-            isLocked={isExtracted}
-          />
+          <div
+            key={splitKey}
+            className={`step4SourceWrap ${playSplit ? "step4SplitAnim" : ""}`}
+          >
+            <YSourceMatrixGrid
+              values={normalizedYMatrix}
+              selectedBlockIndex={selectedBlockIndex}
+              onBlockSelect={handleBlockSelect}
+              isLocked={isExtracted}
+            />
+            {playSplit && <SplitLabels />}
+          </div>
+
+          <button
+            type="button"
+            className="step4ReplayBtn"
+            onClick={replaySplit}
+          >
+            ↻ Replay block-split animation
+          </button>
 
           <p className="step4SmallNote">
             Click any area of the Y matrix to select its 8×8 block. The selected
@@ -292,6 +422,9 @@ useEffect(() => {
         </div>
       </div>
 
+      {showPickPopup && (
+        <SelectBlockPopup onPick={pickFromPopup} onClose={closePickPopup} />
+      )}
     </div>
   );
 }
